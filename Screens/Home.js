@@ -74,7 +74,6 @@ const Home = () => {
 };
 
 const styles = StyleSheet.create({
-    // Add your existing styles here
     container: {
         flex: 1,
         justifyContent: 'center',
@@ -97,7 +96,7 @@ const styles = StyleSheet.create({
     list: {
         width: '100%',
     },
-    // Additional styles for the modal and other elements
+    
 });
 
 export default Home;
