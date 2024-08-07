@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, Pressable, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
-import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './Firebase/firebaseSetup';
 import Home from './Screens/Home';
 import Message from './Screens/Message';
@@ -14,6 +13,9 @@ import PostListing from './Components/PostListing'
 import PostedListings from './Screens/PostedListings';
 import Login from './Screens/Login';
 import SignUp from './Screens/SignUp';
+import { signOut } from 'firebase/auth';
+import ScheduleVisit from './Components/ScheduleVisit';
+
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -74,6 +76,14 @@ const Tabs = () => (
         headerShown: false
       }}
     />
+    <Tab.Screen
+      name="ScheduleVisit"
+      component={ScheduleVisit}
+      options={{
+        tabBarButton: () => null,  // Hiding this tab
+        headerShown: false
+      }}
+    />
   </Tab.Navigator>
 );
 
@@ -92,10 +102,13 @@ const getHeaderTitle = (route) => {
       return 'Post a Listing';
     case 'PostedListings':
       return 'My Posted Listings'
+    case 'ScheduleVisit':
+      return 'Schedule a Visit'
     default:
       return 'My App';
   }
 };
+
 
 // Main App with Stack Navigator
 const App = () => {
@@ -117,7 +130,17 @@ const App = () => {
 
     // Unsubscribe on unmount
     return subscriber;
-  }, []);
+  }, [auth]);
+
+  async function handleLogout(navigation) {
+    try {
+      await signOut(auth)
+      setUser(null)
+      navigation.replace('Login')
+    } catch (err) {
+      console.log("handleLogout error: ", err)
+    }
+  }
 
   return (
     <NavigationContainer>
@@ -138,7 +161,7 @@ const App = () => {
             <Stack.Screen
               name="Root"
               component={Tabs}
-              options={({ route }) => ({
+              options={({ route, navigation }) => ({
                 title: getHeaderTitle(route),
                 headerRight: () => (
                   <View style={{ flexDirection: 'row', marginRight: 10 }}>
@@ -148,6 +171,12 @@ const App = () => {
                     <TouchableOpacity onPress={() => alert('Settings')}>
                       <Icon name="settings-outline" size={25} />
                     </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleLogout(navigation)}
+                      style={{ marginLeft: 20 }}
+                    >
+                      <Icon name="log-out-outline" size={25} color="black" />
+                    </TouchableOpacity>
+
                   </View>
                 ),
               })}

@@ -251,7 +251,24 @@ export const appStyles = StyleSheet.create({
     borderWidth: 2,
     borderColor: Colors.blue,
     color: Colors.themeColor,
-  }
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  input: {
+    height: 100,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 10,
+    marginBottom: 10,
+  },
+  reminderContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
 
 })
 

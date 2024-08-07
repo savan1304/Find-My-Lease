@@ -2,14 +2,10 @@ import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { auth } from '../Firebase/firebaseSetup';
-import { appStyles } from '../Config/Styles';
-import PressableItem from '../Components/PressableItem';
-import { signOut } from 'firebase/auth';
-import { CommonActions } from '@react-navigation/native'; // for resetting the navigation stack
 
 const Profile = ({ navigation }) => {
   const user = auth.currentUser;
-  
+
 
   return (
     <View style={styles.container}>
@@ -44,7 +40,6 @@ const Profile = ({ navigation }) => {
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('PostListing')}>
         <Text style={styles.buttonText}>Post a listing</Text>
       </TouchableOpacity>
-
     </View>
   )
 }
