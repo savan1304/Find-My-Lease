@@ -2,12 +2,12 @@ import { StyleSheet, Text, View, FlatList } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { deleteFromDB, writeToDB } from '../Firebase/firestoreHelper';
 import { collection, onSnapshot, where, query } from 'firebase/firestore';
-import { auth, database, storage } from '../Firebase/firebaseSetup';
-import { ref } from 'firebase/storage';
-import { uploadBytesResumable } from 'firebase/storage';
+import { database } from '../Firebase/firebaseSetup';
 import HouseListItem from '../Components/HouseListItem';
 import { getDoc } from 'firebase/firestore';
 import { doc } from 'firebase/firestore';
+import PressableItem from '../Components/PressableItem';
+import { FontAwesome } from '@expo/vector-icons';
 
 
 export default function PostedListings({ navigation }) {
@@ -72,9 +72,16 @@ export default function PostedListings({ navigation }) {
           <FlatList data={listings}
             renderItem={({ item }) => {
               console.log(item)
-              // don't need the key={item.id} here since we are not rendering the list manually anymore
               return (
-                <HouseListItem listing={item} onPress={handlePressListing} deleteHandler={handleDeleteListing} editHandler={handleEditListing} />
+                <View>
+                  <HouseListItem listing={item} onPress={handlePressListing} deleteHandler={handleDeleteListing} editHandler={handleEditListing} />
+                  <PressableItem onPress={() => { handleEditListing(item.id) }} style={styles.editDeleteButtonStyle} >
+                    <FontAwesome name="pencil" size={24} color="black" />
+                  </PressableItem>
+                  <PressableItem onPress={() => { handleDeleteListing(item.id) }} style={styles.editDeleteButtonStyle} >
+                    <FontAwesome name="trash" size={24} color="black" />
+                  </PressableItem>
+                </View>
               )
             }}
           />
@@ -84,4 +91,10 @@ export default function PostedListings({ navigation }) {
   )
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  editDeleteButtonStyle: {
+    margin: 5,
+    padding: 5,
+    backgroundColor: 'transparent'
+  }
+})

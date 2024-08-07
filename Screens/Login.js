@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native'
+import { Text, View, TextInput } from 'react-native'
 import React, { useState } from 'react'
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../Firebase/firebaseSetup'
@@ -26,7 +26,6 @@ export default function Login({ navigation }) {
         if (!password.length) {
             Alert.alert('password should not be empty')
         }
-
         try {
             console.log("inside try block in loginHandler with email and password:", email, password)
             const userCred = await signInWithEmailAndPassword(auth, email, password)

@@ -1,10 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
-import PressableItem from './PressableItem';
-import { FontAwesome } from '@expo/vector-icons';
 
-const HouseListItem = ({ listing, onPress, deleteHandler, editHandler }) => {
+const HouseListItem = ({ listing, onPress }) => {
 
     return (
 
@@ -29,14 +26,6 @@ const HouseListItem = ({ listing, onPress, deleteHandler, editHandler }) => {
                 <Text>Preffered Gender: {listing.tenantGender}</Text>
                 <Text>Transit connectivity: {listing.transit}</Text>
                 <Text>Year of Construction: {listing.year}</Text>
-                <PressableItem onPress={() => { editHandler(listing.id) }} style={styles.editDeleteButtonStyle} >
-                    {/* <Text>X</Text> */}
-                    <FontAwesome name="pencil" size={24} color="black" />
-                </PressableItem>
-                <PressableItem onPress={() => { deleteHandler(listing.id) }} style={styles.editDeleteButtonStyle} >
-                    {/* <Text>X</Text> */}
-                    <FontAwesome name="trash" size={24} color="black" />
-                </PressableItem>
 
             </Pressable>
         </View>

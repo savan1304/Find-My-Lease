@@ -1,6 +1,5 @@
-import { StyleSheet, Text, View, TextInput, Button, Alert, SafeAreaView } from 'react-native'
+import { Text, View, TextInput, Alert, SafeAreaView } from 'react-native'
 import React, { useState } from 'react'
-import { createNewUser } from '../Firebase/firestoreHelper';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../Firebase/firebaseSetup';
 import { appStyles } from '../Config/Styles';
@@ -102,5 +101,3 @@ export default function SignUp({ navigation }) {
 
     )
 }
-
-const styles = StyleSheet.create({})
