@@ -1,8 +1,16 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome'; // Make sure to install FontAwesome
+import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { auth } from '../Firebase/firebaseSetup';
+import { appStyles } from '../Config/Styles';
+import PressableItem from '../Components/PressableItem';
+import { signOut } from 'firebase/auth';
+import { CommonActions } from '@react-navigation/native'; // for resetting the navigation stack
 
 const Profile = ({ navigation }) => {
+  const user = auth.currentUser;
+  
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -11,8 +19,19 @@ const Profile = ({ navigation }) => {
           <Icon name="edit" size={24} color="#fff" />
         </TouchableOpacity>
       </View>
-      <Text style={styles.info}>Name: John Doe</Text>
-      <Text style={styles.info}>Contact Info: johndoe@example.com</Text>
+
+      {user ? (
+        <>
+          <Text style={styles.info}>Name: </Text>
+          <Text style={styles.info}>Contact Info: {user.email}</Text>
+        </>
+      ) : (
+        <>
+          <Text style={styles.info}>Name: </Text>
+          <Text style={styles.info}>Contact Info:</Text>
+        </>
+      )}
+
       <TouchableOpacity style={styles.button} onPress={() => console.log('Navigate to Saved Listings')}>
         <Text style={styles.buttonText}>Saved Listings</Text>
       </TouchableOpacity>
@@ -25,6 +44,7 @@ const Profile = ({ navigation }) => {
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('PostListing')}>
         <Text style={styles.buttonText}>Post a listing</Text>
       </TouchableOpacity>
+
     </View>
   )
 }

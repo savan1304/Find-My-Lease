@@ -37,3 +37,11 @@ export async function readAllDocs(collectionName) {
     }
 }
 
+export async function createNewUser(email, password) {
+    try {
+        await createUserWithEmailAndPassword(auth, email, password)
+    } catch (err) {
+        console.log(err)
+    }
+}
+
