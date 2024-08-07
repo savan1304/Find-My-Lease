@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button, FlatList, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image } from 'react-native';
 
 const HouseDetails = ({ route, navigation }) => {
     const { house } = route.params;
@@ -9,6 +9,23 @@ const HouseDetails = ({ route, navigation }) => {
         'https://via.placeholder.com/200x200.png?text=House+3',
         'https://via.placeholder.com/200x200.png?text=House+4'
     ];
+
+    const handleContact = () => {
+        console.log('Contact tapped');
+    };
+    
+    const handleSave = () => {
+        console.log('Save tapped');
+    };
+    
+    const handleScheduleViewing = () => {
+        console.log('Schedule Viewing tapped');
+    };
+    
+    const handleSetPriceDropAlert = () => {
+        console.log('Set Price Drop Alert tapped');
+    };
+    
 
     return (
         <View style={styles.container}>
@@ -27,7 +44,18 @@ const HouseDetails = ({ route, navigation }) => {
             <Text style={styles.detail}>Bedrooms: {house.bedrooms}</Text>
             <Text style={styles.detail}>Area: {house.area}</Text>
             <Text style={styles.detail}>Price: {house.price}</Text>
-            <Button title="Go Back" onPress={() => navigation.goBack()} />
+            <TouchableOpacity style={styles.button} onPress={handleContact}>
+                <Text style={styles.buttonText}>Contact</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={handleSave}>
+                <Text style={styles.buttonText}>Save</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={handleScheduleViewing}>
+                <Text style={styles.buttonText}>Schedule Viewing</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={handleSetPriceDropAlert}>
+                <Text style={styles.buttonText}>Set Price Drop Alert</Text>
+            </TouchableOpacity>
         </View>
     );
 };
@@ -51,13 +79,25 @@ const styles = StyleSheet.create({
     },
     imageList: {
         height: 220,
-        flexGrow: 0, // prevent it from taking up any unnecessary space
+        flexGrow: 0, 
     },
     image: {
         width: 200,
         height: 200,
         marginRight: 10,
-        borderRadius: 10, // optional, for rounded corners
+        borderRadius: 10, 
+    },
+    button: {
+        marginTop: 10,
+        backgroundColor: '#007BFF',
+        padding: 10,
+        borderRadius: 5,
+        width: '80%'
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
+        textAlign: 'center'
     }
 });
 
