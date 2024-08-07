@@ -1,11 +1,27 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet, Button, FlatList, Image } from 'react-native';
 
 const HouseDetails = ({ route, navigation }) => {
     const { house } = route.params;
+    const sampleImages = [
+        'https://via.placeholder.com/200x200.png?text=House+1',
+        'https://via.placeholder.com/200x200.png?text=House+2',
+        'https://via.placeholder.com/200x200.png?text=House+3',
+        'https://via.placeholder.com/200x200.png?text=House+4'
+    ];
 
     return (
         <View style={styles.container}>
+            <FlatList
+                data={sampleImages}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                renderItem={({ item }) => (
+                    <Image source={{ uri: item }} style={styles.image} />
+                )}
+                keyExtractor={(_, index) => index.toString()}
+                style={styles.imageList}
+            />
             <Text style={styles.header}>House Details</Text>
             <Text style={styles.detail}>Name: {house.name}</Text>
             <Text style={styles.detail}>Bedrooms: {house.bedrooms}</Text>
@@ -32,6 +48,16 @@ const styles = StyleSheet.create({
     detail: {
         fontSize: 18,
         marginBottom: 10
+    },
+    imageList: {
+        height: 220,
+        flexGrow: 0, // prevent it from taking up any unnecessary space
+    },
+    image: {
+        width: 200,
+        height: 200,
+        marginRight: 10,
+        borderRadius: 10, // optional, for rounded corners
     }
 });
 
