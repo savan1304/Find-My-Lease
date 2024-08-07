@@ -1,9 +1,10 @@
 import { Text, View, TextInput, Alert, SafeAreaView } from 'react-native'
 import React, { useState } from 'react'
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../Firebase/firebaseSetup';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth, database } from '../Firebase/firebaseSetup';
 import { appStyles } from '../Config/Styles';
 import PressableItem from '../Components/PressableItem';
+import { collection, doc, setDoc } from 'firebase/firestore';
 
 
 export default function SignUp({ navigation }) {
@@ -34,6 +35,15 @@ export default function SignUp({ navigation }) {
             console.log("Auth in signup page before calling firebase fn:", auth)
             const userCred = await createUserWithEmailAndPassword(auth, email, password)
             console.log(userCred)
+            const user = userCred.user;
+
+            const usersCollectionRef = collection(database, 'User');
+            await setDoc(doc(usersCollectionRef, user.uid), {
+                email: user.email,
+            });
+
+            console.log("User created and data saved to Firestore!");
+            navigation.navigate('Login');
         } catch (err) {
             console.log("SIGN UP ", err)
         }
