@@ -1,34 +1,31 @@
-import { StyleSheet, Text, View, Pressable } from 'react-native'
+import { StyleSheet, View, Pressable } from 'react-native'
 import React from 'react'
-import helper from '../Config/Helper';
+import { Colors } from '../Config/Colors';
 
 
-const PressableItem = ({children, onPress, style}) => {
+const PressableItem = ({ children, onPress, style }) => {
     return (
-        <Pressable 
-            onPress={onPress}
-            style={({ pressed }) => [
-                style || styles.default,
-                pressed && styles.pressedStyle  
-              ]}>
-            {children}
+        <Pressable onPress={onPress} style={({ pressed }) => {
+            return [styles.defaultStyle, style, pressed && styles.pressedStyle]
+        }}>
+            <View>
+                <View>{children}</View>
+            </View>
         </Pressable>
-      )
+    )
 }
 
 export default PressableItem
 
 const styles = StyleSheet.create({
     pressedStyle: {
-        opacity: 0.5,  
+        opacity: 0.5,
+        backgroundColor: Colors.shadowColor,
     },
-    default:{
-        width:"45%",
-        flexDirection: 'row',
-        padding: helper.padding.listItemContainer,
-        backgroundColor: helper.color.pressedDefaultBackgroundColor,
-        justifyContent: 'center',
-        alignItems: 'center',
-
-    }  
+    defaultStyle: {
+        backgroundColor: Colors.themeColor,
+        padding: 10,
+        margin: 25,
+        borderRadius: 5,
+    }
 })

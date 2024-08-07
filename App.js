@@ -9,16 +9,25 @@ import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import Home from './Screens/Home';
 import Message from './Screens/Message';
 import Profile from './Screens/Profile';
+import PostListing from './Components/PostListing'
+import PostedListings from './Screens/PostedListings';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 // Tabs component
 const Tabs = () => (
-  <Tab.Navigator>
-    <Tab.Screen 
+  <Tab.Navigator screenOptions={({ route }) => ({
+    tabBarStyle: {
+      display:
+        route.name === 'PostListing'
+          ? 'none'
+          : 'flex',
+    },
+  })}>
+    <Tab.Screen
       name="Home"
-      component={Home} 
+      component={Home}
       options={{
         tabBarIcon: ({ color, size }) => (
           <Icon name="home-outline" color={color} size={size} />
@@ -26,9 +35,9 @@ const Tabs = () => (
         headerShown: false
       }}
     />
-    <Tab.Screen 
+    <Tab.Screen
       name="Message"
-      component={Message} 
+      component={Message}
       options={{
         tabBarIcon: ({ color, size }) => (
           <Icon name="chatbubble-outline" color={color} size={size} />
@@ -36,9 +45,9 @@ const Tabs = () => (
         headerShown: false
       }}
     />
-    <Tab.Screen 
+    <Tab.Screen
       name="Profile"
-      component={Profile} 
+      component={Profile}
       options={{
         tabBarIcon: ({ color, size }) => (
           <Icon name="person-outline" color={color} size={size} />
@@ -46,10 +55,26 @@ const Tabs = () => (
         headerShown: false
       }}
     />
+    <Tab.Screen
+      name="PostListing"
+      component={PostListing}
+      options={{
+        tabBarButton: () => null,  // Hiding this tab
+        headerShown: false
+      }}
+    />
+    <Tab.Screen
+      name="PostedListings"
+      component={PostedListings}
+      options={{
+        tabBarButton: () => null,  // Hiding this tab
+        headerShown: false
+      }}
+    />
   </Tab.Navigator>
 );
 
-// Get header title based on route name
+// Getting header title based on route name
 const getHeaderTitle = (route) => {
   const routeName = getFocusedRouteNameFromRoute(route) ?? 'Home';
 
@@ -60,6 +85,10 @@ const getHeaderTitle = (route) => {
       return 'Message';
     case 'Profile':
       return 'Profile';
+    case 'PostListing':
+      return 'Post a Listing';
+    case 'PostedListings':
+      return 'My Posted Listings'
     default:
       return 'My App';
   }
@@ -70,9 +99,9 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen 
-          name="Root" 
-          component={Tabs} 
+        <Stack.Screen
+          name="Root"
+          component={Tabs}
           options={({ route }) => ({
             title: getHeaderTitle(route),
             headerRight: () => (

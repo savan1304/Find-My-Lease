@@ -1,14 +1,21 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, Button, Modal, TouchableOpacity, FlatList } from 'react-native';
+import Picker from '@react-native-picker/picker'; // Import Picker component
 import MapHolder from '../Components/MapHolder';
-import HouseListItem from '../Components/HouseListItem'; 
+import HouseListItem from '../Components/HouseListItem';
 
 const Home = () => {
     const [searchText, setSearchText] = useState('');
+    // const [filters, setFilters] = useState({
+    //     type: 'all', // Initial type is 'all' (no filter)
+    //     bedrooms: 'any', // Initial bedrooms is 'any'
+    //     baths: 'any',
+    //     price: 'any',
+    // });
     const [filters, setFilters] = useState({
         bedrooms: 0,
-        area: 0,
-    });
+        area: 0
+    })
     const [isModalVisible, setModalVisible] = useState(false);
 
     const houses = [
@@ -21,23 +28,73 @@ const Home = () => {
         console.log('House selected:', house);
     };
 
+
     return (
         <View style={styles.container}>
             <Text style={styles.header}>Home Screen</Text>
             <TextInput
                 style={styles.searchBar}
-                placeholder="Search..."
+                placeholder="Search Location..."
                 value={searchText}
                 onChangeText={setSearchText}
             />
-            <Button title="Open Filters" onPress={() => setModalVisible(true)} />
+
+            {/* <View style={styles.filterRow}>s
+                <Picker
+                    style={styles.picker}
+                    selectedValue={filters.type}
+                    onValueChange={(itemValue) => setFilters({ ...filters, type: itemValue })}
+                >
+                    <Picker.Item label="All" value="all" />
+                    <Picker.Item label="Shared" value="shared" />
+                    <Picker.Item label="Private" value="private" />
+                </Picker>
+
+                <Picker
+                    style={styles.picker}
+                    selectedValue={filters.bedrooms}
+                    onValueChange={(itemValue) => setFilters({ ...filters, bedrooms: itemValue })}
+                >
+                    <Picker.Item label="Any Beds" value="any" />
+                    <Picker.Item label="1 Bed" value="1" />
+                    <Picker.Item label="2 Beds" value="2" />
+                    <Picker.Item label="3 Beds" value="3" />
+                    <Picker.Item label="3+ Beds" value="3+" />
+                </Picker>
+
+            </View>
+
+            <View style={styles.filterRow}>
+
+                <Picker
+                    style={styles.picker}
+                    selectedValue={filters.baths}
+                    onValueChange={(itemValue) => setFilters({ ...filters, baths: itemValue })}
+                >
+                    <Picker.Item label="Any Baths" value="any" />
+                    <Picker.Item label="1 Bath" value="1" />
+                    <Picker.Item label="1.5 Baths" value="1.5" />
+                    <Picker.Item label="2 Baths" value="2" />
+                    <Picker.Item label="2.5 Baths" value="2.5" />
+                    <Picker.Item label="3+ Baths" value="3+" />
+                </Picker>
+
+                <Picker
+                    style={styles.picker}
+                    selectedValue={filters.price}
+                    onValueChange={(itemValue) => setFilters({ ...filters, price: itemValue })}
+                >
+                    <Picker.Item label="Any Price" value="any" />
+                    <Picker.Item label="$0-500" value="0-500" />
+                    <Picker.Item label="$500-1000" value="500-1000" />
+                    <Picker.Item label="$1000-2000" value="1000-2000" />
+                    <Picker.Item label="$2000-3000"
+                        value="2000-3000" />
+                    <Picker.Item label="$3000+" value="3000+" />
+                </Picker>
+            </View> */}
+            {/* <Button title="Open Filters" onPress={() => setModalVisible(true)} /> */}
             <MapHolder />
-            <FlatList
-                data={houses}
-                renderItem={({ item }) => <HouseListItem house={item} onPress={handleHousePress} />}
-                keyExtractor={item => item.id}
-                style={styles.list}
-            />
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -96,7 +153,7 @@ const styles = StyleSheet.create({
     list: {
         width: '100%',
     },
-    
+
 });
 
 export default Home;

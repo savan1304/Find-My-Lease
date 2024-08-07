@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Make sure to install FontAwesome
 
-const Profile = () => {
+const Profile = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -16,11 +16,14 @@ const Profile = () => {
       <TouchableOpacity style={styles.button} onPress={() => console.log('Navigate to Saved Listings')}>
         <Text style={styles.buttonText}>Saved Listings</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => console.log('Navigate to My Posted Listings')}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('PostedListings')}>
         <Text style={styles.buttonText}>My Posted Listings</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => console.log('Navigate to My Scheduled Visits')}>
         <Text style={styles.buttonText}>My Scheduled Visits</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('PostListing')}>
+        <Text style={styles.buttonText}>Post a listing</Text>
       </TouchableOpacity>
     </View>
   )
