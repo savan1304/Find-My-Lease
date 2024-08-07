@@ -17,7 +17,7 @@ import { updateDoc } from 'firebase/firestore';
 
 export default function PostListing({ navigation }) {
     const route = useRoute();
-    const { listingData } = route.params;
+    const { listingData = {} } = route.params || {};
     const [images, setImages] = useState([]);
     const [formData, setFormData] = useState({
         price: listingData?.price || '',
@@ -109,7 +109,7 @@ export default function PostListing({ navigation }) {
                 await updateDoc(listingRef, formData);
             } else {
                 console.log("creating new listing", listingData)
-                await writeToDB(listingData, 'Listing');
+                await writeToDB(formData, 'Listing');
             }
             navigation.goBack();
         } catch (error) {

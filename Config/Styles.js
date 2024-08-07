@@ -234,7 +234,24 @@ export const appStyles = StyleSheet.create({
     margin: 5,
     padding: 5,
     backgroundColor: 'transparent'
-}
+  },
+  loginSignUpContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 5
+  },
+  loginSignUpFieldContainer: {
+    width: 200,
+    alignContent: "flex-start",
+    margin: 10
+  },
+  loginSignUpInput: {
+    borderRadius: 5,
+    borderWidth: 2,
+    borderColor: Colors.blue,
+    color: Colors.themeColor,
+  }
 
 })
 

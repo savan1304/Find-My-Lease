@@ -1,16 +1,19 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { View, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
-
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from './Firebase/firebaseSetup';
 import Home from './Screens/Home';
 import Message from './Screens/Message';
 import Profile from './Screens/Profile';
 import PostListing from './Components/PostListing'
 import PostedListings from './Screens/PostedListings';
+import Login from './Screens/Login';
+import SignUp from './Screens/SignUp';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -96,26 +99,62 @@ const getHeaderTitle = (route) => {
 
 // Main App with Stack Navigator
 const App = () => {
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState(null);
+
+  const onAuthStateChanged = (user) => {
+    setUser(user);
+    if (initializing) {
+      setInitializing(false);
+    }
+  };
+
+  useEffect(() => {
+    const subscriber = onAuthStateChanged(auth, (user) => { // Pass auth instance as first argument
+      setUser(user);
+      if (initializing) setInitializing(false);
+    });
+
+    // Unsubscribe on unmount
+    return subscriber;
+  }, []);
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen
-          name="Root"
-          component={Tabs}
-          options={({ route }) => ({
-            title: getHeaderTitle(route),
-            headerRight: () => (
-              <View style={{ flexDirection: 'row', marginRight: 10 }}>
-                <TouchableOpacity onPress={() => alert('Notification')}>
-                  <Icon name="notifications-outline" size={25} style={{ marginRight: 20 }} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => alert('Settings')}>
-                  <Icon name="settings-outline" size={25} />
-                </TouchableOpacity>
-              </View>
-            ),
-          })}
-        />
+        {!user ? (
+          <>
+            <Stack.Screen
+              name="Login"
+              component={Login}
+            />
+            <Stack.Screen
+              name="Signup"
+              component={SignUp}
+            />
+          </>
+        ) : (
+          <>
+            <Stack.Screen
+              name="Root"
+              component={Tabs}
+              options={({ route }) => ({
+                title: getHeaderTitle(route),
+                headerRight: () => (
+                  <View style={{ flexDirection: 'row', marginRight: 10 }}>
+                    <TouchableOpacity onPress={() => alert('Notification')}>
+                      <Icon name="notifications-outline" size={25} style={{ marginRight: 20 }} />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => alert('Settings')}>
+                      <Icon name="settings-outline" size={25} />
+                    </TouchableOpacity>
+                  </View>
+                ),
+              })}
+            />
+          </>
+        )}
+
       </Stack.Navigator>
     </NavigationContainer>
   );
