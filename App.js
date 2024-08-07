@@ -9,16 +9,24 @@ import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import Home from './Screens/Home';
 import Message from './Screens/Message';
 import Profile from './Screens/Profile';
+import HouseDetails from './Screens/HouseDetails'; 
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
+const HomeStack = createStackNavigator();
 
-// Tabs component
+const HomeStackScreen = () => (
+  <HomeStack.Navigator>
+    <HomeStack.Screen name="Home" component={Home} options={{ headerShown: false }} />
+    <HomeStack.Screen name="HouseDetails" component={HouseDetails} options={{ title: 'House Details' }} />
+  </HomeStack.Navigator>
+);
+
 const Tabs = () => (
   <Tab.Navigator>
     <Tab.Screen 
       name="Home"
-      component={Home} 
+      component={HomeStackScreen} 
       options={{
         tabBarIcon: ({ color, size }) => (
           <Icon name="home-outline" color={color} size={size} />
@@ -49,7 +57,7 @@ const Tabs = () => (
   </Tab.Navigator>
 );
 
-// Get header title based on route name
+
 const getHeaderTitle = (route) => {
   const routeName = getFocusedRouteNameFromRoute(route) ?? 'Home';
 
