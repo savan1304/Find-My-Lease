@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Switch, Button } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Switch } from 'react-native'
 import React, { useState } from 'react'
 import { appStyles } from '../Config/Styles';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import PressableItem from './PressableItem';
 
 export default function ScheduleVisit({ route }) {
 
@@ -37,9 +38,9 @@ export default function ScheduleVisit({ route }) {
 
     console.log("inside ScheduleVisit with listing: ", listing)
     return (
-        <View style={styles.container}>
-            <Text style={appStyles.title}>{listing.location}</Text>
-            <Text style={appStyles.title}>{listing.price}</Text>
+        <View style={appStyles.container}>
+            <Text style={appStyles.title}>Location: {listing.location}</Text>
+            <Text style={appStyles.title}>Price: {listing.price}</Text>
 
             <TouchableOpacity onPress={() => setShowDatePicker(true)}>
                 <Text>{visit.date.toLocaleDateString()}</Text>
@@ -69,8 +70,6 @@ export default function ScheduleVisit({ route }) {
                 />
             )}
 
-
-            {/* Questions */}
             <TextInput
                 style={appStyles.input}
                 multiline
@@ -79,7 +78,6 @@ export default function ScheduleVisit({ route }) {
                 onChangeText={text => setVisit(prevVisit => ({ ...prevVisit, questions: text }))}
             />
 
-            {/* Reminder Switch */}
             <View style={appStyles.reminderContainer}>
                 <Text>Set reminder 1 day before?</Text>
                 <Switch
@@ -88,9 +86,9 @@ export default function ScheduleVisit({ route }) {
                 />
             </View>
 
-            <Button title="Schedule Visit" onPress={handleSubmit} />
+            <PressableItem onPress={handleSubmit} style={[appStyles.buttonStyle, appStyles.saveButton]} >
+                <Text style={appStyles.text}>Schedule Visit</Text>
+            </PressableItem>
         </View>
     )
 }
-
-const styles = StyleSheet.create({})
