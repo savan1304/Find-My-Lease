@@ -3,6 +3,8 @@ import React, { useState } from 'react'
 import { appStyles } from '../Config/Styles';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import PressableItem from './PressableItem';
+import { auth, database } from '../Firebase/firebaseSetup';
+import { collection, addDoc } from 'firebase/firestore'; // Import Firestore functions
 
 export default function ScheduleVisit({ route }) {
 
@@ -32,8 +34,23 @@ export default function ScheduleVisit({ route }) {
         }
     };
 
-    function handleSubmit() {
+    async function handleSubmit() {
         console.log("scheduled a visit: ", visit);
+        try {
+            const user = auth.currentUser;
+            if (!user) {
+                throw new Error("User not authenticated");
+            }
+
+            const scheduledVisitsCollectionRef = collection(database, 'User', user.uid, 'ScheduledVisits');
+            console.log(scheduledVisitsCollectionRef)
+            await addDoc(scheduledVisitsCollectionRef, visit);
+            console.log("Scheduled a visit:", visit);
+        } catch (error) {
+            console.error("Error scheduling visit:", error);
+        }
+
+
     };
 
     console.log("inside ScheduleVisit with listing: ", listing)
