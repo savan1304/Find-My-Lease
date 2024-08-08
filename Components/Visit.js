@@ -19,7 +19,7 @@ const Visit = ({ visit }) => {
                     <Text style={styles.info}>Reminder set: Yes</Text>
 
                 ) : (
-                    <Text style={styles.info}>Reminder set: Yes</Text>
+                    <Text style={styles.info}>Reminder set: No</Text>
 
                 )}
             </View>
