@@ -25,7 +25,6 @@ const HouseDetails = ({ route, navigation }) => {
     const handleSetPriceDropAlert = () => {
         console.log('Set Price Drop Alert tapped');
     };
-    
 
     return (
         <View style={styles.container}>
@@ -40,10 +39,18 @@ const HouseDetails = ({ route, navigation }) => {
                 style={styles.imageList}
             />
             <Text style={styles.header}>House Details</Text>
-            <Text style={styles.detail}>Name: {house.name}</Text>
-            <Text style={styles.detail}>Bedrooms: {house.bedrooms}</Text>
-            <Text style={styles.detail}>Area: {house.area}</Text>
-            <Text style={styles.detail}>Price: {house.price}</Text>
+            <View style={styles.detailsContainer}>
+                <Text style={styles.detail}>Area: {house.area}</Text>
+                <Text style={styles.detail}>Bathrooms: {house.bath}</Text>
+                <Text style={styles.detail}>Bedrooms: {house.bed}</Text>
+                <Text style={styles.detail}>Location: {house.location}</Text>
+                <Text style={styles.detail}>Pet Friendly: {house.petFriendly ? 'Yes' : 'No'}</Text>
+                <Text style={styles.detail}>Price: {house.price}</Text>
+                <Text style={styles.detail}>Tenant Gender: {house.tenantGender}</Text>
+                <Text style={styles.detail}>Transit: {house.transit}</Text>
+                <Text style={styles.detail}>Type: {house.type}</Text>
+                <Text style={styles.detail}>Year Built: {house.year}</Text>
+            </View>
             <TouchableOpacity style={styles.button} onPress={handleContact}>
                 <Text style={styles.buttonText}>Contact</Text>
             </TouchableOpacity>
@@ -72,6 +79,10 @@ const styles = StyleSheet.create({
         fontSize: 22,
         fontWeight: 'bold',
         marginBottom: 20
+    },
+    detailsContainer: {
+        marginBottom: 20,
+        width: '100%',
     },
     detail: {
         fontSize: 18,
