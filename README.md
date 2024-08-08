@@ -3,13 +3,48 @@
 _Current state (or functionalities) of the application:_
 
 ==> 9 screens along with the re-usable components
+
+
 ==> Navigations between screens
+
+
 ==> Firebase configured
+
+
+==> Current high-level data model:
+
+
+    Listing: location, price, bed, bath, area, petFriendly(?), transit (options), type (shared/private), year (of construction), (preferred) tenant gender, imageUri
+
+    
+    User: email (password will be stored and handled by firestore)
+
+    
+    ScheduledVisit: date, time, questions, setReminder(?), listingLocation, listingPrice
+
+    
+
 ==> 3 collections in firestore: User, ScheduledVisits (a subcollection of User), Listing
+
+
+     **User collection**: Add doc (**C**) after a new user registration
+
+     
+     
+     **ScheduledVisits** collection: Add doc (**C**) after scheduling a visit, Read (**R**) for Scheduled Visits page
+
+     
+
+     **Listing collection**: Add doc (**R**) after posting a listing, Read(**R**) listing for Home, HouseDetails, My Posted listings screens, Edit(**U**) for Edit listing option from My posted listings screens, Delete(**D**) for deleting the listing from My Posted listings or the Saved screen.
+
+     
+
 ==> CRUD using firestore
 
-==> User can login/signup, check details of a listing,  post a listing, checkout their posted listings
-,save listing, checkout the saved listings, schedule a visit to a listing, checkout the scheduled visits.
+
+==> User can login/signup, check details of a listing,  post a listing, checkout their posted listings,save listing, checkout the saved listings, schedule a visit to a listing, checkout the scheduled visits.
+
+
 
 
 **_Zhecheng Li's work:_**
