@@ -11,6 +11,8 @@ export default function ScheduleVisit({ route }) {
     const listing = route.params.house;
     const [visit, setVisit] = useState({
         listingId: listing.id,
+        listingLocation: listing.location,
+        listingPrice: listing.price,
         date: new Date(),
         time: new Date(),
         questions: '',

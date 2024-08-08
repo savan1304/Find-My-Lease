@@ -34,6 +34,7 @@ const ProfileStackScreen = () => (
   <MainStack.Navigator>
     <MainStack.Screen name="ProfileMain" component={Profile} options={{ headerShown: false }} />
     <MainStack.Screen name="Saved" component={Saved} options={{ title: 'Saved Listings' }} />
+    <MainStack.Screen name="ScheduledVisits" component={ScheduledVisits} options={{ title: 'Scheduled Listings' }} />
   </MainStack.Navigator>
 );
 
@@ -94,14 +95,6 @@ const Tabs = () => (
       component={ScheduleVisit}
       options={{
         tabBarButton: () => null,  
-        headerShown: false
-      }}
-    />
-    <Tab.Screen
-      name="ScheduledVisits"
-      component={ScheduledVisits}
-      options={{
-        tabBarButton: () => null,  // Hiding this tab
         headerShown: false
       }}
     />

@@ -33,7 +33,7 @@ const Profile = ({ navigation }) => {
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('PostedListings')}>
         <Text style={styles.buttonText}>My Posted Listings</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => console.log('Navigate to My Scheduled Visits')}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ScheduledVisits')}>
         <Text style={styles.buttonText}>My Scheduled Visits</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('PostListing')}>
