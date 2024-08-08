@@ -1,20 +1,19 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
-const Visit = ({ visit, house, onPress }) => {
-    const firestoreTimeString = visit.time
-    const time = firestoreTimeString.split('at ')[1].slice(0, -9); // "6:00 PM"
+const Visit = ({ visit }) => {
+    
     return (
-        <TouchableOpacity onPress={() => onPress(house)} style={styles.container}>
+        <View style={styles.container}>
             <View style={styles.left}>
 
                 <AntDesign name="home" size={24} color="black" />
             </View>
             <View style={styles.right}>
-                <Text style={styles.info}>Location: {house.location}</Text>
-                <Text style={styles.info}>Price: {house.price}</Text>
+                <Text style={styles.info}>Location: {visit.listingLocation}</Text>
+                <Text style={styles.info}>Price: {visit.listingPrice}</Text>
                 <Text style={styles.info}>Date: {visit.date}</Text>
-                <Text style={styles.info}>Time: {time}</Text>
+                <Text style={styles.info}>Time: {visit.time}</Text>
                 <Text style={styles.info}>Questions: {visit.questions}</Text>
                 {visit.setReminder ? (
                     <Text style={styles.info}>Reminder set: Yes</Text>
@@ -24,7 +23,7 @@ const Visit = ({ visit, house, onPress }) => {
 
                 )}
             </View>
-        </TouchableOpacity>
+        </View>
     );
 };
 
