@@ -74,7 +74,7 @@ export default function PostedListings({ navigation }) {
               console.log(item)
               return (
                 <View>
-                  <HouseListItem listing={item} onPress={handlePressListing} deleteHandler={handleDeleteListing} editHandler={handleEditListing} />
+                  <HouseListItem house={item} onPress={handlePressListing} deleteHandler={handleDeleteListing} editHandler={handleEditListing} />
                   <PressableItem onPress={() => { handleEditListing(item.id) }} style={styles.editDeleteButtonStyle} >
                     <FontAwesome name="pencil" size={24} color="black" />
                   </PressableItem>
