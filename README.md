@@ -24,9 +24,7 @@ _Current state (or functionalities) of the application:_
 
      **User collection**: Add doc (**C**) after a new user registration
 
-     
      **ScheduledVisits** collection: Add doc (**C**) after scheduling a visit, Read (**R**) for Scheduled Visits page
-  
 
      **Listing collection**: Add doc (**R**) after posting a listing, Read(**R**) listing for Home, HouseDetails, My Posted listings screens, Edit(**U**) for Edit listing option from My posted listings screens, Delete(**D**) for deleting the listing from My Posted listings or the Saved screen.
 
