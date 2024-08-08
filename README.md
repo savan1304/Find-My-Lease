@@ -22,11 +22,11 @@ _Current state (or functionalities) of the application:_
     
 ==> 3 collections in firestore: User, ScheduledVisits (a subcollection of User), Listing
 
-     **User collection**: Add doc (**C**) after a new user registration
+     User collection: Add doc (C) after a new user registration
 
-     **ScheduledVisits** collection: Add doc (**C**) after scheduling a visit, Read (**R**) for Scheduled Visits page
+     ScheduledVisits collection: Add doc (C) after scheduling a visit, Read (R) for Scheduled Visits page
 
-     **Listing collection**: Add doc (**R**) after posting a listing, Read(**R**) listing for Home, HouseDetails, My Posted listings screens, Edit(**U**) for Edit listing option from My posted listings screens, Delete(**D**) for deleting the listing from My Posted listings or the Saved screen.
+     Listing collection: Add doc (R) after posting a listing, Read(R) listing for 'Home', 'HouseDetails', 'My Posted listings' screens, Edit(U) for Edit listing option from 'My posted listings' screens, Delete(D) for deleting the listing from 'My Posted listings' or the 'Saved' screen.
 
      
 
