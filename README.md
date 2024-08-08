@@ -72,7 +72,7 @@ Create (C) operation in firestore: User can post take image, fill necessary data
 Edit (U) operation in firestore: Re-using Post a listing screen when navigated from 'Edit' option in 'My posted listings' screen.
 ![Screenshot_20240807_221947_Expo Go](https://github.com/user-attachments/assets/40d70537-6150-4113-8a86-a8a24c11ed2d)
 
-My Posted listings screen. Fetching listings from firebase (Read (R) operation). Option to Edit(U) will redirect to Post a listing since we are re-using it. Option to Delete (D) deletes the listing from firestore.
+'My Posted listings' screen. Fetching listings from firebase (Read (R) operation). Option to Edit(U) will redirect to Post a listing since we are re-using it. Option to Delete (D) deletes the listing from firestore.
 ![Screenshot_20240807_222014_Expo Go](https://github.com/user-attachments/assets/e24db69c-2053-4dad-a0d4-b03f76c202a8)
 
  
@@ -81,7 +81,7 @@ Schedule a visit screen (Navigated from HouseDetails screen), creating a visit d
 ![Screenshot_20240807_222804_Expo Go](https://github.com/user-attachments/assets/a592d57d-c3cf-472b-a65e-fc5b0695d3b0)
 ![Screenshot_20240807_222327_Expo Go](https://github.com/user-attachments/assets/4e6df0a6-7283-4f44-a854-9846d8729c16)
 
-My scheduled visits screen. Fetching visits from firebase (Read (R) operation)
+'My scheduled visits' screen. Fetching visits from firebase (Read (R) operation)
 ![Screenshot_20240807_224014_Expo Go](https://github.com/user-attachments/assets/cee37a3e-6d81-4dde-8dc0-83238a3436b6)
 
 
