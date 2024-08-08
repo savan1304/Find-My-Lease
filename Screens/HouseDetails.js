@@ -20,6 +20,7 @@ const HouseDetails = ({ route, navigation }) => {
     
     const handleScheduleViewing = () => {
         console.log('Schedule Viewing tapped');
+        navigation.navigate('ScheduleVisit', { house });
     };
     
     const handleSetPriceDropAlert = () => {
