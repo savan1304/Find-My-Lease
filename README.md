@@ -2,7 +2,7 @@
 
 _Current state (or functionalities) of the application:_
 
-==> 9 screens along with the re-usable components
+==> 9 screens and other reusable components
 
 
 ==> Navigations between screens
