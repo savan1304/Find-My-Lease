@@ -1,4 +1,5 @@
 **Iteration-1:**
+
 _Current state (or functionalities) of the application:_
 
 ==> 9 screens along with the re-usable components
@@ -11,7 +12,7 @@ _Current state (or functionalities) of the application:_
 ,save listing, checkout the saved listings, schedule a visit to a listing, checkout the scheduled visits.
 
 
-_Zhecheng Li's work:_
+**_Zhecheng Li's work:_**
 ![IMG_0643](https://github.com/user-attachments/assets/2b885339-fc7a-4e63-8c0a-8d9201c2ff73)
 ![IMG_0647](https://github.com/user-attachments/assets/bc8a12ae-7f7c-4ba2-b8d7-cf5788941af6)
 Home Screen with Search and Filter function. Showing on listing from database
@@ -23,7 +24,8 @@ Profile Layout
 Saved List for each indivual user, users can delete what he saved here
 
 
-_Savan Parmar:_
+
+**_Savan Parmar:_**
 Login screen with email and password:
 ![Screenshot_20240807_222054_Expo Go](https://github.com/user-attachments/assets/33f4feec-a775-4718-a568-a72d226d8abe)
 
