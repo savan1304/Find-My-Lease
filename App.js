@@ -16,6 +16,7 @@ import Login from './Screens/Login';
 import SignUp from './Screens/SignUp';
 import { signOut } from 'firebase/auth';
 import ScheduleVisit from './Components/ScheduleVisit';
+import Saved from './Screens/Saved';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -25,6 +26,13 @@ const HomeStackScreen = () => (
   <MainStack.Navigator>
     <MainStack.Screen name="HomeMain" component={Home} options={{ headerShown: false }} />
     <MainStack.Screen name="HouseDetails" component={HouseDetails} options={{ title: 'House Details' }} />
+  </MainStack.Navigator>
+);
+
+const ProfileStackScreen = () => (
+  <MainStack.Navigator>
+    <MainStack.Screen name="ProfileMain" component={Profile} options={{ headerShown: false }} />
+    <MainStack.Screen name="Saved" component={Saved} options={{ title: 'Saved Listings' }} />
   </MainStack.Navigator>
 );
 
@@ -56,7 +64,7 @@ const Tabs = () => (
     />
     <Tab.Screen
       name="Profile"
-      component={Profile}
+      component={ProfileStackScreen}
       options={{
         tabBarIcon: ({ color, size }) => (
           <Icon name="person-outline" color={color} size={size} />
@@ -68,7 +76,7 @@ const Tabs = () => (
       name="PostListing"
       component={PostListing}
       options={{
-        tabBarButton: () => null,  // Hiding this tab
+        tabBarButton: () => null,  
         headerShown: false
       }}
     />
@@ -76,7 +84,7 @@ const Tabs = () => (
       name="PostedListings"
       component={PostedListings}
       options={{
-        tabBarButton: () => null,  // Hiding this tab
+        tabBarButton: () => null,  
         headerShown: false
       }}
     />
@@ -84,7 +92,7 @@ const Tabs = () => (
       name="ScheduleVisit"
       component={ScheduleVisit}
       options={{
-        tabBarButton: () => null,  // Hiding this tab
+        tabBarButton: () => null,  
         headerShown: false
       }}
     />
@@ -107,6 +115,8 @@ const getHeaderTitle = (route) => {
       return 'My Posted Listings';
     case 'ScheduleVisit':
       return 'Schedule a Visit';
+    case 'Saved':
+      return 'Saved Listings';
     default:
       return 'My App';
   }
@@ -125,12 +135,12 @@ const App = () => {
   };
 
   useEffect(() => {
-    const subscriber = onAuthStateChanged(auth, (user) => { // Pass auth instance as first argument
+    const subscriber = onAuthStateChanged(auth, (user) => { 
       setUser(user);
       if (initializing) setInitializing(false);
     });
 
-    // Unsubscribe on unmount
+    
     return subscriber;
   }, [auth]);
 

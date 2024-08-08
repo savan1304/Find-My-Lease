@@ -1,11 +1,10 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { auth } from '../Firebase/firebaseSetup';
 
 const Profile = ({ navigation }) => {
   const user = auth.currentUser;
-
 
   return (
     <View style={styles.container}>
@@ -28,7 +27,7 @@ const Profile = ({ navigation }) => {
         </>
       )}
 
-      <TouchableOpacity style={styles.button} onPress={() => console.log('Navigate to Saved Listings')}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Saved')}>
         <Text style={styles.buttonText}>Saved Listings</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('PostedListings')}>
@@ -41,7 +40,7 @@ const Profile = ({ navigation }) => {
         <Text style={styles.buttonText}>Post a listing</Text>
       </TouchableOpacity>
     </View>
-  )
+  );
 }
 
 export default Profile;
