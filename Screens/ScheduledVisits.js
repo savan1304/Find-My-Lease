@@ -1,15 +1,16 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import { getDoc } from 'firebase/firestore';
-import { doc } from 'firebase/firestore';
+import { StyleSheet, Text, View, FlatList } from 'react-native'
+import React, { useState, useEffect } from 'react'
 import PressableItem from '../Components/PressableItem';
 import { FontAwesome } from '@expo/vector-icons';
 import Visit from '../Components/Visit';
+import { auth } from '../Firebase/firebaseSetup';
+import { collection, onSnapshot, where, query } from 'firebase/firestore';
+import { database } from '../Firebase/firebaseSetup';
+import { deleteFromDB } from '../Firebase/firestoreHelper';
 
-export default function ScheduledVisits() {
-
+export default function ScheduledVisits({ navigation }) {
     const [visits, setVisits] = useState([])
-
+    const user = auth.currentUser;
 
     useEffect(() => {
         const unsubscribe = onSnapshot(query(
@@ -19,9 +20,15 @@ export default function ScheduledVisits() {
                 if (!querySnapshot.empty) {
                     querySnapshot.forEach((docSnapShot) => {
                         console.log(docSnapShot.id)
-                        newArray.push({ ...docSnapShot.data(), id: docSnapShot.id })
+                        const date = docSnapShot.data().date.toDate();
+                        const time = docSnapShot.data().time.toDate();
+                        newArray.push({ ...docSnapShot.data(), 
+                            id: docSnapShot.id, 
+                            date: date.toLocaleDateString(), 
+                            time: time.toLocaleTimeString(), })
                     });
                 }
+                console.log("newArray in scheduledVisits: ", newArray)
                 setVisits(newArray);
             }, (e) => { console.log(e) })
 
@@ -41,13 +48,7 @@ export default function ScheduledVisits() {
                             console.log(item)
                             return (
                                 <View>
-                                    <Visit house={item} onPress={handlePressVisit}/>
-                                    <PressableItem onPress={() => { handleEditVisit(item.id) }} style={styles.editDeleteButtonStyle} >
-                                        <FontAwesome name="pencil" size={24} color="black" />
-                                    </PressableItem>
-                                    <PressableItem onPress={() => { handleDeleteVisit(item.id) }} style={styles.editDeleteButtonStyle} >
-                                        <FontAwesome name="trash" size={24} color="black" />
-                                    </PressableItem>
+                                    <Visit visit={item} />
                                 </View>
                             )
                         }}
