@@ -8,7 +8,7 @@ import { collection, addDoc } from 'firebase/firestore'; // Import Firestore fun
 
 export default function ScheduleVisit({ route }) {
 
-    const listing = route.params.listing;
+    const listing = route.params.house;
     const [visit, setVisit] = useState({
         listingId: listing.id,
         date: new Date(),
