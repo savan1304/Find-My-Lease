@@ -7,20 +7,26 @@ import { getStorage } from "firebase/storage";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { initializeAuth, getReactNativePersistence } from 'firebase/auth'
 
-import { apiKey, authDomain, projectId, storageBucket, messagingSenderId, appId } from '@env'
+import { apiKeyE, authDomainE, projectIdE, storageBucketE, messagingSenderIdE, appIdE } from '@env'
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: apiKey,
-    authDomain: authDomain,
-    projectId: projectId,
-    storageBucket: storageBucket,
-    messagingSenderId: messagingSenderId,
-    appId: appId
+    apiKey: apiKeyE,
+    authDomain: authDomainE,
+    projectId: projectIdE,
+    storageBucket: storageBucketE,
+    messagingSenderId: messagingSenderIdE,
+    appId: appIdE
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+let app;
+if (!getApp.length){
+    app = initializeApp(firebaseConfig);
+}else{
+    app = getApp();
+}
+//const app = initializeApp(firebaseConfig);
 export const database = getFirestore(app)
 export const storage = getStorage(app);
 export const auth = initializeAuth(app, {
