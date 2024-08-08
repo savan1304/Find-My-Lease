@@ -9,13 +9,14 @@ import { auth } from './Firebase/firebaseSetup';
 import Home from './Screens/Home';
 import Message from './Screens/Message';
 import Profile from './Screens/Profile';
-import HouseDetails from './Screens/HouseDetails'; 
+import HouseDetails from './Screens/HouseDetails';
 import PostListing from './Components/PostListing'
 import PostedListings from './Screens/PostedListings';
 import Login from './Screens/Login';
 import SignUp from './Screens/SignUp';
 import { signOut } from 'firebase/auth';
 import ScheduleVisit from './Components/ScheduleVisit';
+import ScheduledVisits from './Screens/ScheduledVisits';
 import Saved from './Screens/Saved';
 
 const Tab = createBottomTabNavigator();
@@ -93,6 +94,14 @@ const Tabs = () => (
       component={ScheduleVisit}
       options={{
         tabBarButton: () => null,  
+        headerShown: false
+      }}
+    />
+    <Tab.Screen
+      name="ScheduledVisits"
+      component={ScheduledVisits}
+      options={{
+        tabBarButton: () => null,  // Hiding this tab
         headerShown: false
       }}
     />
