@@ -1,5 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image } from 'react-native';
+import { writeToDB } from '../Firebase/firestoreHelper';
+import { auth } from '../Firebase/firebaseSetup';
 
 const HouseDetails = ({ route, navigation }) => {
     const { house } = route.params;
@@ -13,16 +15,27 @@ const HouseDetails = ({ route, navigation }) => {
     const handleContact = () => {
         console.log('Contact tapped');
     };
-    
-    const handleSave = () => {
-        console.log('Save tapped');
+
+    const handleSave = async () => {
+        try {
+            const user = auth.currentUser;
+            if (user) {
+                const collectionPath = `User/${user.uid}/saved`;
+                await writeToDB(house, collectionPath);
+                console.log('House saved successfully');
+            } else {
+                console.log('No user is signed in');
+            }
+        } catch (error) {
+            console.log('Error saving house:', error);
+        }
     };
-    
+
     const handleScheduleViewing = () => {
         console.log('Schedule Viewing tapped');
         navigation.navigate('ScheduleVisit', { house });
     };
-    
+
     const handleSetPriceDropAlert = () => {
         console.log('Set Price Drop Alert tapped');
     };
