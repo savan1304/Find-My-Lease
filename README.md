@@ -38,6 +38,10 @@ _Current state (or functionalities) of the application:_
 
 
 
+
+
+
+
 **_Zhecheng Li's work:_**
 ![IMG_0643](https://github.com/user-attachments/assets/2b885339-fc7a-4e63-8c0a-8d9201c2ff73)
 ![IMG_0647](https://github.com/user-attachments/assets/bc8a12ae-7f7c-4ba2-b8d7-cf5788941af6)
@@ -48,6 +52,11 @@ Detail page for each Listing
 Profile Layout 
 ![IMG_0646](https://github.com/user-attachments/assets/04ba1bc1-4d60-47fc-b3dc-8d5e25a1bd6b)
 Saved List for each indivual user, users can delete what he saved here
+
+
+
+
+
 
 
 
