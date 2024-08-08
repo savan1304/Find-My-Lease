@@ -1,4 +1,17 @@
-Zhecheng Li's work:
+**Iteration-1:**
+_Current state (or functionalities) of the application:_
+
+==> 9 screens along with the re-usable components
+==> Navigations between screens
+==> Firebase configured
+==> 3 collections in firestore: User, ScheduledVisits (a subcollection of User), Listing
+==> CRUD using firestore
+
+==> User can login/signup, check details of a listing,  post a listing, checkout their posted listings
+,save listing, checkout the saved listings, schedule a visit to a listing, checkout the scheduled visits.
+
+
+_Zhecheng Li's work:_
 ![IMG_0643](https://github.com/user-attachments/assets/2b885339-fc7a-4e63-8c0a-8d9201c2ff73)
 ![IMG_0647](https://github.com/user-attachments/assets/bc8a12ae-7f7c-4ba2-b8d7-cf5788941af6)
 Home Screen with Search and Filter function. Showing on listing from database
@@ -8,3 +21,31 @@ Detail page for each Listing
 Profile Layout 
 ![IMG_0646](https://github.com/user-attachments/assets/04ba1bc1-4d60-47fc-b3dc-8d5e25a1bd6b)
 Saved List for each indivual user, users can delete what he saved here
+
+
+_Savan Parmar:_
+Login screen with email and password:
+![Screenshot_20240807_222054_Expo Go](https://github.com/user-attachments/assets/33f4feec-a775-4718-a568-a72d226d8abe)
+
+SignUp screen with email and password, when a user is registered, a new doc is created in 'User' collection in firebase.
+![Screenshot_20240807_222115_Expo Go](https://github.com/user-attachments/assets/52110aa8-d018-407f-ac2a-ec2cedb7f318)
+
+Post a listing screen. 
+Create (C) operation in firestore: User can post take image, fill necessary data in this screen. Pressing Cancel navigates back to 'Profile' screen. Pressing 'Save' creates a new doc for listing in 'Listing' collection in firebase.
+Edit (U) operation in firestore: Re-using Post a listing screen when navigated from 'Edit' option in 'My posted listings' screen.
+![Screenshot_20240807_221947_Expo Go](https://github.com/user-attachments/assets/40d70537-6150-4113-8a86-a8a24c11ed2d)
+
+My Posted listings screen. Fetching listings from firebase (Read (R) operation). Option to Edit(U) will redirect to Post a listing since we are re-using it. Option to Delete (D) deletes the listing from firestore.
+![Screenshot_20240807_222014_Expo Go](https://github.com/user-attachments/assets/e24db69c-2053-4dad-a0d4-b03f76c202a8)
+
+ 
+Schedule a visit screen (Navigated from HouseDetails screen), creating a visit doc(C) in 'ScheduledVisits' collection after successful submit.
+![Screenshot_20240807_222115_Expo Go](https://github.com/user-attachments/assets/11ac2127-7895-4819-ac4e-2c182f6d70e8)
+![Screenshot_20240807_222804_Expo Go](https://github.com/user-attachments/assets/a592d57d-c3cf-472b-a65e-fc5b0695d3b0)
+![Screenshot_20240807_222327_Expo Go](https://github.com/user-attachments/assets/4e6df0a6-7283-4f44-a854-9846d8729c16)
+
+My scheduled visits screen. Fetching visits from firebase (Read (R) operation)
+![Screenshot_20240807_224014_Expo Go](https://github.com/user-attachments/assets/cee37a3e-6d81-4dde-8dc0-83238a3436b6)
+
+
+
