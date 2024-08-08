@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import { View, TouchableOpacity, Pressable, Text } from 'react-native';
+import { View, TouchableOpacity, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { auth } from './Firebase/firebaseSetup';
@@ -17,33 +17,26 @@ import SignUp from './Screens/SignUp';
 import { signOut } from 'firebase/auth';
 import ScheduleVisit from './Components/ScheduleVisit';
 
-
-
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
-const HomeStack = createStackNavigator();
+const MainStack = createStackNavigator();
 
 const HomeStackScreen = () => (
-  <HomeStack.Navigator>
-    <HomeStack.Screen name="Home" component={Home} options={{ headerShown: false }} />
-    <HomeStack.Screen name="HouseDetails" component={HouseDetails} options={{ title: 'House Details' }} />
-  </HomeStack.Navigator>
+  <MainStack.Navigator>
+    <MainStack.Screen name="HomeMain" component={Home} options={{ headerShown: false }} />
+    <MainStack.Screen name="HouseDetails" component={HouseDetails} options={{ title: 'House Details' }} />
+  </MainStack.Navigator>
 );
 
 const Tabs = () => (
   <Tab.Navigator screenOptions={({ route }) => ({
     tabBarStyle: {
-      display:
-        route.name === 'PostListing'
-          ? 'none'
-          : 'flex',
+      display: route.name === 'PostListing' ? 'none' : 'flex',
     },
   })}>
     <Tab.Screen
       name="Home"
-
-      component={HomeStackScreen} 
-
+      component={HomeStackScreen}
       options={{
         tabBarIcon: ({ color, size }) => (
           <Icon name="home-outline" color={color} size={size} />
@@ -98,7 +91,6 @@ const Tabs = () => (
   </Tab.Navigator>
 );
 
-
 const getHeaderTitle = (route) => {
   const routeName = getFocusedRouteNameFromRoute(route) ?? 'Home';
 
@@ -112,14 +104,13 @@ const getHeaderTitle = (route) => {
     case 'PostListing':
       return 'Post a Listing';
     case 'PostedListings':
-      return 'My Posted Listings'
+      return 'My Posted Listings';
     case 'ScheduleVisit':
-      return 'Schedule a Visit'
+      return 'Schedule a Visit';
     default:
       return 'My App';
   }
 };
-
 
 // Main App with Stack Navigator
 const App = () => {
@@ -187,14 +178,12 @@ const App = () => {
                     >
                       <Icon name="log-out-outline" size={25} color="black" />
                     </TouchableOpacity>
-
                   </View>
                 ),
               })}
             />
           </>
         )}
-
       </Stack.Navigator>
     </NavigationContainer>
   );
