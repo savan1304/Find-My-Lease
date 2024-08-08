@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, Button, Modal, TouchableOpacity, FlatList, Dimensions } from 'react-native';
+import { collection, query, onSnapshot } from 'firebase/firestore';
 import MapHolder from '../Components/MapHolder';
 import HouseListItem from '../Components/HouseListItem';
 import helper from '../Config/Helper';
-import { readAllDocs } from '../Firebase/firestoreHelper';
+import { database } from '../Firebase/firebaseSetup'; // Ensure the correct path
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -21,12 +22,19 @@ const Home = ({ navigation }) => {
     const [houses, setHouses] = useState([]);
 
     useEffect(() => {
-        const fetchHouses = async () => {
-            const houseData = await readAllDocs('Listing');
-            setHouses(houseData);
-        };
+        const q = query(collection(database, 'Listing'));
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            let newArray = [];
+            if (!querySnapshot.empty) {
+                querySnapshot.forEach((docSnapShot) => {
+                    console.log(docSnapShot.id);
+                    newArray.push({ ...docSnapShot.data(), id: docSnapShot.id });
+                });
+            }
+            setHouses(newArray);
+        }, (e) => { console.log(e) });
 
-        fetchHouses();
+        return () => unsubscribe(); // Detaching the listener
     }, []);
 
     const filteredHouses = houses.filter(house => {
@@ -224,7 +232,7 @@ const Home = ({ navigation }) => {
                                     type: filters.type === 'Private' ? 'Shared' : 'Private'
                                 }))}
                             >
-                                <Text style={styles.checkboxLabel}>{filters.type}</Text>
+                                <Text style={styles.checkboxLabel}>{filters.type || 'Private'}</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={styles.buttonContainer}>
