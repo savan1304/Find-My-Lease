@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
-import { collection, query, onSnapshot } from 'firebase/firestore';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, Alert } from 'react-native';
+import { collection, query, onSnapshot, doc } from 'firebase/firestore';
 import { database, auth } from '../Firebase/firebaseSetup';
+import { deleteFromDB } from '../Firebase/firestoreHelper';
 
 const Saved = ({ navigation }) => {
   const [savedHouses, setSavedHouses] = useState([]);
@@ -27,6 +28,41 @@ const Saved = ({ navigation }) => {
     navigation.navigate('HouseDetails', { house });
   };
 
+  const handleDelete = async (houseId) => {
+    const user = auth.currentUser;
+    if (user) {
+      try {
+        const collectionPath = `User/${user.uid}/saved`;
+        await deleteFromDB(houseId, collectionPath);
+        setSavedHouses(prevHouses => prevHouses.filter(house => house.id !== houseId));
+        console.log('House deleted successfully');
+      } catch (error) {
+        console.error('Error deleting house:', error);
+      }
+    } else {
+      console.log('No user is signed in');
+    }
+  };
+
+  const confirmDelete = (houseId) => {
+    Alert.alert(
+      'Delete Listing',
+      'Are you sure you want to delete this save listing?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          onPress: () => handleDelete(houseId),
+          style: 'destructive',
+        },
+      ],
+      { cancelable: false },
+    );
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Saved Listings</Text>
@@ -34,14 +70,19 @@ const Saved = ({ navigation }) => {
         <FlatList
           data={savedHouses}
           renderItem={({ item }) => (
-            <TouchableOpacity style={styles.item} onPress={() => handleHousePress(item)}>
-              <Image source={{ uri: item.imageUri || 'https://via.placeholder.com/150' }} style={styles.image} />
+            <View style={styles.item}>
+              <TouchableOpacity onPress={() => handleHousePress(item)}>
+                <Image source={{ uri: item.imageUri || 'https://via.placeholder.com/150' }} style={styles.image} />
+              </TouchableOpacity>
               <View style={styles.info}>
                 <Text style={styles.title}>{item.location}</Text>
                 <Text>{item.price}</Text>
                 <Text>{item.bed} Bed, {item.bath} Bath</Text>
+                <TouchableOpacity onPress={() => confirmDelete(item.id)} style={styles.deleteButton}>
+                  <Text style={styles.deleteButtonText}>Delete</Text>
+                </TouchableOpacity>
               </View>
-            </TouchableOpacity>
+            </View>
           )}
           keyExtractor={item => item.id}
         />
@@ -82,6 +123,17 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  deleteButton: {
+    marginTop: 10,
+    backgroundColor: '#FF6347',
+    padding: 5,
+    borderRadius: 5,
+  },
+  deleteButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    textAlign: 'center',
   },
 });
 
