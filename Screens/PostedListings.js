@@ -1,13 +1,12 @@
 import { StyleSheet, Text, View, FlatList } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import { deleteFromDB, writeToDB } from '../Firebase/firestoreHelper';
-import { collection, onSnapshot, where, query } from 'firebase/firestore';
+import { deleteFromDB } from '../Firebase/firestoreHelper';
+import { collection, onSnapshot, query } from 'firebase/firestore';
 import { database } from '../Firebase/firebaseSetup';
-import HouseListItem from '../Components/HouseListItem';
-import { getDoc } from 'firebase/firestore';
-import { doc } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import PressableItem from '../Components/PressableItem';
-import { FontAwesome } from '@expo/vector-icons';
+import { Colors } from '../Config/Colors';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 
 export default function PostedListings({ navigation }) {
@@ -32,10 +31,6 @@ export default function PostedListings({ navigation }) {
 
     return () => unsubscribe()  // Detaching the listener when no longer listening to the changes in data
   }, [])
-
-  function handlePressListing() {
-    console.log("Listing pressed")
-  }
 
   function handleDeleteListing(listingToBeDeletedID) {
     console.log("Inside handleDeleteListing")
@@ -73,14 +68,22 @@ export default function PostedListings({ navigation }) {
             renderItem={({ item }) => {
               console.log(item)
               return (
-                <View>
-                  <HouseListItem house={item} onPress={handlePressListing} deleteHandler={handleDeleteListing} editHandler={handleEditListing} />
-                  <PressableItem onPress={() => { handleEditListing(item.id) }} style={styles.editDeleteButtonStyle} >
-                    <FontAwesome name="pencil" size={24} color="black" />
-                  </PressableItem>
-                  <PressableItem onPress={() => { handleDeleteListing(item.id) }} style={styles.editDeleteButtonStyle} >
-                    <FontAwesome name="trash" size={24} color="black" />
-                  </PressableItem>
+                <View style={styles.container}>
+                  <View style={styles.listingDetails}>
+                    <Text style={styles.info}>Location: {item.location}</Text>
+                    <Text style={styles.info}>Price: {item.price}</Text>
+                    <Text style={styles.info}>Type: {item.type}</Text>
+                  </View>
+
+                  <View style={styles.editDeleteButtonContainer}>
+                    <PressableItem onPress={() => { handleEditListing(item.id) }} style={styles.editDeleteButtonStyle} >
+                      <Icon name="pencil" size={24} color={Colors.blue} />
+                    </PressableItem>
+                    <PressableItem onPress={() => { handleDeleteListing(item.id) }} style={styles.editDeleteButtonStyle} >
+                      <Icon name="trash" size={24} color={Colors.red} />
+                    </PressableItem>
+                  </View>
+
                 </View>
               )
             }}
@@ -92,9 +95,33 @@ export default function PostedListings({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    marginHorizontal: 15,
+    paddingVertical: 3,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    flex: 3
+  },
+  listingDetails: {
+    flex: 2,
+    marginVertical: 5
+  },
+  info: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 5,
+  },
   editDeleteButtonStyle: {
     margin: 5,
-    padding: 5,
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
+  },
+  editDeleteButtonContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
   }
+
 })

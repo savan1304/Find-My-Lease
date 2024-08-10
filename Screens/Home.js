@@ -5,6 +5,8 @@ import MapHolder from '../Components/MapHolder';
 import HouseListItem from '../Components/HouseListItem';
 import helper from '../Config/Helper';
 import { database } from '../Firebase/firebaseSetup';
+import PressableItem from '../Components/PressableItem';
+import { appStyles } from '../Config/Styles';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -90,7 +92,9 @@ const Home = ({ navigation }) => {
                 value={searchText}
                 onChangeText={setSearchText}
             />
-            <Button title="Open Filters" onPress={() => setModalVisible(true)} />
+            <PressableItem onPress={() => setModalVisible(true)} style={{ margin: 0 }}>
+                <Text style={appStyles.text}>Open Filters</Text>
+            </PressableItem>
             <MapHolder houses={houses} />
             <FlatList
                 data={filteredHouses}
@@ -258,7 +262,7 @@ const Home = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flex: 3,
         justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
@@ -277,6 +281,7 @@ const styles = StyleSheet.create({
     },
     list: {
         width: '100%',
+        flex: 2
     },
     centeredView: {
         flex: 1,

@@ -1,12 +1,13 @@
 import { StyleSheet, Text, View, FlatList } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import PressableItem from '../Components/PressableItem';
-import { FontAwesome } from '@expo/vector-icons';
 import Visit from '../Components/Visit';
-import { auth } from '../Firebase/firebaseSetup';
-import { collection, onSnapshot, where, query } from 'firebase/firestore';
-import { database } from '../Firebase/firebaseSetup';
+import { collection, onSnapshot, query } from 'firebase/firestore';
 import { deleteFromDB } from '../Firebase/firestoreHelper';
+import { Colors } from '../Config/Colors';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { auth, database } from '../Firebase/firebaseSetup';
+import { doc, getDoc } from 'firebase/firestore';
 
 export default function ScheduledVisits({ navigation }) {
     const [visits, setVisits] = useState([])
@@ -22,10 +23,12 @@ export default function ScheduledVisits({ navigation }) {
                         console.log(docSnapShot.id)
                         const date = docSnapShot.data().date.toDate();
                         const time = docSnapShot.data().time.toDate();
-                        newArray.push({ ...docSnapShot.data(), 
-                            id: docSnapShot.id, 
-                            date: date.toLocaleDateString(), 
-                            time: time.toLocaleTimeString(), })
+                        newArray.push({
+                            ...docSnapShot.data(),
+                            id: docSnapShot.id,
+                            date: date.toLocaleDateString(),
+                            time: time.toLocaleTimeString(),
+                        })
                     });
                 }
                 console.log("newArray in scheduledVisits: ", newArray)
@@ -35,6 +38,35 @@ export default function ScheduledVisits({ navigation }) {
 
         return () => unsubscribe()  // Detaching the listener when no longer listening to the changes in data
     }, [])
+
+    function handleDeleteVisit(visitToBeDeletedID) {
+        console.log("Inside handleDeleteVisit")
+        const collectionName = `User/${user.uid}/ScheduledVisits`;
+        deleteFromDB(visitToBeDeletedID, collectionName)
+    }
+
+
+    async function handleEditVisit(visitToBeEditedID) {
+        console.log("Inside handleEditVisit")
+        try {
+            const userDocRef = doc(database, "User", user.uid);
+            const visitSubcollectionRef = collection(userDocRef, "ScheduledVisits");
+            const visitDocRef = doc(visitSubcollectionRef, visitToBeEditedID);
+            const docSnap = await getDoc(visitDocRef);
+
+            if (docSnap.exists()) {
+                const visitData = docSnap.data();
+                console.log("inside if block with visitData: ", visitData)
+                visitData.id = visitToBeEditedID
+                console.log("visitData before navigating to ScheduleVisit page: ", visitData)
+                navigation.navigate('ScheduleVisit', { visitData: visitData });
+            }
+
+        } catch (error) {
+            console.error('Error in navigating to editing visit page:', error);
+        }
+
+    }
 
     return (
         <View>
@@ -47,8 +79,18 @@ export default function ScheduledVisits({ navigation }) {
                         renderItem={({ item }) => {
                             console.log(item)
                             return (
-                                <View>
-                                    <Visit visit={item} />
+                                <View style={styles.container}>
+                                    <View style={styles.visitDetails}>
+                                        <Visit visit={item} />
+                                    </View>
+                                    <View style={styles.editDeleteButtonContainer}>
+                                        <PressableItem onPress={() => { handleEditVisit(item.id) }} style={styles.editDeleteButtonStyle} >
+                                            <Icon name="pencil" size={24} color={Colors.blue} />
+                                        </PressableItem>
+                                        <PressableItem onPress={() => { handleDeleteVisit(item.id) }} style={styles.editDeleteButtonStyle} >
+                                            <Icon name="trash" size={24} color={Colors.red} />
+                                        </PressableItem>
+                                    </View>
                                 </View>
                             )
                         }}
@@ -59,4 +101,33 @@ export default function ScheduledVisits({ navigation }) {
     )
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    container: {
+        flexDirection: 'row',
+        marginHorizontal: 15,
+        paddingVertical: 3,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+        flex: 3
+    },
+    visitDetails: {
+        flex: 2,
+        marginVertical: 5
+    },
+    info: {
+        fontSize: 16,
+        color: '#666',
+        marginBottom: 5,
+    },
+    editDeleteButtonStyle: {
+        margin: 5,
+        backgroundColor: 'transparent',
+    },
+    editDeleteButtonContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+    }
+})
