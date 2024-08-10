@@ -32,15 +32,15 @@ export default function MapHolder({ houses }) {
         const result = await Location.getCurrentPositionAsync();
         console.log("Location in locateUserHandler: ", result)
         setUserLocation({ latitude: result.coords.latitude, longitude: result.coords.longitude })
-
-
       } catch (error) {
         console.log("Location error in locateUserHandler: ", error)
       }
     }
 
   }
+
   console.log("user location in Map component: ", userLocation)
+
   return (
     <>
       {userLocation ? (
