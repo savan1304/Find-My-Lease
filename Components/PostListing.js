@@ -1,5 +1,5 @@
-import { View, Text, ScrollView, TouchableOpacity, Pressable, TextInput, SafeAreaView, Platform } from 'react-native'
-import React, { useState } from 'react';
+import { View, Text, TextInput, SafeAreaView } from 'react-native'
+import React, { useEffect, useState } from 'react';
 import ImageManager from './ImageManager';
 import { appStyles } from '../Config/Styles';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -14,14 +14,20 @@ import { doc } from 'firebase/firestore';
 import { useRoute } from '@react-navigation/native';
 import { database } from '../Firebase/firebaseSetup';
 import { updateDoc } from 'firebase/firestore';
+import { mapsApiKeyE } from '@env'
+import Geocoder from 'react-native-geocoding';
 
 export default function PostListing({ navigation }) {
+
     const route = useRoute();
     const { listingData = {} } = route.params || {};
+    console.log("received listingData in PostListing: ", listingData)
     const [images, setImages] = useState([]);
     const [formData, setFormData] = useState({
         price: listingData?.price || '',
         location: listingData?.location || '',
+        latitude: listingData?.latitude || '',
+        longitude: listingData?.longitude || '',
         bed: listingData?.bed || '',
         bath: listingData?.bath || '',
         area: listingData?.area || '',
@@ -30,7 +36,7 @@ export default function PostListing({ navigation }) {
         type: listingData?.type || '',
         year: listingData?.year || '',
         tenantGender: listingData?.tenantGender || '',
-        imageUri: listingData?.imageUri || ''
+        imageUri: listingData?.imageUri || '',
     });
     const [imageUri, setImageUri] = useState('')
     const [open, setOpen] = useState(false);
@@ -40,7 +46,48 @@ export default function PostListing({ navigation }) {
         { label: 'Shared', value: 'Shared' },
         { label: 'Private', value: 'Private' },
     ]);
+    const [enteredLocation, setEnteredLocation] = useState('')
+    Geocoder.init(mapsApiKeyE)
 
+
+    useEffect(() => {
+        console.log("enteredLocation inside useEffect: ", enteredLocation)
+        if (enteredLocation !== '') {
+            let latLngFromGeocoder = ''
+            Geocoder.from(formData.location)
+                .then(json => {
+                    latLngFromGeocoder = json.results[0].geometry.location;
+                    setFormData(prevFormData => ({
+                        ...prevFormData,
+                        latitude: json.results[0].geometry.location.lat,
+                        longitude: json.results[0].geometry.location.lng
+                    }));
+                    console.log("location from Geocoder: ", latLngFromGeocoder);
+                })
+                .catch(error => console.warn(error));
+        }
+        console.log("formData after setting lat and lng: ", formData)
+    }, [enteredLocation])
+
+
+    function reset() {
+        setFormData({
+            price: '',
+            location: '',
+            latitude: '',
+            longitude: '',
+            bed: '',
+            bath: '',
+            area: '',
+            petFriendly: false,
+            transit: '',
+            type: '',
+            year: '',
+            tenantGender: '',
+            imageUri: '',
+        });
+
+    }
 
     async function imageUriHandler(imageUri) {
         console.log("inside imageUriHandler: ", imageUri)
@@ -53,6 +100,10 @@ export default function PostListing({ navigation }) {
             [field]: newValue,
         }));
     };
+
+    function handleLocationBlur() {
+        setEnteredLocation(formData.location)
+    }
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -72,6 +123,7 @@ export default function PostListing({ navigation }) {
 
     function handleCancel() {
         navigation.navigate('Profile');
+        reset()
     }
 
 
@@ -112,6 +164,7 @@ export default function PostListing({ navigation }) {
                 await writeToDB(formData, 'Listing');
             }
             navigation.goBack();
+            reset()
         } catch (error) {
             console.error('Error saving listing:', error);
         }
@@ -119,6 +172,9 @@ export default function PostListing({ navigation }) {
 
     return (
         <SafeAreaView style={appStyles.postListingContainer}>
+
+
+
             <View style={appStyles.postImageContainer} >
                 <View style={appStyles.imageOptionsContainer}>
                     <PressableItem onPress={pickImage}>
@@ -127,14 +183,17 @@ export default function PostListing({ navigation }) {
                     <ImageManager imageUriHandler={imageUriHandler} />
                 </View>
             </View>
+
+
             <View style={appStyles.listingDetailsContainer}>
+
                 <View style={appStyles.twoListingInputContainer}>
                     <View style={appStyles.addItemContainer}>
                         <Text style={appStyles.addTitles}>Type*</Text>
                         <View>
                             <DropDownPicker
                                 open={open}
-                                value={type}
+                                value={type || ''}
                                 items={types}
                                 setOpen={setOpen}
                                 setValue={setType}
@@ -164,6 +223,7 @@ export default function PostListing({ navigation }) {
                         <TextInput
                             value={formData.location}
                             onChangeText={(text) => handleDataChange('location', text)}
+                            onBlur={handleLocationBlur}
                             style={appStyles.addTitles}
                         />
                     </View>
@@ -251,7 +311,9 @@ export default function PostListing({ navigation }) {
                         </View>
                     </View>
                 </View>
+
             </View>
+
 
             <View style={appStyles.buttonsView}>
                 <View style={appStyles.buttonContainer}>
@@ -267,9 +329,8 @@ export default function PostListing({ navigation }) {
             </View>
 
 
+
         </SafeAreaView>
-
-
     );
 }
 
