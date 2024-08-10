@@ -8,12 +8,10 @@ import Checkbox from 'expo-checkbox';
 import * as ImagePicker from "expo-image-picker"
 import PressableItem from './PressableItem';
 import { writeToDB } from '../Firebase/firestoreHelper';
-import { storage } from '../Firebase/firebaseSetup';
+import { storage, database } from '../Firebase/firebaseSetup';
 import { ref, uploadBytesResumable } from 'firebase/storage';
-import { doc } from 'firebase/firestore';
+import { doc, updateDoc } from 'firebase/firestore';
 import { useRoute } from '@react-navigation/native';
-import { database } from '../Firebase/firebaseSetup';
-import { updateDoc } from 'firebase/firestore';
 import { mapsApiKeyE } from '@env'
 import Geocoder from 'react-native-geocoding';
 
@@ -24,23 +22,23 @@ export default function PostListing({ navigation }) {
     console.log("received listingData in PostListing: ", listingData)
     const [images, setImages] = useState([]);
     const [formData, setFormData] = useState({
-        price: listingData?.price || '',
-        location: listingData?.location || '',
-        latitude: listingData?.latitude || '',
-        longitude: listingData?.longitude || '',
-        bed: listingData?.bed || '',
-        bath: listingData?.bath || '',
-        area: listingData?.area || '',
-        petFriendly: listingData?.petFriendly || false,
-        transit: listingData?.transit || '',
-        type: listingData?.type || '',
-        year: listingData?.year || '',
-        tenantGender: listingData?.tenantGender || '',
-        imageUri: listingData?.imageUri || '',
+        price: '',
+        location: '',
+        latitude: '',
+        longitude: '',
+        bed: '',
+        bath: '',
+        area: '',
+        petFriendly: false,
+        transit: '',
+        type: '',
+        year: '',
+        tenantGender: '',
+        imageUri: '',
     });
     const [imageUri, setImageUri] = useState('')
     const [open, setOpen] = useState(false);
-    const [type, setType] = useState(null); // Default value
+    const [type, setType] = useState(''); // Default value
 
     const [types, setTypes] = useState([
         { label: 'Shared', value: 'Shared' },
@@ -49,6 +47,26 @@ export default function PostListing({ navigation }) {
     const [enteredLocation, setEnteredLocation] = useState('')
     Geocoder.init(mapsApiKeyE)
 
+
+    useEffect(() => {
+        // Updating formData whenever listingData from route params changes
+        setFormData({
+            price: listingData?.price || '',
+            location: listingData?.location || '',
+            latitude: listingData?.latitude || '',
+            longitude: listingData?.longitude || '',
+            bed: listingData?.bed || '',
+            bath: listingData?.bath || '',
+            area: listingData?.area || '',
+            petFriendly: listingData?.petFriendly || false,
+            transit: listingData?.transit || '',
+            type: listingData?.type || '',
+            year: listingData?.year || '',
+            tenantGender: listingData?.tenantGender || '',
+            imageUri: listingData?.imageUri || '',
+        });
+
+    }, [route]); // Adding route as a dependency
 
     useEffect(() => {
         console.log("enteredLocation inside useEffect: ", enteredLocation)
@@ -122,7 +140,11 @@ export default function PostListing({ navigation }) {
 
 
     function handleCancel() {
-        navigation.navigate('Profile');
+        if (listingData) {
+            navigation.navigate('PostedListings')
+        } else {
+            navigation.navigate('Profile');
+        }
         reset()
     }
 
@@ -155,15 +177,16 @@ export default function PostListing({ navigation }) {
             // };
             console.log("inside handleSave: ", listingData)
             if (listingData.id) {
-                console.log("updating existing listing", listingData)
+                console.log("updating existing listing with new data: ", formData)
                 const listingRef = doc(database, 'Listing', listingData.id);
                 console.log(listingRef)
                 await updateDoc(listingRef, formData);
+                navigation.navigate('PostedListings')
             } else {
                 console.log("creating new listing", listingData)
                 await writeToDB(formData, 'Listing');
+                navigation.goBack();
             }
-            navigation.goBack();
             reset()
         } catch (error) {
             console.error('Error saving listing:', error);
@@ -322,7 +345,11 @@ export default function PostListing({ navigation }) {
                             <Text style={appStyles.text}>Cancel</Text>
                         </PressableItem>
                         <PressableItem onPress={() => handleSave()} style={[appStyles.buttonStyle, appStyles.saveButton]} >
-                            <Text style={appStyles.text}>Save</Text>
+                            {listingData ? (
+                                <Text style={appStyles.text}>Save</Text>
+                            ) : (
+                                <Text style={appStyles.text}>Post</Text>
+                            )}
                         </PressableItem>
                     </View>
                 </View>
