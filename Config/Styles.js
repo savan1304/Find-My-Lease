@@ -54,6 +54,12 @@ export const appStyles = StyleSheet.create({
     justifyContent: "space-evenly",
     marginVertical: 7
   },
+  saveAndCancelButtonContainerForVisit: {
+    marginHorizontal: 15,
+    padding: 2,
+    justifyContent: "space-evenly",
+    marginVertical: 7
+  },
   text: {
     color: Colors.background
   },
@@ -61,11 +67,19 @@ export const appStyles = StyleSheet.create({
     width: '50%',
     alignItems: 'center',
   },
+  buttonStyleForVisit: {
+    width: '100%',
+    alignItems: 'center',
+    margin: 10
+  },
   saveButton: {
     backgroundColor: Colors.themeColor
   },
   cancelButton: {
     backgroundColor: Colors.red
+  },
+  editButton: {
+    backgroundColor: Colors.green
   },
   itemContainerScreen: {
     marginTop: 10,
@@ -224,9 +238,17 @@ export const appStyles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
   },
+  buttonsViewForVisit: {
+    flex: 1,
+  },
   buttonContainer: {
     flex: 1,                    // Take up all available space
     justifyContent: 'flex-end',  // Align items to the bottom
+    marginBottom: 5,
+    marginHorizontal: 35,
+  },
+  buttonContainerForVisit: {
+    flex: 1,                    // Take up all available space
     marginBottom: 5,
     marginHorizontal: 35,
   },
@@ -264,11 +286,10 @@ export const appStyles = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
   },
-  reminderContainer: {
+  visitLocationAndPriceContainer:{
     flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
+    justifyContent: 'space-between'
+  }
 
 })
 

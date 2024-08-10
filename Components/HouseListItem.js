@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { AntDesign } from '@expo/vector-icons'; 
-const HouseListItem = ({ house, onPress }) => {
+import { AntDesign } from '@expo/vector-icons';
+const HouseListItem = ({ house, onPress, style }) => {
     return (
-        <TouchableOpacity onPress={() => onPress(house)} style={styles.container}>
+        <TouchableOpacity onPress={() => onPress(house)} style={[styles.container, style]}>
             <View style={styles.left}>
 
                 <AntDesign name="home" size={24} color="black" />
