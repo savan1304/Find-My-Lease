@@ -100,6 +100,5 @@ const styles = StyleSheet.create({
     padding: 20,
     borderWidth: 2,
     borderColor: '#333',
-    borderRadius: 5
   }
 });
