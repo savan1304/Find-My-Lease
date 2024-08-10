@@ -4,7 +4,7 @@ import { collection, query, onSnapshot } from 'firebase/firestore';
 import MapHolder from '../Components/MapHolder';
 import HouseListItem from '../Components/HouseListItem';
 import helper from '../Config/Helper';
-import { database } from '../Firebase/firebaseSetup'; // Ensure the correct path
+import { database } from '../Firebase/firebaseSetup';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -91,7 +91,7 @@ const Home = ({ navigation }) => {
                 onChangeText={setSearchText}
             />
             <Button title="Open Filters" onPress={() => setModalVisible(true)} />
-            <MapHolder />
+            <MapHolder houses={houses} />
             <FlatList
                 data={filteredHouses}
                 renderItem={({ item }) => (
