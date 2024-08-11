@@ -22,6 +22,13 @@ export async function writeToDB(data, collectionName) {
     }
 }
 
+export async function deleteFromDB(id, collectionName) {
+    try {
+        await deleteDoc(doc(database, collectionName, id))
+    } catch (error) {
+        console.log("Error in Deleting from db", error)
+    }
+}
 
 export async function readAllDocs(collectionName) {
     try {
