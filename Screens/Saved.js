@@ -65,75 +65,81 @@ const Saved = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Saved Listings</Text>
-      {savedHouses.length > 0 ? (
-        <FlatList
-          data={savedHouses}
-          renderItem={({ item }) => (
-            <View style={styles.item}>
-              <TouchableOpacity onPress={() => handleHousePress(item)}>
-                <Image source={{ uri: item.imageUri || 'https://via.placeholder.com/150' }} style={styles.image} />
-              </TouchableOpacity>
-              <View style={styles.info}>
-                <Text style={styles.title}>{item.location}</Text>
-                <Text>{item.price}</Text>
-                <Text>{item.bed} Bed, {item.bath} Bath</Text>
-                <TouchableOpacity onPress={() => confirmDelete(item.id)} style={styles.deleteButton}>
-                  <Text style={styles.deleteButtonText}>Delete</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          )}
-          keyExtractor={item => item.id}
-        />
-      ) : (
-        <Text>No saved listings found.</Text>
-      )}
+        <Text style={styles.header}>Saved Listings</Text>
+        {savedHouses.length > 0 ? (
+            <FlatList
+                data={savedHouses}
+                renderItem={({ item }) => (
+                    <View style={styles.itemContainer}>
+                        <TouchableOpacity onPress={() => handleHousePress(item)} style={styles.item}>
+                            <Image source={{ uri: item.imageUri || 'https://via.placeholder.com/150' }} style={styles.image} />
+                            <View style={styles.info}>
+                                <Text style={styles.title}>{item.location}</Text>
+                                <Text>{item.price}</Text>
+                                <Text>{item.bed} Bed, {item.bath} Bath</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => confirmDelete(item.id)} style={styles.deleteButton}>
+                            <Text style={styles.deleteButtonText}>Delete</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
+                keyExtractor={item => item.id}
+            />
+        ) : (
+            <Text>No saved listings found.</Text>
+        )}
     </View>
-  );
+);
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
+      flex: 1,
+      padding: 20,
+      backgroundColor: '#fff',
   },
   header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
+      fontSize: 24,
+      fontWeight: 'bold',
+      marginBottom: 20,
+  },
+  itemContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 20,
+      backgroundColor: '#f9f9f9',
+      padding: 10,
+      borderRadius: 5,
   },
   item: {
-    flexDirection: 'row',
-    marginBottom: 20,
-    backgroundColor: '#f9f9f9',
-    padding: 10,
-    borderRadius: 5,
+      flex: 1, 
+      flexDirection: 'row',
+      alignItems: 'center',
   },
   image: {
-    width: 100,
-    height: 100,
-    borderRadius: 10,
-    marginRight: 10,
+      width: 100,
+      height: 100,
+      borderRadius: 10,
+      marginRight: 10,
   },
   info: {
-    justifyContent: 'center',
+      flex: 1, 
   },
   title: {
-    fontSize: 18,
-    fontWeight: 'bold',
+      fontSize: 18,
+      fontWeight: 'bold',
   },
   deleteButton: {
-    marginTop: 10,
-    backgroundColor: '#FF6347',
-    padding: 5,
-    borderRadius: 5,
+      padding: 5,
+      backgroundColor: '#FF6347',
+      borderRadius: 5,
   },
   deleteButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    textAlign: 'center',
+      color: '#fff',
+      fontSize: 14,
+      textAlign: 'center',
   },
 });
 
