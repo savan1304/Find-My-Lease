@@ -19,7 +19,7 @@ const Saved = ({ navigation }) => {
         setSavedHouses(newArray);
       });
 
-      return () => unsubscribe(); // Detach the listener when component unmounts
+      return () => unsubscribe(); 
     }
   }, []);
 
