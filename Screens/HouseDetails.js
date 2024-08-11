@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, ScrollView, Alert } from 'react-native';
 import { writeToDB } from '../Firebase/firestoreHelper';
 import { auth } from '../Firebase/firebaseSetup';
 
@@ -16,18 +16,30 @@ const HouseDetails = ({ route, navigation }) => {
         console.log('Contact tapped');
     };
 
+    const confirmSave = () => {
+        Alert.alert(
+            'Save Listing',
+            'Are you sure you want to save this listing?',
+            [
+                { text: 'Cancel', style: 'cancel' },
+                { text: 'Save', onPress: handleSave }
+            ],
+            { cancelable: false }
+        );
+    };
+
     const handleSave = async () => {
         try {
             const user = auth.currentUser;
             if (user) {
                 const collectionPath = `User/${user.uid}/saved`;
                 await writeToDB(house, collectionPath);
-                console.log('House saved successfully');
             } else {
-                console.log('No user is signed in');
+                Alert.alert('Error', 'No user is signed in');
             }
         } catch (error) {
             console.log('Error saving house:', error);
+            Alert.alert('Error', 'Failed to save house. Please try again.');
         }
     };
 
@@ -41,7 +53,7 @@ const HouseDetails = ({ route, navigation }) => {
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
             <FlatList
                 data={sampleImages}
                 horizontal
@@ -52,7 +64,6 @@ const HouseDetails = ({ route, navigation }) => {
                 keyExtractor={(_, index) => index.toString()}
                 style={styles.imageList}
             />
-            <Text style={styles.header}>House Details</Text>
             <View style={styles.detailsContainer}>
                 <Text style={styles.detail}>Area: {house.area}</Text>
                 <Text style={styles.detail}>Bathrooms: {house.bath}</Text>
@@ -68,7 +79,7 @@ const HouseDetails = ({ route, navigation }) => {
             <TouchableOpacity style={styles.button} onPress={handleContact}>
                 <Text style={styles.buttonText}>Contact</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={handleSave}>
+            <TouchableOpacity style={styles.button} onPress={confirmSave}>
                 <Text style={styles.buttonText}>Save</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={handleScheduleViewing}>
@@ -77,17 +88,18 @@ const HouseDetails = ({ route, navigation }) => {
             <TouchableOpacity style={styles.button} onPress={handleSetPriceDropAlert}>
                 <Text style={styles.buttonText}>Set Price Drop Alert</Text>
             </TouchableOpacity>
-        </View>
+        </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 20,
         backgroundColor: '#fff'
+    },
+    contentContainer: {
+        padding: 20,
+        paddingBottom: 100  
     },
     header: {
         fontSize: 22,
@@ -104,20 +116,22 @@ const styles = StyleSheet.create({
     },
     imageList: {
         height: 220,
-        flexGrow: 0, 
+        flexGrow: 0,
+        marginBottom: 20
     },
     image: {
         width: 200,
         height: 200,
         marginRight: 10,
-        borderRadius: 10, 
+        borderRadius: 10,
     },
     button: {
         marginTop: 10,
         backgroundColor: '#007BFF',
         padding: 10,
         borderRadius: 5,
-        width: '80%'
+        width: '80%',
+        alignSelf: 'center'  
     },
     buttonText: {
         color: '#fff',
