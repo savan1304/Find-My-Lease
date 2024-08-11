@@ -1,10 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, ScrollView, Alert } from 'react-native';
 import { writeToDB } from '../Firebase/firestoreHelper';
 import { auth } from '../Firebase/firebaseSetup';
-import { useNavigation } from '@react-navigation/native';
 
-const HouseDetails = ({ route, navigation }) => {
+const HouseDetails = ({ route }) => {
     const { house } = route.params;
     const sampleImages = [
         'https://via.placeholder.com/200x200.png?text=House+1',
@@ -22,14 +21,8 @@ const HouseDetails = ({ route, navigation }) => {
             'Save Listing',
             'Are you sure you want to save this listing?',
             [
-                {
-                    text: 'Cancel',
-                    style: 'cancel',
-                },
-                {
-                    text: 'Save',
-                    onPress: handleSave,
-                },
+                { text: 'Cancel', style: 'cancel' },
+                { text: 'Save', onPress: handleSave }
             ],
             { cancelable: false }
         );
@@ -52,7 +45,7 @@ const HouseDetails = ({ route, navigation }) => {
 
     const handleScheduleViewing = () => {
         console.log('Schedule Viewing tapped');
-        navigation.navigate('ScheduleVisit', { house });
+        // navigation.navigate('ScheduleVisit', { house });
     };
 
     const handleSetPriceDropAlert = () => {
@@ -60,18 +53,15 @@ const HouseDetails = ({ route, navigation }) => {
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <FlatList
                 data={sampleImages}
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                renderItem={({ item }) => (
-                    <Image source={{ uri: item }} style={styles.image} />
-                )}
+                renderItem={({ item }) => <Image source={{ uri: item }} style={styles.image} />}
                 keyExtractor={(_, index) => index.toString()}
                 style={styles.imageList}
             />
-            <Text style={styles.header}>House Details</Text>
             <View style={styles.detailsContainer}>
                 <Text style={styles.detail}>Area: {house.area}</Text>
                 <Text style={styles.detail}>Bathrooms: {house.bath}</Text>
@@ -96,15 +86,13 @@ const HouseDetails = ({ route, navigation }) => {
             <TouchableOpacity style={styles.button} onPress={handleSetPriceDropAlert}>
                 <Text style={styles.buttonText}>Set Price Drop Alert</Text>
             </TouchableOpacity>
-        </View>
+        </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
         padding: 20,
         backgroundColor: '#fff'
     },
@@ -123,20 +111,22 @@ const styles = StyleSheet.create({
     },
     imageList: {
         height: 220,
-        flexGrow: 0, 
+        flexGrow: 0,
+        marginBottom: 20
     },
     image: {
         width: 200,
         height: 200,
         marginRight: 10,
-        borderRadius: 10, 
+        borderRadius: 10,
     },
     button: {
         marginTop: 10,
         backgroundColor: '#007BFF',
         padding: 10,
         borderRadius: 5,
-        width: '80%'
+        width: '80%',
+        alignSelf: 'center'  // Center button horizontally
     },
     buttonText: {
         color: '#fff',
