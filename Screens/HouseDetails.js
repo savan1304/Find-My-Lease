@@ -45,7 +45,7 @@ const HouseDetails = ({ route }) => {
 
     const handleScheduleViewing = () => {
         console.log('Schedule Viewing tapped');
-        // navigation.navigate('ScheduleVisit', { house });
+        navigation.navigate('ScheduleVisit', { house });
     };
 
     const handleSetPriceDropAlert = () => {
@@ -53,12 +53,14 @@ const HouseDetails = ({ route }) => {
     };
 
     return (
-        <ScrollView style={styles.container}>
+        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
             <FlatList
                 data={sampleImages}
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                renderItem={({ item }) => <Image source={{ uri: item }} style={styles.image} />}
+                renderItem={({ item }) => (
+                    <Image source={{ uri: item }} style={styles.image} />
+                )}
                 keyExtractor={(_, index) => index.toString()}
                 style={styles.imageList}
             />
@@ -93,8 +95,11 @@ const HouseDetails = ({ route }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
         backgroundColor: '#fff'
+    },
+    contentContainer: {
+        padding: 20,
+        paddingBottom: 100  
     },
     header: {
         fontSize: 22,
@@ -126,7 +131,7 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 5,
         width: '80%',
-        alignSelf: 'center'  // Center button horizontally
+        alignSelf: 'center'  
     },
     buttonText: {
         color: '#fff',
