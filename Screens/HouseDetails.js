@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, ScrollView, 
 import { writeToDB } from '../Firebase/firestoreHelper';
 import { auth } from '../Firebase/firebaseSetup';
 
-const HouseDetails = ({ route }) => {
+const HouseDetails = ({ route, navigation }) => {
     const { house } = route.params;
     const sampleImages = [
         'https://via.placeholder.com/200x200.png?text=House+1',
