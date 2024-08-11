@@ -1,21 +1,24 @@
-import { addDoc, collection, deleteDoc, doc, updateDoc, getDocs } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, updateDoc, getDocs, query, where } from "firebase/firestore";
 import { database } from "./firebaseSetup";
 
 export async function writeToDB(data, collectionName) {
     try {
-        const docID = await addDoc(collection(database, collectionName), data)
-        console.log(docID)
-    } catch (error) {
-        console.log("Error in writing to db", error)
-    }
+        // Check if the document already exists in the collection
+        const q = query(
+            collection(database, collectionName),
+            where("id", "==", data.id)
+        );
 
-}
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+            console.log("Document already exists in the collection.");
+            return; 
+        }
 
-export async function deleteFromDB(id, collectionName) {
-    try {
-        await deleteDoc(doc(database, collectionName, id))
+        const docRef = await addDoc(collection(database, collectionName), data);
+        console.log(`Document written with ID: ${docRef.id}`);
     } catch (error) {
-        console.log("Error in Deleting from db", error)
+        console.log("Error in writing to db", error);
     }
 }
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, Alert } from 'react-native';
 import { writeToDB } from '../Firebase/firestoreHelper';
 import { auth } from '../Firebase/firebaseSetup';
 
@@ -16,18 +16,36 @@ const HouseDetails = ({ route, navigation }) => {
         console.log('Contact tapped');
     };
 
+    const confirmSave = () => {
+        Alert.alert(
+            'Save Listing',
+            'Are you sure you want to save this listing?',
+            [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Save',
+                    onPress: handleSave,
+                },
+            ],
+            { cancelable: false }
+        );
+    };
+
     const handleSave = async () => {
         try {
             const user = auth.currentUser;
             if (user) {
                 const collectionPath = `User/${user.uid}/saved`;
                 await writeToDB(house, collectionPath);
-                console.log('House saved successfully');
             } else {
-                console.log('No user is signed in');
+                Alert.alert('Error', 'No user is signed in');
             }
         } catch (error) {
             console.log('Error saving house:', error);
+            Alert.alert('Error', 'Failed to save house. Please try again.');
         }
     };
 
@@ -68,7 +86,7 @@ const HouseDetails = ({ route, navigation }) => {
             <TouchableOpacity style={styles.button} onPress={handleContact}>
                 <Text style={styles.buttonText}>Contact</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={handleSave}>
+            <TouchableOpacity style={styles.button} onPress={confirmSave}>
                 <Text style={styles.buttonText}>Save</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={handleScheduleViewing}>
