@@ -45,6 +45,7 @@ const ProfileStackScreen = () => (
     <MainStack.Screen name="Saved" component={Saved} options={{ title: 'Saved Listings' }} />
     <MainStack.Screen name="HouseDetails" component={HouseDetails} options={{ title: 'House Details' }} />
     <MainStack.Screen name="ScheduledVisits" component={ScheduledVisits} options={{ title: 'Scheduled Visits' }} />
+    <MainStack.Screen name="ScheduleVisit" component={ScheduleVisit} options={{ title: 'Scheduled a Visit' }} />
   </MainStack.Navigator>
 );
 
