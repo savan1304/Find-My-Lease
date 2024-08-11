@@ -25,15 +25,16 @@ const MainStack = createStackNavigator();
 
 const HomeStackScreen = () => (
   <MainStack.Navigator>
-    <MainStack.Screen name="HomeMain" component={Home} options={{ headerShown: false }} />
+    <MainStack.Screen name="My Home" component={Home} options={{ headerShown: false }} />
     <MainStack.Screen name="HouseDetails" component={HouseDetails} options={{ title: 'House Details' }} />
   </MainStack.Navigator>
 );
 
 const ProfileStackScreen = () => (
   <MainStack.Navigator>
-    <MainStack.Screen name="ProfileMain" component={Profile} options={{ headerShown: false }} />
+    <MainStack.Screen name="My Profile" component={Profile} options={{ headerShown: false }} />
     <MainStack.Screen name="Saved" component={Saved} options={{ title: 'Saved Listings' }} />
+    <MainStack.Screen name="HouseDetails" component={HouseDetails} options={{ title: 'House Details' }} />
     <MainStack.Screen name="ScheduledVisits" component={ScheduledVisits} options={{ title: 'Scheduled Visits' }} />
   </MainStack.Navigator>
 );
@@ -71,30 +72,6 @@ const Tabs = () => (
         tabBarIcon: ({ color, size }) => (
           <Icon name="person-outline" color={color} size={size} />
         ),
-        headerShown: false
-      }}
-    />
-    <Tab.Screen
-      name="PostListing"
-      component={PostListing}
-      options={{
-        tabBarButton: () => null,  
-        headerShown: false
-      }}
-    />
-    <Tab.Screen
-      name="PostedListings"
-      component={PostedListings}
-      options={{
-        tabBarButton: () => null,  
-        headerShown: false
-      }}
-    />
-    <Tab.Screen
-      name="ScheduleVisit"
-      component={ScheduleVisit}
-      options={{
-        tabBarButton: () => null,  
         headerShown: false
       }}
     />

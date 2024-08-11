@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, Alert } from 'react-native';
 import { writeToDB } from '../Firebase/firestoreHelper';
 import { auth } from '../Firebase/firebaseSetup';
+import { useNavigation } from '@react-navigation/native';
 
 const HouseDetails = ({ route, navigation }) => {
     const { house } = route.params;
