@@ -7,6 +7,7 @@ import { auth, database } from '../Firebase/firebaseSetup';
 import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
 import { useRoute } from '@react-navigation/native';
 import { Colors } from '../Config/Colors';
+import { scheduleNotification, requestNotificationPermissions } from '../Components/NotificationManager'; 
 
 export default function ScheduleVisit({ navigation }) {
 
@@ -61,18 +62,40 @@ export default function ScheduleVisit({ navigation }) {
 
     const handleDateChange = (event, selectedDate) => {
         setShowDatePicker(false);
-
         if (selectedDate) {
-            setVisit(prevVisit => ({ ...prevVisit, date: selectedDate }));
+            setVisit(prevVisit => ({
+                ...prevVisit,
+                date: new Date(
+                    selectedDate.getFullYear(),
+                    selectedDate.getMonth(),
+                    selectedDate.getDate(),
+                    prevVisit.time.getHours(),
+                    prevVisit.time.getMinutes(),
+                    prevVisit.time.getSeconds()
+                )
+            }));
         }
     };
-
+    
     const handleTimeChange = (event, selectedTime) => {
         setShowTimePicker(false);
         if (selectedTime) {
-            setVisit(prevVisit => ({ ...prevVisit, time: selectedTime }));
+            setVisit(prevVisit => ({
+                ...prevVisit,
+                date: new Date(
+                    prevVisit.date.getFullYear(),
+                    prevVisit.date.getMonth(),
+                    prevVisit.date.getDate(),
+                    selectedTime.getHours(),
+                    selectedTime.getMinutes(),
+                    selectedTime.getSeconds()
+                ),
+                time: selectedTime // It can be helpful to separately store the time if needed elsewhere
+            }));
+            console.log("Time updated to:", selectedTime.toLocaleTimeString());
         }
     };
+    
 
     function handleCancel() {
         if (visitData) {
@@ -89,28 +112,32 @@ export default function ScheduleVisit({ navigation }) {
             if (!user) {
                 throw new Error("User not authenticated");
             }
-
             if (visitData.id) {
-                console.log("updating existing visit with new data: ", visit)
                 const userDocRef = doc(database, "User", user.uid);
                 const visitSubcollectionRef = collection(userDocRef, "ScheduledVisits");
                 const visitDocRef = doc(visitSubcollectionRef, visitData.id);
                 await updateDoc(visitDocRef, visit);
-                navigation.navigate('ScheduledVisits')
             } else {
                 const scheduledVisitsCollectionRef = collection(database, 'User', user.uid, 'ScheduledVisits');
-                console.log(scheduledVisitsCollectionRef)
                 await addDoc(scheduledVisitsCollectionRef, visit);
-                console.log("Scheduled a visit:", visit);
-                navigation.goBack()
             }
-            reset()
+    
+            // Schedule a notification if the reminder is set
+            if (visit.setReminder) {
+                const reminderDate = new Date(visit.date.getTime());
+                reminderDate.setDate(reminderDate.getDate() - 1); // Set reminder 1 day before the actual visit
+    
+                await scheduleNotification(reminderDate, "Reminder", `Visit scheduled for ${visit.listingLocation} at ${visit.date.toLocaleDateString()}`);
+            }
+    
+            navigation.goBack();
+            reset();
         } catch (error) {
             console.error("Error scheduling visit:", error);
         }
-
-
-    };
+    }
+    
+    
 
     console.log("inside ScheduleVisit with listing: ", listing)
     return (
@@ -174,7 +201,16 @@ export default function ScheduleVisit({ navigation }) {
                 <Text style={[appStyles.addTitles, { padding: 0, margin: 0 }]}>Set reminder 1 day before?</Text>
                 <Switch
                     value={visit.setReminder}
-                    onValueChange={value => setVisit(prevVisit => ({ ...prevVisit, setReminder: value }))}
+                    onValueChange={async (value) => {
+                        if (value) {
+                            const hasPermission = await requestNotificationPermissions();
+                            if (!hasPermission) {
+                                Alert.alert("Permission Required");
+                                return; 
+                            }
+                        }
+                    setVisit(prevVisit => ({ ...prevVisit, setReminder: value }));
+                    }}
                 />
             </View>
 
