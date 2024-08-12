@@ -18,10 +18,19 @@ import { signOut } from 'firebase/auth';
 import ScheduleVisit from './Components/ScheduleVisit';
 import ScheduledVisits from './Screens/ScheduledVisits';
 import Saved from './Screens/Saved';
+import * as Notifications from 'expo-notifications';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const MainStack = createStackNavigator();
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
 
 const HomeStackScreen = () => (
   <MainStack.Navigator>
@@ -36,6 +45,7 @@ const ProfileStackScreen = () => (
     <MainStack.Screen name="Saved" component={Saved} options={{ title: 'Saved Listings' }} />
     <MainStack.Screen name="HouseDetails" component={HouseDetails} options={{ title: 'House Details' }} />
     <MainStack.Screen name="ScheduledVisits" component={ScheduledVisits} options={{ title: 'Scheduled Visits' }} />
+    <MainStack.Screen name="ScheduleVisit" component={ScheduleVisit} options={{ title: 'Scheduled a Visit' }} />
   </MainStack.Navigator>
 );
 
