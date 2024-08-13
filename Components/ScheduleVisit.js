@@ -205,7 +205,7 @@ export default function ScheduleVisit({ navigation }) {
                         if (value) {
                             const hasPermission = await requestNotificationPermissions();
                             if (!hasPermission) {
-                                Alert.alert("Permission Required");
+                                console.log("Permission Required");
                                 return; 
                             }
                         }

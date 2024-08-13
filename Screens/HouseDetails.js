@@ -1,16 +1,40 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, ScrollView, Alert } from 'react-native';
 import { writeToDB } from '../Firebase/firestoreHelper';
 import { auth } from '../Firebase/firebaseSetup';
+import { scoreApiKey } from '@env';  // Ensure your API key is stored securely
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
 
 const HouseDetails = ({ route, navigation }) => {
     const { house } = route.params;
+    const [locationScores, setLocationScores] = useState(null);
+
     const sampleImages = [
         'https://via.placeholder.com/200x200.png?text=House+1',
         'https://via.placeholder.com/200x200.png?text=House+2',
         'https://via.placeholder.com/200x200.png?text=House+3',
         'https://via.placeholder.com/200x200.png?text=House+4'
     ];
+
+    useEffect(() => {
+        fetchLocationScores();
+    }, []);
+
+    const fetchLocationScores = async () => {
+        const url = `https://api.walkscore.com/score?format=json&address=${encodeURIComponent(house.location)}&lat=${house.latitude}&lon=${house.longitude}&transit=1&bike=1&wsapikey=${scoreApiKey}`;
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            if (data.status === 1) {
+                setLocationScores(data);
+            } else {
+                console.error('Failed to fetch scores:', data);
+            }
+        } catch (error) {
+            console.error('Error fetching scores:', error);
+        }
+    };
 
     const handleContact = () => {
         console.log('Contact tapped');
@@ -75,6 +99,22 @@ const HouseDetails = ({ route, navigation }) => {
                 <Text style={styles.detail}>Transit: {house.transit}</Text>
                 <Text style={styles.detail}>Type: {house.type}</Text>
                 <Text style={styles.detail}>Year Built: {house.year}</Text>
+                {locationScores && (
+                    <View style={styles.scoresContainer}>
+                        <View style={styles.scoreDetail}>
+                            <MaterialCommunityIcons name="walk" size={24} color="black" />
+                            <Text style={styles.detail}>Walking Score: {locationScores.walkscore} ({locationScores.description})</Text>
+                        </View>
+                        <View style={styles.scoreDetail}>
+                            <MaterialCommunityIcons name="bus" size={24} color="black" />
+                            <Text style={styles.detail}>Transit Score: {locationScores.transit.score} ({locationScores.transit.description})</Text>
+                        </View>
+                        <View style={styles.scoreDetail}>
+                            <MaterialCommunityIcons name="bike" size={24} color="black" />
+                            <Text style={styles.detail}>Biking Score: {locationScores.bike.score} ({locationScores.bike.description})</Text>
+                        </View>
+                    </View>
+                )}
             </View>
             <TouchableOpacity style={styles.button} onPress={handleContact}>
                 <Text style={styles.buttonText}>Contact</Text>
@@ -137,7 +177,22 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16,
         textAlign: 'center'
-    }
+    },
+    scoresContainer: {
+        marginTop: 10,
+        marginBottom: 20,
+        padding: 10,
+        backgroundColor: '#f0f0f0'
+    },
+    scoreDetail: {
+        flexDirection: 'row',
+        alignItems: 'center',  
+        marginBottom: 10,
+    },
+    detail: {
+        fontSize: 18,
+        marginLeft: 5,  
+    },
 });
 
 export default HouseDetails;
