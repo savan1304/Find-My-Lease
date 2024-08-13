@@ -175,7 +175,7 @@ export const appStyles = StyleSheet.create({
 
 
   postListingContainer: {
-    flex: 4,
+    flex: 5,
     justifyContent: 'center',
     alignItems: 'center',
     margin: 5
@@ -206,7 +206,7 @@ export const appStyles = StyleSheet.create({
     margin: 5,
   },
   listingDetailsContainer: {
-    flex: 2,
+    flex: 3,
     width: '95%',
   },
   twoListingInputContainer: {
