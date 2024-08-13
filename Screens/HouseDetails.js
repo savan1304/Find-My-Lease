@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, ScrollView, 
 import { writeToDB } from '../Firebase/firestoreHelper';
 import { auth } from '../Firebase/firebaseSetup';
 import { scoreApiKey } from '@env';  // Ensure your API key is stored securely
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
 
 const HouseDetails = ({ route, navigation }) => {
     const { house } = route.params;
@@ -99,9 +101,18 @@ const HouseDetails = ({ route, navigation }) => {
                 <Text style={styles.detail}>Year Built: {house.year}</Text>
                 {locationScores && (
                     <View style={styles.scoresContainer}>
-                        <Text style={styles.detail}>Walking Score: {locationScores.walkscore} ({locationScores.description})</Text>
-                        <Text style={styles.detail}>Transit Score: {locationScores.transit.score} ({locationScores.transit.description})</Text>
-                        <Text style={styles.detail}>Biking Score: {locationScores.bike.score} ({locationScores.bike.description})</Text>
+                        <View style={styles.scoreDetail}>
+                            <MaterialCommunityIcons name="walk" size={24} color="black" />
+                            <Text style={styles.detail}>Walking Score: {locationScores.walkscore} ({locationScores.description})</Text>
+                        </View>
+                        <View style={styles.scoreDetail}>
+                            <MaterialCommunityIcons name="bus" size={24} color="black" />
+                            <Text style={styles.detail}>Transit Score: {locationScores.transit.score} ({locationScores.transit.description})</Text>
+                        </View>
+                        <View style={styles.scoreDetail}>
+                            <MaterialCommunityIcons name="bike" size={24} color="black" />
+                            <Text style={styles.detail}>Biking Score: {locationScores.bike.score} ({locationScores.bike.description})</Text>
+                        </View>
                     </View>
                 )}
             </View>
@@ -172,7 +183,16 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         padding: 10,
         backgroundColor: '#f0f0f0'
-    }
+    },
+    scoreDetail: {
+        flexDirection: 'row',
+        alignItems: 'center',  
+        marginBottom: 10,
+    },
+    detail: {
+        fontSize: 18,
+        marginLeft: 5,  
+    },
 });
 
 export default HouseDetails;
