@@ -28,11 +28,9 @@ const HouseDetails = ({ route, navigation }) => {
                 setLocationScores(data);
             } else {
                 console.error('Failed to fetch scores:', data);
-                Alert.alert('Error', 'Failed to fetch location scores.');
             }
         } catch (error) {
             console.error('Error fetching scores:', error);
-            Alert.alert('Error', 'Failed to fetch location scores. Please check your network connection.');
         }
     };
 
