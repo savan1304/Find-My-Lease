@@ -43,7 +43,7 @@ export default function SignUp({ navigation }) {
             });
 
             console.log("User created and data saved to Firestore!");
-            navigation.navigate('Login');
+            navigation.replace('Login');
         } catch (err) {
             console.log("SIGN UP ", err)
         }
