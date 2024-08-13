@@ -286,9 +286,18 @@ export const appStyles = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
   },
-  visitLocationAndPriceContainer:{
+  visitLocationAndPriceContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'flex-end',
+  },
+  locationOrPriceContainer2: {
+    flex: 1,
+    alignItems: 'flex-end'
+  },
+
+  locationOrPriceContainer1: {
+    flex: 1,
+    alighItems: 'flex-end',
   }
 
 })
