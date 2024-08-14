@@ -1,4 +1,4 @@
-import { View, Text, TextInput, SafeAreaView, ScrollView, Image } from 'react-native'
+import { View, Text, TextInput, SafeAreaView, ScrollView, Image, FlatList } from 'react-native'
 import React, { useEffect, useState, useCallback } from 'react';
 import ImageManager from './ImageManager';
 import { appStyles } from '../Config/Styles';
@@ -14,6 +14,7 @@ import { doc, updateDoc } from 'firebase/firestore';
 import { useRoute } from '@react-navigation/native';
 import { mapsApiKeyE } from '@env'
 import Geocoder from 'react-native-geocoding';
+import { getDownloadURL } from 'firebase/storage';
 
 export default function PostListing({ navigation }) {
 
@@ -45,27 +46,52 @@ export default function PostListing({ navigation }) {
     ]);
     const [enteredLocation, setEnteredLocation] = useState('')
     Geocoder.init(mapsApiKeyE)
+    let fetchedImageUrls = []
 
 
     useEffect(() => {
         // Updating formData whenever listingData from route params changes
-        setFormData({
-            price: listingData?.price || '',
-            location: listingData?.location || '',
-            latitude: listingData?.latitude || '',
-            longitude: listingData?.longitude || '',
-            bed: listingData?.bed || '',
-            bath: listingData?.bath || '',
-            area: listingData?.area || '',
-            petFriendly: listingData?.petFriendly || false,
-            transit: listingData?.transit || '',
-            type: listingData?.type || '',
-            year: listingData?.year || '',
-            tenantGender: listingData?.tenantGender || '',
-            imageUris: listingData?.imageUris || [],
-        });
-
+        async function populateData() {
+            const fetchedImageUrls = await fetchImageUrls()
+            setFormData({
+                price: listingData?.price || '',
+                location: listingData?.location || '',
+                latitude: listingData?.latitude || '',
+                longitude: listingData?.longitude || '',
+                bed: listingData?.bed || '',
+                bath: listingData?.bath || '',
+                area: listingData?.area || '',
+                petFriendly: listingData?.petFriendly || false,
+                transit: listingData?.transit || '',
+                type: listingData?.type || '',
+                year: listingData?.year || '',
+                tenantGender: listingData?.tenantGender || '',
+                imageUris: fetchedImageUrls
+            });
+        }
+        populateData()
     }, [route]); // Adding route as a dependency
+
+
+    console.log("form data after use effect: ", formData)
+
+    async function fetchImageUrls() {
+        console.log("entered fetchImageUrls function with listingData: ", listingData)
+        if (listingData && listingData.imageUris && listingData.imageUris.length > 0) {
+            try {
+                fetchedImageUrls = await Promise.all(
+                    listingData.imageUris.map(imageUri =>
+                        getDownloadURL(ref(storage, imageUri))
+                    )
+                );
+                console.log("Fetched image URLs:", fetchedImageUrls);
+                return fetchedImageUrls
+            } catch (error) {
+                console.error("Error fetching image URLs:", error);
+            }
+        }
+        return []
+    }
 
     useEffect(() => {
         console.log("enteredLocation inside useEffect: ", enteredLocation)
@@ -85,6 +111,8 @@ export default function PostListing({ navigation }) {
         }
         console.log("formData after setting lat and lng: ", formData)
     }, [enteredLocation])
+
+
 
 
     function reset() {
@@ -204,19 +232,39 @@ export default function PostListing({ navigation }) {
         }
     }, [images]);
 
+    const renderImage = ({ item }) => (
+        <Image source={{ uri: item }} style={{ width: 250, height: 150, margin: 5 }} />
+    );
+
+
+
     return (
         <SafeAreaView style={appStyles.postListingContainer}>
 
 
 
-            <View style={appStyles.postImageContainer} >
-                <View style={appStyles.imageOptionsContainer}>
-                    <PressableItem onPress={pickImage}>
-                        <Text style={appStyles.text}>Upload Images</Text>
-                    </PressableItem>
-                    <ImageManager imageUriHandler={imageUriHandler} />
+            {formData.imageUris.length > 0 ? (
+                <ScrollView style={appStyles.scrollViewContainer} contentContainerStyle={appStyles.contentContainer}>
+                    <FlatList
+                        data={formData.imageUris}
+                        renderItem={renderImage}
+                        keyExtractor={(item, index) => index.toString()}
+                        horizontal
+                        style={appStyles.imageList}
+                        showsHorizontalScrollIndicator={true}
+                    />
+                </ScrollView>
+            ) : (
+                <View style={appStyles.postImageContainer} >
+
+                    <View style={appStyles.imageOptionsContainer}>
+                        <PressableItem onPress={pickImage}>
+                            <Text style={appStyles.text}>Upload Images</Text>
+                        </PressableItem>
+                        <ImageManager imageUriHandler={imageUriHandler} />
+                    </View>
                 </View>
-            </View>
+            )}
 
 
             <View style={appStyles.listingDetailsContainer}>
