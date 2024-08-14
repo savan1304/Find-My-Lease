@@ -1,15 +1,17 @@
-import { appStyles } from '../Config/Styles';
 import React, { useState } from 'react';
-import { Text, View, TextInput, Alert } from 'react-native';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { Text, View, TextInput, Alert, Modal, StyleSheet, Button } from 'react-native';
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '../Firebase/firebaseSetup';
 import PressableItem from '../Components/PressableItem';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { appStyles } from '../Config/Styles';
 
 export default function Login({ navigation }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [resetEmail, setResetEmail] = useState('');
 
     const loginHandler = async () => {
         console.log("Attempting to login");
@@ -36,6 +38,22 @@ export default function Login({ navigation }) {
     const signupHandler = () => {
         console.log("Navigating to signup");
         navigation.replace("Signup");
+    };
+
+    const handleForgotPassword = () => {
+        if (!resetEmail) {
+            Alert.alert("Input required", "Please enter your email address to reset your password.");
+            return;
+        }
+        sendPasswordResetEmail(auth, resetEmail)
+            .then(() => {
+                Alert.alert("Check your email", "A link to reset your password has been sent to your email.");
+                setModalVisible(false); 
+                setResetEmail(''); 
+            })
+            .catch((error) => {
+                Alert.alert("Error", error.message);
+            });
     };
 
     return (
@@ -67,14 +85,77 @@ export default function Login({ navigation }) {
                         />
                     </View>
                 </View>
-            </View>
 
-            <PressableItem onPress={loginHandler} style={[appStyles.buttonStyle, appStyles.cancelButton]}>
-                <Text style={appStyles.text}>Login</Text>
-            </PressableItem>
-            <PressableItem onPress={signupHandler} style={[appStyles.buttonStyle, appStyles.saveButton]}>
-                <Text style={appStyles.text}>SignUp</Text>
-            </PressableItem>
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => {
+                        Alert.alert("Modal has been closed.");
+                        setModalVisible(!modalVisible);
+                    }}
+                >
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalView}>
+                            <TextInput
+                                style={styles.modalText}
+                                onChangeText={setResetEmail}
+                                value={resetEmail}
+                                placeholder="Enter your email for password reset"
+                                keyboardType="email-address"
+                                autoFocus={true}
+                            />
+                            <Button title="Send Reset Email" onPress={handleForgotPassword} />
+                            <Button title="Cancel" color="red" onPress={() => setModalVisible(!modalVisible)} />
+                        </View>
+                    </View>
+                </Modal>
+                <View style={styles.buttonContainer}>
+                <PressableItem onPress={loginHandler} style={[appStyles.buttonStyle, appStyles.cancelButton]}>
+                    <Text style={appStyles.text}>Login</Text>
+                </PressableItem>
+                <PressableItem onPress={signupHandler} style={[appStyles.buttonStyle, appStyles.saveButton]}>
+                    <Text style={appStyles.text}>SignUp</Text>
+                </PressableItem>
+                <PressableItem onPress={() => setModalVisible(true)} style={[appStyles.buttonStyle, appStyles.saveButton]}>
+                    <Text style={appStyles.text}>Forgot Password?</Text>
+                </PressableItem>
+                </View>
+            </View>
         </SafeAreaView>
     );
 }
+
+const styles = StyleSheet.create({
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: "center",
+        width: 250, 
+    },
+    buttonContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
+});
