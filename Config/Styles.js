@@ -52,7 +52,7 @@ export const appStyles = StyleSheet.create({
     marginHorizontal: 15,
     padding: 2,
     justifyContent: "space-evenly",
-    marginVertical: 7
+    marginVertical: 8
   },
   saveAndCancelButtonContainerForVisit: {
     marginHorizontal: 15,
@@ -175,7 +175,7 @@ export const appStyles = StyleSheet.create({
 
 
   postListingContainer: {
-    flex: 4,
+    flex: 5,
     justifyContent: 'center',
     alignItems: 'center',
     margin: 5
@@ -206,7 +206,7 @@ export const appStyles = StyleSheet.create({
     margin: 5,
   },
   listingDetailsContainer: {
-    flex: 2,
+    flex: 3,
     width: '95%',
   },
   twoListingInputContainer: {
@@ -286,9 +286,18 @@ export const appStyles = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
   },
-  visitLocationAndPriceContainer:{
+  visitLocationAndPriceContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'flex-end',
+  },
+  locationOrPriceContainer2: {
+    flex: 1,
+    alignItems: 'flex-end'
+  },
+
+  locationOrPriceContainer1: {
+    flex: 1,
+    alighItems: 'flex-end',
   }
 
 })

@@ -95,7 +95,7 @@ const Home = ({ navigation }) => {
             <PressableItem onPress={() => setModalVisible(true)} style={{ margin: 0 }}>
                 <Text style={appStyles.text}>Open Filters</Text>
             </PressableItem>
-            <MapHolder houses={houses} />
+            <MapHolder navigation={navigation} houses={houses} />
             <FlatList
                 data={filteredHouses}
                 renderItem={({ item }) => (

@@ -7,7 +7,7 @@ import { auth, database } from '../Firebase/firebaseSetup';
 import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
 import { useRoute } from '@react-navigation/native';
 import { Colors } from '../Config/Colors';
-import { scheduleNotification, requestNotificationPermissions } from '../Components/NotificationManager'; 
+import { scheduleNotification, requestNotificationPermissions } from '../Components/NotificationManager';
 
 export default function ScheduleVisit({ navigation }) {
 
@@ -76,7 +76,7 @@ export default function ScheduleVisit({ navigation }) {
             }));
         }
     };
-    
+
     const handleTimeChange = (event, selectedTime) => {
         setShowTimePicker(false);
         if (selectedTime) {
@@ -95,14 +95,10 @@ export default function ScheduleVisit({ navigation }) {
             console.log("Time updated to:", selectedTime.toLocaleTimeString());
         }
     };
-    
+
 
     function handleCancel() {
-        if (visitData) {
-            navigation.navigate('ScheduledVisits')
-        } else {
-            navigation.goBack();
-        }
+        navigation.goBack();
         reset()
     }
 
@@ -121,30 +117,34 @@ export default function ScheduleVisit({ navigation }) {
                 const scheduledVisitsCollectionRef = collection(database, 'User', user.uid, 'ScheduledVisits');
                 await addDoc(scheduledVisitsCollectionRef, visit);
             }
-    
+
             // Schedule a notification if the reminder is set
             if (visit.setReminder) {
                 const reminderDate = new Date(visit.date.getTime());
                 reminderDate.setDate(reminderDate.getDate() - 1); // Set reminder 1 day before the actual visit
-    
+
                 await scheduleNotification(reminderDate, "Reminder", `Visit scheduled for ${visit.listingLocation} at ${visit.date.toLocaleDateString()}`);
             }
-    
+
             navigation.goBack();
             reset();
         } catch (error) {
             console.error("Error scheduling visit:", error);
         }
     }
-    
-    
+
+
 
     console.log("inside ScheduleVisit with listing: ", listing)
     return (
         <View style={appStyles.container}>
             <View style={appStyles.visitLocationAndPriceContainer}>
-                <Text style={[appStyles.title, { color: Colors.shadowColor }]}>{visit.listingLocation}</Text>
-                <Text style={[appStyles.title, { color: Colors.shadowColor }]}>C$ {visit.listingPrice}/mo</Text>
+                <View style={appStyles.locationOrPriceContainer1}>
+                    <Text style={[appStyles.title, { color: Colors.shadowColor }]}>{visit.listingLocation}</Text>
+                </View>
+                <View style={appStyles.locationOrPriceContainer2}>
+                    <Text style={[appStyles.title, { color: Colors.shadowColor }]}>C$ {visit.listingPrice}/mo</Text>
+                </View>
             </View>
 
 
@@ -206,10 +206,10 @@ export default function ScheduleVisit({ navigation }) {
                             const hasPermission = await requestNotificationPermissions();
                             if (!hasPermission) {
                                 console.log("Permission Required");
-                                return; 
+                                return;
                             }
                         }
-                    setVisit(prevVisit => ({ ...prevVisit, setReminder: value }));
+                        setVisit(prevVisit => ({ ...prevVisit, setReminder: value }));
                     }}
                 />
             </View>
