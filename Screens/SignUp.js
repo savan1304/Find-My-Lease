@@ -1,4 +1,4 @@
-import { Text, View, TextInput, Alert, SafeAreaView } from 'react-native'
+import { Text, View, TextInput, Alert, SafeAreaView, StyleSheet } from 'react-native'
 import React, { useState } from 'react'
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, database } from '../Firebase/firebaseSetup';
@@ -43,7 +43,7 @@ export default function SignUp({ navigation }) {
             });
 
             console.log("User created and data saved to Firestore!");
-            navigation.replace('Login');
+            navigation.replace('HomeMain');
         } catch (err) {
             console.log("SIGN UP ", err)
         }
@@ -100,14 +100,23 @@ export default function SignUp({ navigation }) {
                     </View>
                 </View>
             </View>
-
+            <View style={styles.buttonContainer}>
             <PressableItem onPress={signupHandler} style={[appStyles.buttonStyle, appStyles.cancelButton]} >
                 <Text style={appStyles.text}>Register</Text>
             </PressableItem>
             <PressableItem onPress={loginHandler} style={[appStyles.buttonStyle, appStyles.saveButton]} >
                 <Text style={appStyles.text}>Already Registered? Login</Text>
             </PressableItem>
+            </View>
         </SafeAreaView>
 
     )
 }
+
+const styles = StyleSheet.create({
+    buttonContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
+});
