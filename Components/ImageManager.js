@@ -7,7 +7,7 @@ import { appStyles } from '../Config/Styles';
 export default function ImageManager({ imageUriHandler }) {
 
     const [response, requestPermission] = ImagePicker.useCameraPermissions();
-    const [imageUri, setImageUri] = useState('')
+    const [imageUris, setImageUris] = useState([]);
 
     async function verifyPermission() {
         console.log(response)
@@ -26,30 +26,31 @@ export default function ImageManager({ imageUriHandler }) {
                 Alert.alert("You need to give permission to launch camera")
                 return;
             }
+
             if (hasPermission) {
                 const result = await ImagePicker.launchCameraAsync({
-                    allowsEditing: true
-                })
-                console.log(result)
-                setImageUri(result.assets[0].uri)
-                imageUriHandler(result.assets[0].uri)   // didn't pass imageUri here because setImageUri is async so it will be set in the next render, and immediately imageUri will still be empty string.
+                    allowsEditing: true,
+                    allowsMultipleSelection: true,
+                });
 
+                imageUriHandler(result.assets.map(asset => asset.uri));
             }
-        }
-        catch (err) {
+        } catch (err) {
             console.log("take photo err: ", err)
         }
-
     };
     return (
         <View>
             <PressableItem onPress={takeImageHandler}>
                 <Text style={appStyles.text}>Take a photo</Text>
             </PressableItem>
-            {imageUri && (<Image source={{
-                uri: imageUri,
-            }} style={styles.images}
-            />)}
+            {imageUris.map((uri, index) => (
+                <Image
+                    key={index}
+                    source={{ uri }}
+                    style={styles.images}
+                />
+            ))}
 
         </View>
     )
