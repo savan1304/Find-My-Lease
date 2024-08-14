@@ -55,10 +55,9 @@ export const appStyles = StyleSheet.create({
     marginVertical: 8
   },
   saveAndCancelButtonContainerForVisit: {
+    flexDirection: 'row',
     marginHorizontal: 15,
-    padding: 2,
     justifyContent: "space-evenly",
-    marginVertical: 7
   },
   text: {
     color: Colors.background
@@ -220,6 +219,7 @@ export const appStyles = StyleSheet.create({
     color: Colors.themeColor,
     marginHorizontal: 5,
     width: 50,
+    alignItems: 'center'
   },
   addItemContainer: {
     margin: 15,
@@ -298,7 +298,21 @@ export const appStyles = StyleSheet.create({
   locationOrPriceContainer1: {
     flex: 1,
     alighItems: 'flex-end',
-  }
+  },
+  imageList: {
+    height: 150,
+    flexGrow: 0,
+    marginBottom: 20
+  },
+  scrollViewContainer: {
+    flex: 1,
+    margin: 10,
+    padding: 20,
+  },
+  contentContainer: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
 
 })
 
