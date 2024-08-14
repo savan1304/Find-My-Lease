@@ -38,7 +38,7 @@ export default function PostListing({ navigation }) {
     });
     const [imageUri, setImageUri] = useState('')
     const [open, setOpen] = useState(false);
-    const [type, setType] = useState(''); // Default value
+    const [type, setType] = useState('');
 
     const [types, setTypes] = useState([
         { label: 'Shared', value: 'Shared' },
@@ -112,7 +112,8 @@ export default function PostListing({ navigation }) {
         setImageUri(imageUri)
     }
 
-    function handleDataChange(field, newValue) {
+    async function handleDataChange(field, newValue) {
+
         setFormData(prevFormData => ({
             ...prevFormData,
             [field]: newValue,
@@ -150,16 +151,16 @@ export default function PostListing({ navigation }) {
 
 
 
-    async function retrieveAndUploadImage(uri) {
-        console.log("inside retrieveAndUploadImage uri: ", uri)
+    async function retrieveAndUploadImage(imageUri) {
+        console.log("inside retrieveAndUploadImage uri: ", imageUri)
         try {
-            const response = await fetch(uri);
+            const response = await fetch(imageUri);
             if (!response.ok) {
                 throw new Error("The request was not successful")
             }
             const blob = await response.blob();
             console.log("inside retrieveAndUploadImage blob:", blob)
-            const imageName = uri.substring(uri.lastIndexOf('/') + 1);
+            const imageName = imageUri.substring(imageUri.lastIndexOf('/') + 1);
             console.log("inside retrieveAndUploadImage imageName:", imageName)
             const imageRef = ref(storage, `images/${imageName}`)
             const uploadResult = await uploadBytesResumable(imageRef, blob);
@@ -170,27 +171,31 @@ export default function PostListing({ navigation }) {
     }
 
     async function handleSave() {
-        try {
-            // const listingData = {
-            //     ...formData,
-            //     imageUri: "", // Store image URIs
-            // };
-            console.log("inside handleSave: ", listingData)
-            if (listingData.id) {
-                console.log("updating existing listing with new data: ", formData)
-                const listingRef = doc(database, 'Listing', listingData.id);
-                console.log(listingRef)
-                await updateDoc(listingRef, formData);
-                navigation.navigate('PostedListings')
-            } else {
-                console.log("creating new listing", listingData)
-                await writeToDB(formData, 'Listing');
-                navigation.goBack();
-            }
-            reset()
-        } catch (error) {
-            console.error('Error saving listing:', error);
+
+        let listingDataToSave = {}
+        if (imageUri !== '') {
+            console.log("inside imageUri !== '' condition")
+            const imageUrlFromretrieveAndUplodimage = await retrieveAndUploadImage(imageUri);
+            listingDataToSave = {
+                ...formData,
+                imageUri: imageUrlFromretrieveAndUplodimage,
+            };
         }
+
+        console.log("inside handleSave: ", listingDataToSave)
+        if (listingData.id) {
+            console.log("updating existing listing with new data: ", formData)
+            const listingRef = doc(database, 'Listing', listingData.id);
+            console.log(listingRef)
+            await updateDoc(listingRef, listingDataToSave);
+            navigation.navigate('PostedListings')
+        } else {
+            console.log("creating new listing with: ", listingDataToSave)
+            await writeToDB(listingDataToSave, 'Listing');
+            navigation.goBack();
+        }
+        reset()
+
     };
 
     return (

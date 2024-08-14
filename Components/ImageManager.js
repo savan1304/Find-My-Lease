@@ -30,7 +30,7 @@ export default function ImageManager({ imageUriHandler }) {
                 const result = await ImagePicker.launchCameraAsync({
                     allowsEditing: true
                 })
-                console.log(result)
+                console.log("result from takeImageHandler: ",result)
                 setImageUri(result.assets[0].uri)
                 imageUriHandler(result.assets[0].uri)   // didn't pass imageUri here because setImageUri is async so it will be set in the next render, and immediately imageUri will still be empty string.
 
