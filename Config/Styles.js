@@ -52,7 +52,7 @@ export const appStyles = StyleSheet.create({
     marginHorizontal: 15,
     padding: 2,
     justifyContent: "space-evenly",
-    marginVertical: 7
+    marginVertical: 8
   },
   saveAndCancelButtonContainerForVisit: {
     marginHorizontal: 15,
