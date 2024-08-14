@@ -4,7 +4,7 @@ import * as Location from 'expo-location';
 import MapView, { Marker } from "react-native-maps";
 
 
-export default function MapHolder({ houses }) {
+export default function MapHolder({ navigation, houses }) {
   console.log("houses receievd from Home page: ", houses)
   const [response, requestPermission] = Location.useForegroundPermissions()
   const [userLocation, setUserLocation] = useState(null)
@@ -39,6 +39,11 @@ export default function MapHolder({ houses }) {
 
   }
 
+  const handleMarkerPress = house => {
+    console.log('House selected:', house);
+    navigation.navigate('HouseDetails', { house });
+  };
+
   console.log("user location in Map component: ", userLocation)
 
   return (
@@ -69,6 +74,7 @@ export default function MapHolder({ houses }) {
                 }}
                 title={`C$${house.price}`}
                 image={require('../assets/house_location.png')}
+                onPress={() => {handleMarkerPress(house)}}
               >
               </Marker>
             ))}

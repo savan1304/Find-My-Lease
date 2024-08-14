@@ -148,7 +148,7 @@ const App = () => {
                     <Icon name="notifications-outline" size={25} style={{ marginRight: 20 }} />
                   </TouchableOpacity>
                   <TouchableOpacity onPress={() => alert('Settings')}>
-                    <Icon name="settings-outline" size={25} />
+                    <Icon name="settings-outline" size={25} style={{ marginRight: 20 }} />
                   </TouchableOpacity>
                   <TouchableOpacity onPress={() => handleLogout(navigation)}>
                     <Icon name="log-out-outline" size={25} />
