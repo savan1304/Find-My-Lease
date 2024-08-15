@@ -1,10 +1,10 @@
 import { Text, View, TouchableOpacity, TextInput, Switch, Image, ScrollView, FlatList } from 'react-native'
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { appStyles } from '../Config/Styles';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import PressableItem from './PressableItem';
 import { auth, database } from '../Firebase/firebaseSetup';
-import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, doc, getDoc } from 'firebase/firestore';
 import { useRoute } from '@react-navigation/native';
 import { Colors } from '../Config/Colors';
 import { scheduleNotification, requestNotificationPermissions } from '../Components/NotificationManager';
@@ -15,8 +15,9 @@ export default function ScheduleVisit({ navigation }) {
 
     const route = useRoute();
     const user = auth.currentUser;
-    const { visitData = {} } = route.params || {};
+    const { visitData = {}, listingData = {} } = route.params || {};
     console.log("received visitData in ScheduleVisit: ", visitData)
+    console.log("received listingData in ScheduleVisit: ", listingData)
     let listing = {};
     if (Object.keys(visitData).length === 0) {
         listing = route.params.house;
@@ -34,13 +35,16 @@ export default function ScheduleVisit({ navigation }) {
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showTimePicker, setShowTimePicker] = useState(false);
 
-    const [listingData, setListingData] = useState(null); // To store fetched listing data
-    const [imageUrls, setImageUrls] = useState([]); // To store fetched image URLs
-    const flatListRef = useRef(null);
-    let fetchedImageUrls = []
+    const [imageUrls, setImageUrls] = useState([]); // Storing fetched image URLs
+
+
+    useEffect(() => {
+
+    }, [route]);
 
     useEffect(() => {
         // Updating visit whenever visitData from route params changes
+
         async function populateData() {
             setVisit({
                 listingId: visitData?.listingId || listing.id,
@@ -53,23 +57,33 @@ export default function ScheduleVisit({ navigation }) {
             });
 
             await fetchImageUrls()
+
             console.log("fetchedImageUrls at the end of useEffect: ", imageUrls)
         }
+
         populateData()
 
     }, [route]); // Adding route as a dependency
 
+
     async function fetchImageUrls() {
         console.log("entered fetchImageUrls function with listingData: ", listing)
         try {
-            if (listing.imageUris.length > 0) {
-                const urls = await Promise.all(
-                    listing.imageUris.map(imageUri =>
-                        getDownloadURL(ref(storage, imageUri))
-                    )
-                );
-                setImageUrls(urls);
+
+            let data = {}
+            if (listing && listing.imageUris && listing.imageUris.length > 0) {
+                data = listing
+            } else if (listingData && listingData.imageUris && listingData.imageUris.length > 0) {
+                data = listingData
             }
+
+            const urls = await Promise.all(
+                data.imageUris.map(imageUri =>
+                    getDownloadURL(ref(storage, imageUri))
+                )
+            );
+            setImageUrls(urls);
+
             console.log("Fetched image URLs:", imageUrls);
         } catch (error) {
             console.error("Error fetching image URLs:", error);
@@ -121,7 +135,7 @@ export default function ScheduleVisit({ navigation }) {
                     selectedTime.getMinutes(),
                     selectedTime.getSeconds()
                 ),
-                time: selectedTime // It can be helpful to separately store the time if needed elsewhere
+                time: selectedTime // separately storing the time if needed elsewhere
             }));
             console.log("Time updated to:", selectedTime.toLocaleTimeString());
         }
