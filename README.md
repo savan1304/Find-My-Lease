@@ -69,32 +69,28 @@ Create the notification 1 day before the user's schedule (local notification)
 Asking user's permission for Location through a click on the Map area in the Home screen:
 ![Location_Permission](https://github.com/user-attachments/assets/7cd16bd5-fefc-44d2-b29f-f6f0344b273e)
 
-<br>
 When Permission is given, an interactive Map with locations of available listings are displayed with multiple markers and custom icon (along with the user's location):
 ![Map_all_mutliple](https://github.com/user-attachments/assets/f54a3eba-92aa-415f-b8bb-c0915be4797d)
 
-<br>
 Zoomed in (interactive) screen of an area:
 ![Map_multiple](https://github.com/user-attachments/assets/40ec19e0-91b1-4964-b1f4-3d9a000c491e)
 
-<br>
 Listing price as titles of their markers on the map (clcking on marker takes the user to HouseDetail of the clicked listing):
 ![Map_Listing_Title](https://github.com/user-attachments/assets/6623d8f9-19e1-48a8-adbd-ed449dca399f)
 ![Map_marker_title](https://github.com/user-attachments/assets/fb2eb05b-b025-435b-8851-f9daf176b452)
 
-<br>
 Displaying images as user takes/upload photos while posting a new listing:
 ![PostListing_Create](https://github.com/user-attachments/assets/39ec974e-e095-48a2-afe9-23a09d8296df)
 
-<br>
+
 Displaying existing images of the listing (with options to take/uplaod additional images) while editing a listed posted by user
 ![PostListing_Edit](https://github.com/user-attachments/assets/53e419d5-834b-49ff-99bb-f8c07cc38b51)
 
-<br>
+
 Displaying existing images of the listing while scheduling a new visit:
 ![ScheduleVisit_Create](https://github.com/user-attachments/assets/4d6e2263-abc9-430a-84c2-b370af10e6bf)
 
-<br>
+
 Displaying existing images of the listing while editing a scheduled visit:
 ![Schedule_Visit_Edit](https://github.com/user-attachments/assets/2f1e301f-1e31-4deb-838b-870b2f51e570)
 
