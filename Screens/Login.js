@@ -5,6 +5,7 @@ import { auth } from '../Firebase/firebaseSetup';
 import PressableItem from '../Components/PressableItem';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { appStyles } from '../Config/Styles';
+import { MaterialIcons } from '@expo/vector-icons'; 
 
 export default function Login({ navigation }) {
     const [email, setEmail] = useState('');
@@ -58,6 +59,14 @@ export default function Login({ navigation }) {
 
     return (
         <SafeAreaView style={appStyles.loginSignUpContainer}>
+            <View style={styles.iconContainer}>
+                <MaterialIcons name="apartment" size={64} color="blue" />
+            </View>
+            <View style={styles.introContainer}>
+                <Text style={styles.introText}>
+                    Welcome back to FindMyLease! Continue your journey to find the perfect place to rent or manage your property rentals with ease. Log in now to access your account and all the features of FindMyLease!
+                </Text>
+            </View>
             <View>
                 <View style={appStyles.loginSignUpFieldContainer}>
                     <Text>Email</Text>
@@ -101,6 +110,7 @@ export default function Login({ navigation }) {
                                 style={styles.modalText}
                                 onChangeText={setResetEmail}
                                 value={resetEmail}
+                                placeholderTextColor="gray"
                                 placeholder="Enter your email for password reset"
                                 keyboardType="email-address"
                                 autoFocus={true}
@@ -127,6 +137,19 @@ export default function Login({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+    iconContainer: {
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    introContainer: {
+        marginBottom: 20,
+        paddingHorizontal: 20,
+    },
+    introText: {
+        fontSize: 16,
+        textAlign: 'center',
+        color: 'blue',
+    },
     centeredView: {
         flex: 1,
         justifyContent: "center",
@@ -154,7 +177,6 @@ const styles = StyleSheet.create({
         width: 250, 
     },
     buttonContainer: {
-        flex: 1,
         justifyContent: 'center',
         alignItems: 'center'
     }

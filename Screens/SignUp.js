@@ -5,7 +5,7 @@ import { auth, database } from '../Firebase/firebaseSetup';
 import { appStyles } from '../Config/Styles';
 import PressableItem from '../Components/PressableItem';
 import { collection, doc, setDoc } from 'firebase/firestore';
-
+import { MaterialIcons } from '@expo/vector-icons'; 
 
 export default function SignUp({ navigation }) {
     const [email, setEmail] = useState('');
@@ -35,7 +35,7 @@ export default function SignUp({ navigation }) {
             Alert.alert("Please enter a valid email address");
             return;
         } else if (!isPasswordValid(password)) {
-            Alert.alert("Password is too simple, it must contain both numbers and letters");
+            Alert.alert("Password must contain both numbers and letters");
             return;
         } else if (password !== confirmPassword) {
             Alert.alert("Passwords do not match");
@@ -62,6 +62,16 @@ export default function SignUp({ navigation }) {
 
     return (
         <SafeAreaView style={appStyles.loginSignUpContainer}>
+            <View style={styles.iconContainer}>
+                <MaterialIcons name="apartment" size={64} color="blue" />
+            </View>
+            <View style={styles.introContainer}>
+                <Text style={styles.introText}>
+                    Welcome to FindMyLease! This platform is designed to help you find the perfect place to rent as a renter or post your property for others to rent. Whether you're searching for a new home or looking to rent out your property, our app makes the process easy and efficient. 
+                    {"\n\n"}
+                    Sign up now to unlock the full functionality of FindMyLease!
+                </Text>
+            </View>
             <View>
                 <View style={appStyles.loginSignUpFieldContainer}>
                     <Text>Email</Text>
@@ -119,13 +129,24 @@ export default function SignUp({ navigation }) {
                 </PressableItem>
             </View>
         </SafeAreaView>
-
     )
 }
 
 const styles = StyleSheet.create({
+    iconContainer: {
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    introContainer: {
+        marginBottom: 20,
+        paddingHorizontal: 20,
+    },
+    introText: {
+        fontSize: 16,
+        textAlign: 'center',
+        color: 'blue',
+    },
     buttonContainer: {
-        flex: 1,
         justifyContent: 'center',
         alignItems: 'center'
     }
