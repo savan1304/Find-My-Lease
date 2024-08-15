@@ -103,8 +103,8 @@ export default function PostListing({ navigation }) {
                     latLngFromGeocoder = json.results[0].geometry.location;
                     setFormData(prevFormData => ({
                         ...prevFormData,
-                        latitude: json.results[0].geometry.location.lat,
-                        longitude: json.results[0].geometry.location.lng
+                        latitude: Number(json.results[0].geometry.location.lat),
+                        longitude: Number(json.results[0].geometry.location.lng)
                     }));
                     console.log("location from Geocoder: ", latLngFromGeocoder);
                 })
@@ -238,7 +238,8 @@ export default function PostListing({ navigation }) {
     }, [images]);
 
     const renderImage = ({ item }) => (
-        <Image source={{ uri: item }} style={{ width: 250, height: 150, margin: 5 }} />
+        <Image source={{ uri: item.uri || item }}
+            style={{ width: 250, height: 150, margin: 5 }} />
     );
 
 
@@ -246,16 +247,14 @@ export default function PostListing({ navigation }) {
     return (
         <SafeAreaView style={appStyles.postListingContainer}>
 
-
-
-            {images.length > 0 ? (
+            {(images.length > 0 || formData.imageUris.length > 0) ? (
                 <View style={appStyles.postImageContainerAfterImageClicked}>
                     <ScrollView
                         style={[appStyles.scrollViewContainer, { height: 250 }]}
                         contentContainerStyle={appStyles.contentContainer}
                     >
                         <FlatList
-                            data={images.map(image => image.uri)} // Using images state for new listings
+                            data={images.length > 0 ? images : formData.imageUris}
                             renderItem={renderImage}
                             keyExtractor={(item, index) => index.toString()}
                             horizontal
@@ -287,7 +286,8 @@ export default function PostListing({ navigation }) {
                         <ImageManager imageUriHandler={imageUriHandler} />
                     </View>
                 </View>
-            )}
+            )
+            }
 
 
             <View style={appStyles.listingDetailsContainer}>
@@ -439,6 +439,6 @@ export default function PostListing({ navigation }) {
 
 
 
-        </SafeAreaView>
+        </SafeAreaView >
     );
 }
