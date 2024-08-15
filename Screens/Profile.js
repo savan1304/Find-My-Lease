@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Modal, TextInput, Button } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { auth, database } from '../Firebase/firebaseSetup'; 
 import { doc, getDoc } from 'firebase/firestore'; 
+import { editToDB } from '../Firebase/firestoreHelper'; 
 
 const Profile = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [name, setName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const user = auth.currentUser;
 
   useEffect(() => {
@@ -15,7 +19,10 @@ const Profile = ({ navigation }) => {
         const userDoc = await getDoc(userDocRef);
 
         if (userDoc.exists()) {
-          setUserData(userDoc.data());
+          const data = userDoc.data();
+          setUserData(data);
+          setName(data.name || '');
+          setPhoneNumber(data.phoneNumber || '');
         } else {
           console.log("No such document!");
         }
@@ -25,11 +32,23 @@ const Profile = ({ navigation }) => {
     fetchUserData();
   }, [user]);
 
+  const handleSave = async () => {
+    if (user) {
+      try {
+        await editToDB(user.uid, { name, phoneNumber }, 'User');
+        setUserData({ ...userData, name, phoneNumber });
+        setIsModalVisible(false);
+      } catch (error) {
+        console.error("Failed to update profile:", error);
+      }
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Profile</Text>
-        <TouchableOpacity style={styles.editButton} onPress={() => console.log('Edit Pressed')}>
+        <TouchableOpacity style={styles.editButton} onPress={() => setIsModalVisible(true)}>
           <Icon name="edit" size={24} color="#fff" />
         </TouchableOpacity>
       </View>
@@ -39,12 +58,14 @@ const Profile = ({ navigation }) => {
           <Text style={styles.info}>UID: {user.uid}</Text>
           <Text style={styles.info}>Name: {userData?.name || 'N/A'}</Text>
           <Text style={styles.info}>Contact Info: {user.email}</Text>
+          <Text style={styles.info}>Phone Number: {userData?.phoneNumber || 'N/A'}</Text>
         </>
       ) : (
         <>
           <Text style={styles.info}>UID: Temp UID</Text>
           <Text style={styles.info}>Name: Temp User</Text>
           <Text style={styles.info}>Contact Info: N/A</Text>
+          <Text style={styles.info}>Phone Number: N/A</Text>
         </>
       )}
 
@@ -60,6 +81,38 @@ const Profile = ({ navigation }) => {
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('PostListing')}>
         <Text style={styles.buttonText}>Post a listing</Text>
       </TouchableOpacity>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={() => {
+          setIsModalVisible(false);
+        }}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalTitle}>Edit Profile</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Name"
+              placeholderTextColor="gray"
+              value={name}
+              onChangeText={setName}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Phone Number"
+              placeholderTextColor="gray"
+              value={phoneNumber}
+              onChangeText={setPhoneNumber}
+              keyboardType="phone-pad"
+            />
+            <Button title="Save" onPress={handleSave} />
+            <Button title="Cancel" color="red" onPress={() => setIsModalVisible(false)} />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -100,5 +153,40 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontSize: 16,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalView: {
+    width: 300,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 20,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 15,
+  },
+  input: {
+    width: '100%',
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 15,
   },
 });
