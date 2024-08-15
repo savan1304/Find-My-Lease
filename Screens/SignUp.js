@@ -10,9 +10,14 @@ import { collection, doc, setDoc } from 'firebase/firestore';
 export default function SignUp({ navigation }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('');
 
+    function isPasswordValid(password) {
+        const hasNumber = /\d/; // Regular expression to check if the password contains a number
+        const hasLetter = /[a-zA-Z]/; // Regular expression to check if the password contains a letter
 
+        return hasNumber.test(password) && hasLetter.test(password);
+    }
 
     async function loginHandler() {
         navigation.replace("Login")
@@ -24,17 +29,23 @@ export default function SignUp({ navigation }) {
         let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
 
         if (email.length === 0 || password.length === 0) {
-            Alert.alert("Email or password cannot be empty")
-            return
+            Alert.alert("Email or password cannot be empty");
+            return;
         } else if (reg.test(email) === false) {
             Alert.alert("Please enter a valid email address");
-            return
+            return;
+        } else if (!isPasswordValid(password)) {
+            Alert.alert("Password is too simple, it must contain both numbers and letters");
+            return;
+        } else if (password !== confirmPassword) {
+            Alert.alert("Passwords do not match");
+            return;
         }
 
         try {
             console.log("Auth in signup page before calling firebase fn:", auth)
-            const userCred = await createUserWithEmailAndPassword(auth, email, password)
-            console.log(userCred)
+            const userCred = await createUserWithEmailAndPassword(auth, email, password);
+            console.log(userCred);
             const user = userCred.user;
 
             const usersCollectionRef = collection(database, 'User');
@@ -45,11 +56,9 @@ export default function SignUp({ navigation }) {
             console.log("User created and data saved to Firestore!");
             navigation.replace('HomeMain');
         } catch (err) {
-            console.log("SIGN UP ", err)
+            console.log("SIGN UP ", err);
         }
     }
-
-
 
     return (
         <SafeAreaView style={appStyles.loginSignUpContainer}>
@@ -63,7 +72,7 @@ export default function SignUp({ navigation }) {
                             autoCorrect={false}
                             autoCapitalize="none"
                             onChangeText={(email) => {
-                                setEmail(email)
+                                setEmail(email);
                             }}
                         />
                     </View>
@@ -77,8 +86,9 @@ export default function SignUp({ navigation }) {
                             value={password}
                             autoCorrect={false}
                             autoCapitalize="none"
+                            secureTextEntry={true}
                             onChangeText={(password) => {
-                                setPassword(password)
+                                setPassword(password);
                             }}
                         />
                     </View>
@@ -94,19 +104,19 @@ export default function SignUp({ navigation }) {
                             autoCapitalize="none"
                             secureTextEntry={true}
                             onChangeText={(confirmPassword) => {
-                                setConfirmPassword(confirmPassword)
+                                setConfirmPassword(confirmPassword);
                             }}
                         />
                     </View>
                 </View>
             </View>
             <View style={styles.buttonContainer}>
-            <PressableItem onPress={signupHandler} style={[appStyles.buttonStyle, appStyles.cancelButton]} >
-                <Text style={appStyles.text}>Register</Text>
-            </PressableItem>
-            <PressableItem onPress={loginHandler} style={[appStyles.buttonStyle, appStyles.saveButton]} >
-                <Text style={appStyles.text}>Already Registered? Login</Text>
-            </PressableItem>
+                <PressableItem onPress={signupHandler} style={[appStyles.buttonStyle, appStyles.cancelButton]} >
+                    <Text style={appStyles.text}>Register</Text>
+                </PressableItem>
+                <PressableItem onPress={loginHandler} style={[appStyles.buttonStyle, appStyles.saveButton]} >
+                    <Text style={appStyles.text}>Already Registered? Login</Text>
+                </PressableItem>
             </View>
         </SafeAreaView>
 
