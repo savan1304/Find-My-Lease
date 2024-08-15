@@ -69,8 +69,8 @@ export default function MapHolder({ navigation, houses }) {
               <Marker
                 key={index}
                 coordinate={{
-                  latitude: house.latitude,
-                  longitude: house.longitude
+                  latitude: Number(house.latitude),
+                  longitude: Number(house.longitude)
                 }}
                 title={`C$${house.price}`}
                 image={require('../assets/house_location.png')}
