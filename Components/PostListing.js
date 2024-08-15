@@ -102,8 +102,8 @@ export default function PostListing({ navigation }) {
                     latLngFromGeocoder = json.results[0].geometry.location;
                     setFormData(prevFormData => ({
                         ...prevFormData,
-                        latitude: json.results[0].geometry.location.lat,
-                        longitude: json.results[0].geometry.location.lng
+                        latitude: Number(json.results[0].geometry.location.lat),
+                        longitude: Number(json.results[0].geometry.location.lng)
                     }));
                     console.log("location from Geocoder: ", latLngFromGeocoder);
                 })
