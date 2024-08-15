@@ -49,7 +49,10 @@ const Profile = ({ navigation }) => {
     if (user) {
       navigation.navigate(screen);
     } else {
-      Alert.alert("Access Denied", "You need to log in to access this feature.");
+      Alert.alert('Login Required', 'You need to be logged in to perform this action.', [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Login', onPress: () => navigation.navigate('Login') }
+      ]);
     }
   };
 
