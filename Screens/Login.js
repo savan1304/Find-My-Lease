@@ -29,7 +29,7 @@ export default function Login({ navigation }) {
             const userCred = await signInWithEmailAndPassword(auth, email, password);
             console.log("Login successful: ", userCred);
             setIsLoading(false);
-            navigation.replace('HomeMain');
+            navigation.navigate('HomeMain');
         } catch (err) {
             setIsLoading(false);
             Alert.alert('Login Error', err.message);
