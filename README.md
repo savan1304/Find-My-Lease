@@ -13,7 +13,7 @@ _Current state (or functionalities) of the application:_
     External API: In HouseDetails screen, using an external API to show walking/ biking/ transit score of the location of the listing.
 
 
-==> Apart from the listed features from the requirements for iteration-2, currently Login-SignUp validation and 'Forgot password' functionalities are implemented. However, there are some functionalities related to reading data by user id is pending, therefore 'Authentication' is not completed for iteration-2.
+==> Apart from the listed features from the requirements for iteration-2, currently Login-SignUp validation and 'Forgot password' functionalities are implemented. However, some functionalities related to reading data by user id are pending, therefore 'Authentication' is not completed for iteration-2.
 
 
 ==> Current high-level data model:
@@ -39,24 +39,24 @@ _Current state (or functionalities) of the application:_
 
  
 ==> The listed above is an addition to iteration-1. Therefore all the functionalities from iteration-1 are included.
-
+<br>
 
 **_Zhecheng Li's work in Iteration-2:_**
-
+<br>
 ![Capture_Iteration2_0](https://github.com/user-attachments/assets/202abccc-ec03-4d2c-9c47-c6a119f4b41c)
 ![Capture_Iteration2_1](https://github.com/user-attachments/assets/e7c5f9e4-0ce2-45be-bde9-2197b5ef8855)
 ![Capture_Iteration2_2](https://github.com/user-attachments/assets/9019d5ca-2f20-45c7-aa75-902895857af3)
 
 Updated the login and sign-up screen with a description. User can use forget password button to reset their password. 
-
+<br>
 ![Capture_Iteration2_5](https://github.com/user-attachments/assets/da5d9693-2912-434b-848c-5dd0707258c6)
-
+<br>
 In sign up screen, user cannot create too simple password(must contain number+letter)
-
+<br>
 ![Capture_Iteration2_3](https://github.com/user-attachments/assets/b066c846-af8f-42ec-9a0c-6d90ec3b95f3)
-
+<br>
 On the detailed page, the user can view the details with external API to show the walking score, biking score, and transit score. 
-
+<br>
 ![Capture_Iteration2_4](https://github.com/user-attachments/assets/c5e9710f-2859-42c1-943d-bb0a9a25713d)
 
 Create the notification 1 day before the user's schedule (local notification)
@@ -65,35 +65,36 @@ Create the notification 1 day before the user's schedule (local notification)
 <br>
 
 **_Savan Parmar - Iteration-2:_**
+<br>
 Asking user's permission for Location through a click on the Map area in the Home screen:
 ![Location_Permission](https://github.com/user-attachments/assets/7cd16bd5-fefc-44d2-b29f-f6f0344b273e)
 
-
+<br>
 When Permission is given, an interactive Map with locations of available listings are displayed with multiple markers and custom icon (along with the user's location):
 ![Map_all_mutliple](https://github.com/user-attachments/assets/f54a3eba-92aa-415f-b8bb-c0915be4797d)
 
-
+<br>
 Zoomed in (interactive) screen of an area:
 ![Map_multiple](https://github.com/user-attachments/assets/40ec19e0-91b1-4964-b1f4-3d9a000c491e)
 
-
+<br>
 Listing price as titles of their markers on the map (clcking on marker takes the user to HouseDetail of the clicked listing):
 ![Map_Listing_Title](https://github.com/user-attachments/assets/6623d8f9-19e1-48a8-adbd-ed449dca399f)
 ![Map_marker_title](https://github.com/user-attachments/assets/fb2eb05b-b025-435b-8851-f9daf176b452)
 
-
+<br>
 Displaying images as user takes/upload photos while posting a new listing:
 ![PostListing_Create](https://github.com/user-attachments/assets/39ec974e-e095-48a2-afe9-23a09d8296df)
 
-
+<br>
 Displaying existing images of the listing (with options to take/uplaod additional images) while editing a listed posted by user
 ![PostListing_Edit](https://github.com/user-attachments/assets/53e419d5-834b-49ff-99bb-f8c07cc38b51)
 
-
+<br>
 Displaying existing images of the listing while scheduling a new visit:
 ![ScheduleVisit_Create](https://github.com/user-attachments/assets/4d6e2263-abc9-430a-84c2-b370af10e6bf)
 
-
+<br>
 Displaying existing images of the listing while editing a scheduled visit:
 ![Schedule_Visit_Edit](https://github.com/user-attachments/assets/2f1e301f-1e31-4deb-838b-870b2f51e570)
 
@@ -102,7 +103,10 @@ Displaying existing images of the listing while editing a scheduled visit:
 <br>
 <br>
 <br>
-
+<br>
+<br>
+<br>
+<br>
 
 **Iteration-1:**
 
