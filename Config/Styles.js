@@ -58,6 +58,7 @@ export const appStyles = StyleSheet.create({
     flexDirection: 'row',
     marginHorizontal: 15,
     justifyContent: "space-evenly",
+    height: 90
   },
   text: {
     color: Colors.background
@@ -69,7 +70,6 @@ export const appStyles = StyleSheet.create({
   buttonStyleForVisit: {
     width: '100%',
     alignItems: 'center',
-    margin: 10
   },
   saveButton: {
     backgroundColor: Colors.themeColor
@@ -190,6 +190,17 @@ export const appStyles = StyleSheet.create({
     borderRadius: 5,
     width: '90%',
   },
+  postImageContainerAfterImageClicked: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // flexDirection: 'row',
+    margin: 10,
+    padding: 20,
+    // borderWidth: 1,
+    borderRadius: 5,
+    width: '90%',
+  },
   imageOptionsContainer: {
     paddingVertical: 5,
     flexDirection: 'row',
@@ -249,7 +260,6 @@ export const appStyles = StyleSheet.create({
   },
   buttonContainerForVisit: {
     flex: 1,                    // Take up all available space
-    marginBottom: 5,
     marginHorizontal: 35,
   },
   editDeleteButtonStyle: {
@@ -311,7 +321,7 @@ export const appStyles = StyleSheet.create({
   },
   contentContainer: {
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
 
 })
