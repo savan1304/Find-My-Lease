@@ -48,6 +48,8 @@ export default function ScheduledVisits({ navigation }) {
 
     async function handleEditVisit(visitToBeEditedID) {
         console.log("Inside handleEditVisit")
+        let visitData = {}
+        let listingData = {}
         try {
             const userDocRef = doc(database, "User", user.uid);
             const visitSubcollectionRef = collection(userDocRef, "ScheduledVisits");
@@ -55,11 +57,22 @@ export default function ScheduledVisits({ navigation }) {
             const docSnap = await getDoc(visitDocRef);
 
             if (docSnap.exists()) {
-                const visitData = docSnap.data();
+                visitData = docSnap.data();
                 console.log("inside if block with visitData: ", visitData)
                 visitData.id = visitToBeEditedID
                 console.log("visitData before navigating to ScheduleVisit page: ", visitData)
-                navigation.navigate('ScheduleVisit', { visitData: visitData });
+
+                const listingDocRef = doc(database, 'Listing', visitData.listingId);
+                const listingDocSnap = await getDoc(listingDocRef);
+                console.log("response from getDoc for listingData: ", listingDocSnap)
+
+                if (listingDocSnap.exists()) {
+                    listingData = listingDocSnap.data();
+                    console.log("listingData from listingDocSnap: ", listingDocSnap)
+                }
+                console.log("listingData before navigating to ScheduleVisit page: ", listingData)
+
+                navigation.navigate('ScheduleVisit', { visitData, listingData });
             }
 
         } catch (error) {

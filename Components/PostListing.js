@@ -1,5 +1,5 @@
 import { View, Text, TextInput, SafeAreaView, ScrollView, Image, FlatList } from 'react-native'
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import ImageManager from './ImageManager';
 import { appStyles } from '../Config/Styles';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -47,6 +47,7 @@ export default function PostListing({ navigation }) {
     const [enteredLocation, setEnteredLocation] = useState('')
     Geocoder.init(mapsApiKeyE)
     let fetchedImageUrls = []
+    const flatListRef = useRef(null);
 
 
     useEffect(() => {
@@ -136,7 +137,11 @@ export default function PostListing({ navigation }) {
 
     async function imageUriHandler(newImageUris) {
         console.log("inside imageUriHandler: ", newImageUris);
-        setImages(prevImages => [...prevImages, ...newImageUris.map(uri => ({ uri }))]); // Updating the images state
+        setImages(prevImages => [...prevImages, ...newImageUris.map(uri => ({ uri }))]);
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            imageUris: [...prevFormData.imageUris, ...newImageUris],
+        }));
     }
 
     async function handleDataChange(field, newValue) {
@@ -243,20 +248,38 @@ export default function PostListing({ navigation }) {
 
 
 
-            {formData.imageUris.length > 0 ? (
-                <ScrollView style={appStyles.scrollViewContainer} contentContainerStyle={appStyles.contentContainer}>
-                    <FlatList
-                        data={formData.imageUris}
-                        renderItem={renderImage}
-                        keyExtractor={(item, index) => index.toString()}
-                        horizontal
-                        style={appStyles.imageList}
-                        showsHorizontalScrollIndicator={true}
-                    />
-                </ScrollView>
+            {images.length > 0 ? (
+                <View style={appStyles.postImageContainerAfterImageClicked}>
+                    <ScrollView
+                        style={[appStyles.scrollViewContainer, { height: 250 }]}
+                        contentContainerStyle={appStyles.contentContainer}
+                    >
+                        <FlatList
+                            data={images.map(image => image.uri)} // Using images state for new listings
+                            renderItem={renderImage}
+                            keyExtractor={(item, index) => index.toString()}
+                            horizontal
+                            ref={flatListRef}
+                            onContentSizeChange={(width, height) => {
+                                flatListRef.current?.setNativeProps({
+                                    style: { height },
+                                });
+                            }}
+                            style={appStyles.imageList}
+                            showsHorizontalScrollIndicator={true}
+                        />
+                    </ScrollView>
+
+                    {/* Option to add more images */}
+                    <View style={appStyles.imageOptionsContainer}>
+                        <PressableItem onPress={pickImage}>
+                            <Text style={appStyles.text}>Upload Images</Text>
+                        </PressableItem>
+                        <ImageManager imageUriHandler={imageUriHandler} />
+                    </View>
+                </View>
             ) : (
                 <View style={appStyles.postImageContainer} >
-
                     <View style={appStyles.imageOptionsContainer}>
                         <PressableItem onPress={pickImage}>
                             <Text style={appStyles.text}>Upload Images</Text>
