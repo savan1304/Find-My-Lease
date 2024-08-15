@@ -1,10 +1,29 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { auth } from '../Firebase/firebaseSetup';
+import { auth, database } from '../Firebase/firebaseSetup'; 
+import { doc, getDoc } from 'firebase/firestore'; 
 
 const Profile = ({ navigation }) => {
+  const [userData, setUserData] = useState(null);
   const user = auth.currentUser;
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (user) {
+        const userDocRef = doc(database, 'User', user.uid);
+        const userDoc = await getDoc(userDocRef);
+
+        if (userDoc.exists()) {
+          setUserData(userDoc.data());
+        } else {
+          console.log("No such document!");
+        }
+      }
+    };
+
+    fetchUserData();
+  }, [user]);
 
   return (
     <View style={styles.container}>
@@ -17,13 +36,15 @@ const Profile = ({ navigation }) => {
 
       {user ? (
         <>
-          <Text style={styles.info}>Name: </Text>
+          <Text style={styles.info}>UID: {user.uid}</Text>
+          <Text style={styles.info}>Name: {userData?.name || 'N/A'}</Text>
           <Text style={styles.info}>Contact Info: {user.email}</Text>
         </>
       ) : (
         <>
-          <Text style={styles.info}>Name: </Text>
-          <Text style={styles.info}>Contact Info:</Text>
+          <Text style={styles.info}>UID: Temp UID</Text>
+          <Text style={styles.info}>Name: Temp User</Text>
+          <Text style={styles.info}>Contact Info: N/A</Text>
         </>
       )}
 
