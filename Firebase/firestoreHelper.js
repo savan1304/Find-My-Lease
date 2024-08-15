@@ -3,18 +3,6 @@ import { database } from "./firebaseSetup";
 
 export async function writeToDB(data, collectionName) {
     try {
-        // Check if the document already exists in the collection
-        const q = query(
-            collection(database, collectionName),
-            where("id", "==", data.id)
-        );
-
-        const querySnapshot = await getDocs(q);
-        if (!querySnapshot.empty) {
-            console.log("Document already exists in the collection.");
-            return; 
-        }
-
         const docRef = await addDoc(collection(database, collectionName), data);
         console.log(`Document written with ID: ${docRef.id}`);
     } catch (error) {
@@ -63,4 +51,5 @@ export async function editToDB(id, data, collectionName) {
     } catch (error) {
         console.log("Error in editing the document", error);
     }
+
 }

@@ -1,20 +1,23 @@
-import { Text, View, TouchableOpacity, TextInput, Switch } from 'react-native'
+import { Text, View, TouchableOpacity, TextInput, Switch, Image, ScrollView, FlatList } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { appStyles } from '../Config/Styles';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import PressableItem from './PressableItem';
 import { auth, database } from '../Firebase/firebaseSetup';
-import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, doc, getDoc } from 'firebase/firestore';
 import { useRoute } from '@react-navigation/native';
 import { Colors } from '../Config/Colors';
 import { scheduleNotification, requestNotificationPermissions } from '../Components/NotificationManager';
+import { getDownloadURL, ref } from 'firebase/storage';
+import { storage } from '../Firebase/firebaseSetup';
 
 export default function ScheduleVisit({ navigation }) {
 
     const route = useRoute();
     const user = auth.currentUser;
-    const { visitData = {} } = route.params || {};
+    const { visitData = {}, listingData = {} } = route.params || {};
     console.log("received visitData in ScheduleVisit: ", visitData)
+    console.log("received listingData in ScheduleVisit: ", listingData)
     let listing = {};
     if (Object.keys(visitData).length === 0) {
         listing = route.params.house;
@@ -32,19 +35,61 @@ export default function ScheduleVisit({ navigation }) {
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showTimePicker, setShowTimePicker] = useState(false);
 
+    const [imageUrls, setImageUrls] = useState([]); // Storing fetched image URLs
+
+
+    useEffect(() => {
+
+    }, [route]);
+
     useEffect(() => {
         // Updating visit whenever visitData from route params changes
-        setVisit({
-            listingId: visitData?.listingId || listing.id,
-            listingLocation: visitData?.listingLocation || listing.location,
-            listingPrice: visitData?.listingPrice || listing.price,
-            date: visitData?.date ? new Date(visitData.date.seconds * 1000) : new Date(),
-            time: visitData?.time ? new Date(visitData.time.seconds * 1000) : new Date(),
-            questions: visitData?.questions || '',
-            setReminder: visitData?.setReminder || false,
-        });
+
+        async function populateData() {
+            setVisit({
+                listingId: visitData?.listingId || listing.id,
+                listingLocation: visitData?.listingLocation || listing.location,
+                listingPrice: visitData?.listingPrice || listing.price,
+                date: visitData?.date ? new Date(visitData.date.seconds * 1000) : new Date(),
+                time: visitData?.time ? new Date(visitData.time.seconds * 1000) : new Date(),
+                questions: visitData?.questions || '',
+                setReminder: visitData?.setReminder || false,
+            });
+
+            await fetchImageUrls()
+
+            console.log("fetchedImageUrls at the end of useEffect: ", imageUrls)
+        }
+
+        populateData()
 
     }, [route]); // Adding route as a dependency
+
+
+    async function fetchImageUrls() {
+        console.log("entered fetchImageUrls function with listingData: ", listing)
+        try {
+
+            let data = {}
+            if (listing && listing.imageUris && listing.imageUris.length > 0) {
+                data = listing
+            } else if (listingData && listingData.imageUris && listingData.imageUris.length > 0) {
+                data = listingData
+            }
+
+            const urls = await Promise.all(
+                data.imageUris.map(imageUri =>
+                    getDownloadURL(ref(storage, imageUri))
+                )
+            );
+            setImageUrls(urls);
+
+            console.log("Fetched image URLs:", imageUrls);
+        } catch (error) {
+            console.error("Error fetching image URLs:", error);
+        }
+
+    }
 
     function reset() {
         setVisit({
@@ -90,7 +135,7 @@ export default function ScheduleVisit({ navigation }) {
                     selectedTime.getMinutes(),
                     selectedTime.getSeconds()
                 ),
-                time: selectedTime // It can be helpful to separately store the time if needed elsewhere
+                time: selectedTime // separately storing the time if needed elsewhere
             }));
             console.log("Time updated to:", selectedTime.toLocaleTimeString());
         }
@@ -133,7 +178,9 @@ export default function ScheduleVisit({ navigation }) {
         }
     }
 
-
+    const renderImage = ({ item }) => (
+        <Image source={{ uri: item }} style={{ width: 250, height: 150, margin: 5 }} />
+    );
 
     console.log("inside ScheduleVisit with listing: ", listing)
     return (
@@ -146,6 +193,22 @@ export default function ScheduleVisit({ navigation }) {
                     <Text style={[appStyles.title, { color: Colors.shadowColor }]}>C$ {visit.listingPrice}/mo</Text>
                 </View>
             </View>
+
+            {imageUrls.length > 0 ? (
+                <ScrollView style={appStyles.scrollViewContainer} contentContainerStyle={appStyles.contentContainer}>
+                    <FlatList
+                        data={imageUrls}
+                        renderItem={renderImage}
+                        keyExtractor={(item, index) => index.toString()}
+                        horizontal
+                        style={appStyles.imageList}
+                        showsHorizontalScrollIndicator={true}
+                    />
+                </ScrollView>
+            ) : (
+                <>
+                </>
+            )}
 
 
             <View style={appStyles.addItemContainer}>
@@ -184,12 +247,12 @@ export default function ScheduleVisit({ navigation }) {
 
             <View style={appStyles.addItemContainer}>
                 <Text style={appStyles.addTitles}>Questions</Text>
-                <View style={[appStyles.addInput, { height: 100, paddingLeft: 10, width: '70%' }]}
+                <View style={[appStyles.addInput, { height: 100, width: '70%' }]}
                 >
                     <TextInput
                         style={appStyles.addTitles}
                         multiline
-                        placeholder="Any questions for the landlord?"
+                        placeholder={"Any questions for the \nlandlord?"}
                         value={visit.questions}
                         onChangeText={text => setVisit(prevVisit => ({ ...prevVisit, questions: text }))}
                     />
@@ -216,7 +279,7 @@ export default function ScheduleVisit({ navigation }) {
 
             <View style={appStyles.buttonsView}>
                 <View style={appStyles.buttonContainer}>
-                    <View style={appStyles.saveAndCancelButtonContainer}>
+                    <View style={appStyles.saveAndCancelButtonContainerForVisit}>
                         <PressableItem onPress={handleCancel} style={[appStyles.buttonStyle, appStyles.cancelButton]} >
                             <Text style={appStyles.text}>Cancel</Text>
                         </PressableItem>

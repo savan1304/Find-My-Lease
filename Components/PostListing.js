@@ -1,5 +1,5 @@
-import { View, Text, TextInput, SafeAreaView } from 'react-native'
-import React, { useEffect, useState } from 'react';
+import { View, Text, TextInput, SafeAreaView, ScrollView, Image, FlatList } from 'react-native'
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import ImageManager from './ImageManager';
 import { appStyles } from '../Config/Styles';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -14,6 +14,7 @@ import { doc, updateDoc } from 'firebase/firestore';
 import { useRoute } from '@react-navigation/native';
 import { mapsApiKeyE } from '@env'
 import Geocoder from 'react-native-geocoding';
+import { getDownloadURL } from 'firebase/storage';
 
 export default function PostListing({ navigation }) {
 
@@ -34,11 +35,10 @@ export default function PostListing({ navigation }) {
         type: '',
         year: '',
         tenantGender: '',
-        imageUri: '',
+        imageUris: [],
     });
-    const [imageUri, setImageUri] = useState('')
     const [open, setOpen] = useState(false);
-    const [type, setType] = useState(''); // Default value
+    const [type, setType] = useState('');
 
     const [types, setTypes] = useState([
         { label: 'Shared', value: 'Shared' },
@@ -46,27 +46,53 @@ export default function PostListing({ navigation }) {
     ]);
     const [enteredLocation, setEnteredLocation] = useState('')
     Geocoder.init(mapsApiKeyE)
+    let fetchedImageUrls = []
+    const flatListRef = useRef(null);
 
 
     useEffect(() => {
         // Updating formData whenever listingData from route params changes
-        setFormData({
-            price: listingData?.price || '',
-            location: listingData?.location || '',
-            latitude: listingData?.latitude || '',
-            longitude: listingData?.longitude || '',
-            bed: listingData?.bed || '',
-            bath: listingData?.bath || '',
-            area: listingData?.area || '',
-            petFriendly: listingData?.petFriendly || false,
-            transit: listingData?.transit || '',
-            type: listingData?.type || '',
-            year: listingData?.year || '',
-            tenantGender: listingData?.tenantGender || '',
-            imageUri: listingData?.imageUri || '',
-        });
-
+        async function populateData() {
+            const fetchedImageUrls = await fetchImageUrls()
+            setFormData({
+                price: listingData?.price || '',
+                location: listingData?.location || '',
+                latitude: listingData?.latitude || '',
+                longitude: listingData?.longitude || '',
+                bed: listingData?.bed || '',
+                bath: listingData?.bath || '',
+                area: listingData?.area || '',
+                petFriendly: listingData?.petFriendly || false,
+                transit: listingData?.transit || '',
+                type: listingData?.type || '',
+                year: listingData?.year || '',
+                tenantGender: listingData?.tenantGender || '',
+                imageUris: fetchedImageUrls
+            });
+        }
+        populateData()
     }, [route]); // Adding route as a dependency
+
+
+    console.log("form data after use effect: ", formData)
+
+    async function fetchImageUrls() {
+        console.log("entered fetchImageUrls function with listingData: ", listingData)
+        if (listingData && listingData.imageUris && listingData.imageUris.length > 0) {
+            try {
+                fetchedImageUrls = await Promise.all(
+                    listingData.imageUris.map(imageUri =>
+                        getDownloadURL(ref(storage, imageUri))
+                    )
+                );
+                console.log("Fetched image URLs:", fetchedImageUrls);
+                return fetchedImageUrls
+            } catch (error) {
+                console.error("Error fetching image URLs:", error);
+            }
+        }
+        return []
+    }
 
     useEffect(() => {
         console.log("enteredLocation inside useEffect: ", enteredLocation)
@@ -77,8 +103,8 @@ export default function PostListing({ navigation }) {
                     latLngFromGeocoder = json.results[0].geometry.location;
                     setFormData(prevFormData => ({
                         ...prevFormData,
-                        latitude: json.results[0].geometry.location.lat,
-                        longitude: json.results[0].geometry.location.lng
+                        latitude: Number(json.results[0].geometry.location.lat),
+                        longitude: Number(json.results[0].geometry.location.lng)
                     }));
                     console.log("location from Geocoder: ", latLngFromGeocoder);
                 })
@@ -86,6 +112,8 @@ export default function PostListing({ navigation }) {
         }
         console.log("formData after setting lat and lng: ", formData)
     }, [enteredLocation])
+
+
 
 
     function reset() {
@@ -102,17 +130,22 @@ export default function PostListing({ navigation }) {
             type: '',
             year: '',
             tenantGender: '',
-            imageUri: '',
+            imageUris: [],
         });
 
     }
 
-    async function imageUriHandler(imageUri) {
-        console.log("inside imageUriHandler: ", imageUri)
-        setImageUri(imageUri)
+    async function imageUriHandler(newImageUris) {
+        console.log("inside imageUriHandler: ", newImageUris);
+        setImages(prevImages => [...prevImages, ...newImageUris.map(uri => ({ uri }))]);
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            imageUris: [...prevFormData.imageUris, ...newImageUris],
+        }));
     }
 
-    function handleDataChange(field, newValue) {
+    async function handleDataChange(field, newValue) {
+
         setFormData(prevFormData => ({
             ...prevFormData,
             [field]: newValue,
@@ -150,16 +183,16 @@ export default function PostListing({ navigation }) {
 
 
 
-    async function retrieveAndUploadImage(uri) {
-        console.log("inside retrieveAndUploadImage uri: ", uri)
+    async function retrieveAndUploadImage(imageUri) {
+        console.log("inside retrieveAndUploadImage uri: ", imageUri)
         try {
-            const response = await fetch(uri);
+            const response = await fetch(imageUri);
             if (!response.ok) {
                 throw new Error("The request was not successful")
             }
             const blob = await response.blob();
             console.log("inside retrieveAndUploadImage blob:", blob)
-            const imageName = uri.substring(uri.lastIndexOf('/') + 1);
+            const imageName = imageUri.substring(imageUri.lastIndexOf('/') + 1);
             console.log("inside retrieveAndUploadImage imageName:", imageName)
             const imageRef = ref(storage, `images/${imageName}`)
             const uploadResult = await uploadBytesResumable(imageRef, blob);
@@ -169,43 +202,92 @@ export default function PostListing({ navigation }) {
         }
     }
 
-    async function handleSave() {
-        try {
-            // const listingData = {
-            //     ...formData,
-            //     imageUri: "", // Store image URIs
-            // };
-            console.log("inside handleSave: ", listingData)
-            if (listingData.id) {
-                console.log("updating existing listing with new data: ", formData)
-                const listingRef = doc(database, 'Listing', listingData.id);
-                console.log(listingRef)
-                await updateDoc(listingRef, formData);
-                navigation.navigate('PostedListings')
-            } else {
-                console.log("creating new listing", listingData)
-                await writeToDB(formData, 'Listing');
-                navigation.goBack();
-            }
-            reset()
-        } catch (error) {
-            console.error('Error saving listing:', error);
+    const handleSave = useCallback(async () => {
+
+        let imageUrls = [];
+        for (const image of images) {
+            const imageUrl = await retrieveAndUploadImage(image.uri); // Accessing the 'uri' property
+            imageUrls.push(imageUrl);
         }
-    };
+
+        const listingDataToSave = {
+            ...formData,
+            imageUris: imageUrls, // Storing an array of image URLs
+        };
+
+        console.log("inside handleSave: ", listingDataToSave)
+        if (listingData.id) {
+            console.log("updating existing listing with new data: ", formData)
+            const listingRef = doc(database, 'Listing', listingData.id);
+            console.log(listingRef)
+            await updateDoc(listingRef, listingDataToSave);
+            navigation.navigate('PostedListings')
+        } else {
+            console.log("creating new listing with: ", listingDataToSave)
+            await writeToDB(listingDataToSave, 'Listing');
+            navigation.goBack();
+        }
+        reset()
+
+    }, [images, formData]); // Including dependencies that should trigger a re-render
+
+    useEffect(() => {
+        if (images.length > 0) {
+            console.log("images inside useEffect: ", images);
+        }
+    }, [images]);
+
+    const renderImage = ({ item }) => (
+        <Image source={{ uri: item.uri || item }}
+            style={{ width: 250, height: 150, margin: 5 }} />
+    );
+
+
 
     return (
         <SafeAreaView style={appStyles.postListingContainer}>
 
+            {(images.length > 0 || formData.imageUris.length > 0) ? (
+                <View style={appStyles.postImageContainerAfterImageClicked}>
+                    <ScrollView
+                        style={[appStyles.scrollViewContainer, { height: 250 }]}
+                        contentContainerStyle={appStyles.contentContainer}
+                    >
+                        <FlatList
+                            data={images.length > 0 ? images : formData.imageUris}
+                            renderItem={renderImage}
+                            keyExtractor={(item, index) => index.toString()}
+                            horizontal
+                            ref={flatListRef}
+                            onContentSizeChange={(width, height) => {
+                                flatListRef.current?.setNativeProps({
+                                    style: { height },
+                                });
+                            }}
+                            style={appStyles.imageList}
+                            showsHorizontalScrollIndicator={true}
+                        />
+                    </ScrollView>
 
-
-            <View style={appStyles.postImageContainer} >
-                <View style={appStyles.imageOptionsContainer}>
-                    <PressableItem onPress={pickImage}>
-                        <Text style={appStyles.text}>Upload Images</Text>
-                    </PressableItem>
-                    <ImageManager imageUriHandler={imageUriHandler} />
+                    {/* Option to add more images */}
+                    <View style={appStyles.imageOptionsContainer}>
+                        <PressableItem onPress={pickImage}>
+                            <Text style={appStyles.text}>Upload Images</Text>
+                        </PressableItem>
+                        <ImageManager imageUriHandler={imageUriHandler} />
+                    </View>
                 </View>
-            </View>
+            ) : (
+                <View style={appStyles.postImageContainer} >
+                    <View style={appStyles.imageOptionsContainer}>
+                        <PressableItem onPress={pickImage}>
+                            <Text style={appStyles.text}>Upload Images</Text>
+                        </PressableItem>
+                        <ImageManager imageUriHandler={imageUriHandler} />
+                    </View>
+                </View>
+            )
+            }
 
 
             <View style={appStyles.listingDetailsContainer}>
@@ -357,16 +439,6 @@ export default function PostListing({ navigation }) {
 
 
 
-        </SafeAreaView>
+        </SafeAreaView >
     );
 }
-
-
-
-
-
-
-
-
-
-
