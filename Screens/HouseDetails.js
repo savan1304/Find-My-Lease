@@ -72,10 +72,6 @@ const HouseDetails = ({ route, navigation }) => {
         navigation.navigate('ScheduleVisit', { house });
     };
 
-    const handleSetPriceDropAlert = () => {
-        console.log('Set Price Drop Alert tapped');
-    };
-
     return (
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
             <FlatList
@@ -124,9 +120,6 @@ const HouseDetails = ({ route, navigation }) => {
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={handleScheduleViewing}>
                 <Text style={styles.buttonText}>Schedule Viewing</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={handleSetPriceDropAlert}>
-                <Text style={styles.buttonText}>Set Price Drop Alert</Text>
             </TouchableOpacity>
         </ScrollView>
     );
