@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc, getDocs } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, updateDoc, getDocs, query, where, setDoc  } from "firebase/firestore";
 import { database } from "./firebaseSetup";
 
 export async function writeToDB(data, collectionName) {
@@ -41,4 +41,15 @@ export async function createNewUser(email, password) {
     } catch (err) {
         console.log(err)
     }
+}
+
+export async function editToDB(id, data, collectionName) {
+    try {
+        const docRef = doc(database, collectionName, id);
+        await setDoc(docRef, data, { merge: true });
+        console.log(`Document with ID ${id} has been updated.`);
+    } catch (error) {
+        console.log("Error in editing the document", error);
+    }
+
 }
