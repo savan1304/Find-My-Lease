@@ -31,16 +31,14 @@ export default function ScheduleVisit({ navigation }) {
         time: new Date(),
         questions: '',
         setReminder: false,
+        requester: user.uid
     });
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showTimePicker, setShowTimePicker] = useState(false);
 
     const [imageUrls, setImageUrls] = useState([]); // Storing fetched image URLs
+    const [listingDetails, setListingDetails] = useState({})
 
-
-    useEffect(() => {
-
-    }, [route]);
 
     useEffect(() => {
         // Updating visit whenever visitData from route params changes
@@ -54,6 +52,7 @@ export default function ScheduleVisit({ navigation }) {
                 time: visitData?.time ? new Date(visitData.time.seconds * 1000) : new Date(),
                 questions: visitData?.questions || '',
                 setReminder: visitData?.setReminder || false,
+                requester: user.uid
             });
 
             await fetchImageUrls()
@@ -66,6 +65,26 @@ export default function ScheduleVisit({ navigation }) {
     }, [route]); // Adding route as a dependency
 
 
+    useEffect(() => {
+        const listingID = listingData?.id || listing.id
+        async function getListingDetails() {
+            try {
+                const listingDocRef = doc(database, 'Listing', listingID);
+                const listingDocSnap = await getDoc(listingDocRef);
+                if (!listingDocSnap.exists()) {
+                    throw new Error("Listing not found");
+                }
+                const listingData = listingDocSnap.data();
+                console.log('getListingData listingData: ', listingData)
+                setListingDetails(listingData)
+            } catch (error) {
+                console.log('error in getListingData in useEffect: ', error)
+            }
+        }
+        getListingDetails()
+    }, [route])
+
+
     async function fetchImageUrls() {
         console.log("entered fetchImageUrls function with listingData: ", listing)
         try {
@@ -75,6 +94,8 @@ export default function ScheduleVisit({ navigation }) {
                 data = listing
             } else if (listingData && listingData.imageUris && listingData.imageUris.length > 0) {
                 data = listingData
+            } else {
+                return
             }
 
             const urls = await Promise.all(
@@ -153,15 +174,42 @@ export default function ScheduleVisit({ navigation }) {
             if (!user) {
                 throw new Error("User not authenticated");
             }
+
+            let visitID = ''
+            let updatedVisitRequests = []
             if (visitData.id) {
                 const userDocRef = doc(database, "User", user.uid);
                 const visitSubcollectionRef = collection(userDocRef, "ScheduledVisits");
                 const visitDocRef = doc(visitSubcollectionRef, visitData.id);
-                await updateDoc(visitDocRef, visit);
+                console.log("updating the visit with: ", visit)
+                await updateDoc(visitDocRef, visit);    // storing the changes in 'ScheduledVisits'
+                updatedVisitRequests = listingData.visitRequests.map(request => {   // For updating the changes in visitRequests in 'Listing'
+                    if (request.id === visitData.id) {
+                        return { ...request, ...visit }; // Merge updated data
+                    } else {
+                        return request;
+                    }
+                });
+
             } else {
                 const scheduledVisitsCollectionRef = collection(database, 'User', user.uid, 'ScheduledVisits');
-                await addDoc(scheduledVisitsCollectionRef, visit);
+                console.log("creating a visit with: ", visit)
+                const newVisitDocRef = await addDoc(scheduledVisitsCollectionRef, visit);   // creating a visit in 'ScheduledVisits'
+                visitID = newVisitDocRef.id
+                console.log('visitID from newVsitDocRef after adding visit in ScheduledVisits: ', visitID)
+                updatedVisitRequests = [                // For storing the visit in visitRequests in 'Listing'
+                    ...(listing.visitRequests || []),
+                    { ...visit, id: visitID }, // Include the visitId
+                ];
             }
+
+            const listingDocRef = doc(database, 'Listing', visit.listingId);
+            const listingDocSnap = await getDoc(listingDocRef);
+            if (!listingDocSnap.exists()) {
+                throw new Error("Listing not found");
+            }
+            await updateDoc(listingDocRef, { visitRequests: updatedVisitRequests });    // storing or updating visitRequests in 'Listing'
+
 
             // Schedule a notification if the reminder is set
             if (visit.setReminder) {

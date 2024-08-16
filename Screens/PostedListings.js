@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View, FlatList } from 'react-native'
+import { StyleSheet, Text, View, FlatList, Alert } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { deleteFromDB } from '../Firebase/firestoreHelper';
-import { collection, onSnapshot, query } from 'firebase/firestore';
-import { database } from '../Firebase/firebaseSetup';
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import { auth, database } from '../Firebase/firebaseSetup';
 import { doc, getDoc } from 'firebase/firestore';
 import PressableItem from '../Components/PressableItem';
 import { Colors } from '../Config/Colors';
@@ -12,11 +12,14 @@ import Icon from 'react-native-vector-icons/Ionicons';
 export default function PostedListings({ navigation }) {
 
   const [listings, setListings] = useState([])
+  const user = auth.currentUser
 
 
   useEffect(() => {
     const unsubscribe = onSnapshot(query(
-      collection(database, 'Listing')),
+      collection(database, 'Listing'),
+      where('createdBy', '==', user.uid)
+    ),
       (querySnapshot) => {
         let newArray = []
         if (!querySnapshot.empty) {
@@ -32,6 +35,7 @@ export default function PostedListings({ navigation }) {
     return () => unsubscribe()  // Detaching the listener when no longer listening to the changes in data
   }, [])
 
+  
   function handleDeleteListing(listingToBeDeletedID) {
     console.log("Inside handleDeleteListing")
     deleteFromDB(listingToBeDeletedID, 'Listing')
@@ -57,6 +61,17 @@ export default function PostedListings({ navigation }) {
 
   }
 
+  function handlePostiveVisitRequestCounterPress(visitRequest) {
+    console.log("visit request counter pressed with visitRequest: ", visitRequest)
+    navigation.navigate('VisitRequests', { visitRequest: visitRequest });
+  }
+
+  function handleZeroVisitRequestCounterPress() {
+    Alert.alert('No requests', 'There are no viewing requests for this listing yet.', [
+      { text: 'Ok', style: 'default' },
+    ]);
+  }
+
   return (
     <View>
 
@@ -73,6 +88,16 @@ export default function PostedListings({ navigation }) {
                     <Text style={styles.info}>Location: {item.location}</Text>
                     <Text style={styles.info}>Price: {item.price}</Text>
                     <Text style={styles.info}>Type: {item.type}</Text>
+                    {item.visitRequests ? (
+                      <PressableItem onPress={() => { handlePostiveVisitRequestCounterPress(item.visitRequests) }} style={[styles.editDeleteButtonStyle, { backgroundColor: Colors.shadowColor, marginHorizontal: 0, marginVertical: 5, width: '64%' }]} >
+                        <Text style={{ color: Colors.background }}>Viewing Requests: {item.visitRequests.length}</Text>
+                      </PressableItem>
+                    ) : (
+                      <PressableItem onPress={() => { handleZeroVisitRequestCounterPress() }} style={[styles.editDeleteButtonStyle, { backgroundColor: Colors.shadowColor, marginHorizontal: 0, marginVertical: 5, width: '64%' }]} >
+                        <Text style={{ color: Colors.background }}>Viewing Requests: 0</Text>
+                      </PressableItem>
+
+                    )}
                   </View>
 
                   <View style={styles.editDeleteButtonContainer}>
