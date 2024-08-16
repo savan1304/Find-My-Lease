@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, ScrollView, Alert } from 'react-native';
 import { writeToDB } from '../Firebase/firestoreHelper';
-import { auth } from '../Firebase/firebaseSetup';
 import { scoreApiKey } from '@env';  // Ensure your API key is stored securely
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-
+import { AuthContext } from '../Components/AuthContext';
 
 const HouseDetails = ({ route, navigation }) => {
     const { house } = route.params;
+    const { user } = useContext(AuthContext);  // Use AuthContext for user state
     const [locationScores, setLocationScores] = useState(null);
 
     const sampleImages = [
@@ -36,25 +36,37 @@ const HouseDetails = ({ route, navigation }) => {
         }
     };
 
+    const requireLogin = (action) => {
+        if (user) {
+            action();
+        } else {
+            Alert.alert('Login Required', 'You need to be logged in to perform this action.', [
+                { text: 'Cancel', style: 'cancel' },
+                { text: 'Login', onPress: () => navigation.navigate('Login') }
+            ]);
+        }
+    };
+
     const handleContact = () => {
         console.log('Contact tapped');
     };
 
     const confirmSave = () => {
-        Alert.alert(
-            'Save Listing',
-            'Are you sure you want to save this listing?',
-            [
-                { text: 'Cancel', style: 'cancel' },
-                { text: 'Save', onPress: handleSave }
-            ],
-            { cancelable: false }
-        );
+        requireLogin(() => {
+            Alert.alert(
+                'Save Listing',
+                'Are you sure you want to save this listing?',
+                [
+                    { text: 'Cancel', style: 'cancel' },
+                    { text: 'Save', onPress: handleSave }
+                ],
+                { cancelable: false }
+            );
+        });
     };
 
     const handleSave = async () => {
         try {
-            const user = auth.currentUser;
             if (user) {
                 const collectionPath = `User/${user.uid}/saved`;
                 await writeToDB(house, collectionPath);
@@ -68,12 +80,10 @@ const HouseDetails = ({ route, navigation }) => {
     };
 
     const handleScheduleViewing = () => {
-        console.log('Schedule Viewing tapped');
-        navigation.navigate('ScheduleVisit', { house });
-    };
-
-    const handleSetPriceDropAlert = () => {
-        console.log('Set Price Drop Alert tapped');
+        requireLogin(() => {
+            console.log('Schedule Viewing tapped');
+            navigation.navigate('ScheduleVisit', { house });
+        });
     };
 
     return (
@@ -116,7 +126,7 @@ const HouseDetails = ({ route, navigation }) => {
                     </View>
                 )}
             </View>
-            <TouchableOpacity style={styles.button} onPress={handleContact}>
+            <TouchableOpacity style={styles.button} onPress={() => requireLogin(handleContact)}>
                 <Text style={styles.buttonText}>Contact</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={confirmSave}>
@@ -124,9 +134,6 @@ const HouseDetails = ({ route, navigation }) => {
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={handleScheduleViewing}>
                 <Text style={styles.buttonText}>Schedule Viewing</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={handleSetPriceDropAlert}>
-                <Text style={styles.buttonText}>Set Price Drop Alert</Text>
             </TouchableOpacity>
         </ScrollView>
     );
@@ -140,11 +147,6 @@ const styles = StyleSheet.create({
     contentContainer: {
         padding: 20,
         paddingBottom: 100  
-    },
-    header: {
-        fontSize: 22,
-        fontWeight: 'bold',
-        marginBottom: 20
     },
     detailsContainer: {
         marginBottom: 20,

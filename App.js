@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import { View, TouchableOpacity, Text } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { auth } from './Firebase/firebaseSetup';
 import Home from './Screens/Home';
@@ -19,6 +19,7 @@ import ScheduledVisits from './Screens/ScheduledVisits';
 import Saved from './Screens/Saved';
 import * as Notifications from 'expo-notifications';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import { AuthProvider, AuthContext } from './Components/AuthContext';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -82,6 +83,22 @@ const Tabs = () => (
       }}
     />
     <Tab.Screen
+      name="Login"
+      component={Login}
+      options={{
+        headerShown: false,
+        tabBarButton: () => null,
+      }}
+    />
+    <Tab.Screen
+      name="Signup"
+      component={SignUp}
+      options={{
+        headerShown: false,
+        tabBarButton: () => null,
+      }}
+    />
+    <Tab.Screen
       name="PostListing"
       component={PostListing}
       options={{
@@ -108,60 +125,52 @@ const Tabs = () => (
   </Tab.Navigator>
 );
 
-const App = () => {
-  const [initializing, setInitializing] = useState(true);
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((newUser) => {
-      setUser(newUser);
-      if (initializing) setInitializing(false);
-    });
-    return unsubscribe;  // Cleanup subscription
-  }, []);
+const AppContent = () => {
+  const { user } = useContext(AuthContext); // Use AuthContext to track user status
 
   const handleLogout = async (navigation) => {
     try {
       await signOut(auth);
-      navigation.replace('Login');
+      navigation.navigate('Login');
     } catch (error) {
       console.error("Logout error: ", error);
     }
   };
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        {!user ? (
-          <>
-            <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="Signup" component={SignUp} />
-          </>
-        ) : (
-          <Stack.Screen
-            name="Root"
-            component={Tabs}
-            options={({ route, navigation }) => ({
-              headerRight: () => (
-                <View style={{ flexDirection: 'row', marginRight: 10 }}>
-                  <TouchableOpacity onPress={() => alert('Notifications')}>
-                    <Icon name="notifications-outline" size={25} style={{ marginRight: 20 }} />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => alert('Settings')}>
-                    <Icon name="settings-outline" size={25} style={{ marginRight: 20 }} />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => handleLogout(navigation)}>
-                    <Icon name="log-out-outline" size={25} />
-                  </TouchableOpacity>
-                </View>
-              ),
-              title: getFocusedRouteNameFromRoute(route) ?? "Home"
-            })}
-          />
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Root"
+        component={Tabs} 
+        options={({ route, navigation }) => ({
+          headerRight: () => (
+            <View style={{ flexDirection: 'row', marginRight: 10 }}>
+              <TouchableOpacity onPress={() => alert('Notifications')}>
+                <Icon name="notifications-outline" size={25} style={{ marginRight: 20 }} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => alert('Settings')}>
+                <Icon name="settings-outline" size={25} style={{ marginRight: 20 }} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => handleLogout(navigation)}>
+                <Icon name="log-out-outline" size={25} />
+              </TouchableOpacity>
+            </View>
+          ),
+          title: getFocusedRouteNameFromRoute(route) ?? "Home"
+        })}
+      />
+      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="Signup" component={SignUp} />
+    </Stack.Navigator>
   );
 };
+
+const App = () => (
+  <AuthProvider>
+    <NavigationContainer>
+      <AppContent />
+    </NavigationContainer>
+  </AuthProvider>
+);
 
 export default App;

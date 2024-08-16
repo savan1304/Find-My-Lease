@@ -29,7 +29,7 @@ export default function Login({ navigation }) {
             const userCred = await signInWithEmailAndPassword(auth, email, password);
             console.log("Login successful: ", userCred);
             setIsLoading(false);
-            navigation.replace('HomeMain');
+            navigation.navigate('HomeMain');
         } catch (err) {
             setIsLoading(false);
             Alert.alert('Login Error', err.message);
@@ -122,10 +122,10 @@ export default function Login({ navigation }) {
                 </Modal>
                 <View style={styles.buttonContainer}>
                 <PressableItem onPress={loginHandler} style={[appStyles.buttonStyle, appStyles.cancelButton]}>
-                    <Text style={appStyles.text}>Login</Text>
+                    <Text style={appStyles.text}>Log in</Text>
                 </PressableItem>
                 <PressableItem onPress={signupHandler} style={[appStyles.buttonStyle, appStyles.saveButton]}>
-                    <Text style={appStyles.text}>SignUp</Text>
+                    <Text style={appStyles.text}>Sign Up</Text>
                 </PressableItem>
                 <PressableItem onPress={() => setModalVisible(true)} style={[appStyles.buttonStyle, appStyles.saveButton]}>
                     <Text style={appStyles.text}>Forgot Password?</Text>
