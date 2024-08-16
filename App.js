@@ -6,7 +6,6 @@ import { View, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { auth } from './Firebase/firebaseSetup';
 import Home from './Screens/Home';
-import Message from './Screens/Message';
 import Profile from './Screens/Profile';
 import HouseDetails from './Screens/HouseDetails';
 import PostListing from './Components/PostListing';
@@ -43,7 +42,6 @@ const HomeStackScreen = () => (
 const ProfileStackScreen = () => (
   <MainStack.Navigator>
     <MainStack.Screen name="ProfileMain" component={Profile} options={{ headerShown: false }} />
-    <MainStack.Screen name="Saved" component={Saved} options={{ title: 'Saved Listings' }} />
     <MainStack.Screen name="HouseDetails" component={HouseDetails} options={{ title: 'House Details' }} />
     <MainStack.Screen name="ScheduledVisits" component={ScheduledVisits} options={{ title: 'Scheduled Visits' }} />
     <MainStack.Screen name="ScheduleVisit" component={ScheduleVisit} options={{ title: 'Schedule a Visit' }} />
@@ -63,11 +61,11 @@ const Tabs = () => (
       }}
     />
     <Tab.Screen
-      name="Message"
-      component={Message}
+      name="Saved"
+      component={Saved}
       options={{
         tabBarIcon: ({ color, size }) => (
-          <Icon name="chatbubble-outline" color={color} size={size} />
+          <Icon name="heart-outline" color={color} size={size} />
         ),
         headerShown: false
       }}
@@ -126,7 +124,7 @@ const Tabs = () => (
 );
 
 const AppContent = () => {
-  const { user } = useContext(AuthContext); // Use AuthContext to track user status
+  const { user } = useContext(AuthContext);
 
   const handleLogout = async (navigation) => {
     try {
