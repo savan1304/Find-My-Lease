@@ -7,8 +7,8 @@ import { Colors } from '../Config/Colors';
 import Checkbox from 'expo-checkbox';
 import * as ImagePicker from "expo-image-picker"
 import PressableItem from './PressableItem';
-import { writeToDB } from '../Firebase/firestoreHelper';
-import { storage, database } from '../Firebase/firebaseSetup';
+import { writeToDB } from '../Firebase/firestoreHelper';	
+import { storage, database, auth } from '../Firebase/firebaseSetup';
 import { ref, uploadBytesResumable } from 'firebase/storage';
 import { doc, updateDoc } from 'firebase/firestore';
 import { useRoute } from '@react-navigation/native';
@@ -18,6 +18,7 @@ import { getDownloadURL } from 'firebase/storage';
 
 export default function PostListing({ navigation }) {
 
+    const user = auth.currentUser
     const route = useRoute();
     const { listingData = {} } = route.params || {};
     console.log("received listingData in PostListing: ", listingData)
@@ -36,6 +37,7 @@ export default function PostListing({ navigation }) {
         year: '',
         tenantGender: '',
         imageUris: [],
+        createdBy: user.uid
     });
     const [open, setOpen] = useState(false);
     const [type, setType] = useState('');
@@ -67,7 +69,8 @@ export default function PostListing({ navigation }) {
                 type: listingData?.type || '',
                 year: listingData?.year || '',
                 tenantGender: listingData?.tenantGender || '',
-                imageUris: fetchedImageUrls
+                imageUris: fetchedImageUrls,
+                createdBy: user.uid
             });
         }
         populateData()
