@@ -81,9 +81,6 @@ const Profile = ({ navigation }) => {
         </>
       )}
 
-      <TouchableOpacity style={styles.button} onPress={() => handleNavigation('Saved')}>
-        <Text style={styles.buttonText}>Saved Listings</Text>
-      </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => handleNavigation('PostedListings')}>
         <Text style={styles.buttonText}>My Posted Listings</Text>
       </TouchableOpacity>
