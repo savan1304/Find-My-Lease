@@ -1,27 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, Alert } from 'react-native';
 import { collection, query, onSnapshot, doc } from 'firebase/firestore';
 import { database, auth } from '../Firebase/firebaseSetup';
 import { deleteFromDB } from '../Firebase/firestoreHelper';
+import { AuthContext } from '../Components/AuthContext';
 
 const Saved = ({ navigation }) => {
+  const { user, userData } = useContext(AuthContext);
   const [savedHouses, setSavedHouses] = useState([]);
 
   useEffect(() => {
-    const user = auth.currentUser;
+    console.log('Context user in Saved:', user);
     if (user) {
       const q = query(collection(database, `User/${user.uid}/saved`));
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        let newArray = [];
-        querySnapshot.forEach((doc) => {
-          newArray.push({ ...doc.data(), id: doc.id });
+        let houses = [];
+        querySnapshot.forEach(doc => {
+          houses.push({ ...doc.data(), id: doc.id });
         });
-        setSavedHouses(newArray);
+        setSavedHouses(houses);
       });
-
-      return () => unsubscribe(); 
+      return () => unsubscribe();
     }
-  }, []);
+  }, [user]);
 
   const handleHousePress = (house) => {
     console.log('House selected:', house);
