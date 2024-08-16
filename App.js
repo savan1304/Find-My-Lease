@@ -149,9 +149,15 @@ const AppContent = () => {
               <TouchableOpacity onPress={() => alert('Settings')}>
                 <Icon name="settings-outline" size={25} style={{ marginRight: 20 }} />
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => handleLogout(navigation)}>
-                <Icon name="log-out-outline" size={25} />
-              </TouchableOpacity>
+              {user ? (
+                <TouchableOpacity onPress={() => handleLogout(navigation)}>
+                  <Icon name="log-out-outline" size={25} />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                  <Icon name="log-in-outline" size={25} />
+                </TouchableOpacity>
+              )}
             </View>
           ),
           title: getFocusedRouteNameFromRoute(route) ?? "Home"
