@@ -54,7 +54,7 @@ export default function SignUp({ navigation }) {
             });
 
             console.log("User created and data saved to Firestore!");
-            navigation.replace('HomeMain');
+            navigation.navigate('HomeMain');
         } catch (err) {
             console.log("SIGN UP ", err);
         }
@@ -125,7 +125,7 @@ export default function SignUp({ navigation }) {
                     <Text style={appStyles.text}>Register</Text>
                 </PressableItem>
                 <PressableItem onPress={loginHandler} style={[appStyles.buttonStyle, appStyles.saveButton]} >
-                    <Text style={appStyles.text}>Already Registered? Login</Text>
+                    <Text style={appStyles.text}>Already Registered? Log in</Text>
                 </PressableItem>
             </View>
         </SafeAreaView>

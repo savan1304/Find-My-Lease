@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Modal, TextInput, Button } from 'react-native';
+import React, { useEffect, useState, useContext } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Modal, TextInput, Button, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { auth, database } from '../Firebase/firebaseSetup'; 
 import { doc, getDoc } from 'firebase/firestore'; 
 import { editToDB } from '../Firebase/firestoreHelper'; 
+import { AuthContext } from '../Components/AuthContext';
 
 const Profile = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [name, setName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const user = auth.currentUser;
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -44,6 +45,17 @@ const Profile = ({ navigation }) => {
     }
   };
 
+  const handleNavigation = (screen) => {
+    if (user) {
+      navigation.navigate(screen);
+    } else {
+      Alert.alert('Login Required', 'You need to be logged in to perform this action.', [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Login', onPress: () => navigation.navigate('Login') }
+      ]);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -69,16 +81,16 @@ const Profile = ({ navigation }) => {
         </>
       )}
 
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Saved')}>
+      <TouchableOpacity style={styles.button} onPress={() => handleNavigation('Saved')}>
         <Text style={styles.buttonText}>Saved Listings</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('PostedListings')}>
+      <TouchableOpacity style={styles.button} onPress={() => handleNavigation('PostedListings')}>
         <Text style={styles.buttonText}>My Posted Listings</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ScheduledVisits')}>
+      <TouchableOpacity style={styles.button} onPress={() => handleNavigation('ScheduledVisits')}>
         <Text style={styles.buttonText}>My Scheduled Visits</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('PostListing')}>
+      <TouchableOpacity style={styles.button} onPress={() => handleNavigation('PostListing')}>
         <Text style={styles.buttonText}>Post a listing</Text>
       </TouchableOpacity>
 
