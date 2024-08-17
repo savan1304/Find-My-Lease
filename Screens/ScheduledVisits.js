@@ -8,11 +8,12 @@ import { Colors } from '../Config/Colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { auth, database } from '../Firebase/firebaseSetup';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import call from 'react-native-phone-call'
+
 
 export default function ScheduledVisits({ navigation }) {
     const [visits, setVisits] = useState([])
     const user = auth.currentUser;
-
     useEffect(() => {
         const unsubscribe = onSnapshot(query(
             collection(database, 'User', user.uid, 'ScheduledVisits')),
@@ -20,14 +21,26 @@ export default function ScheduledVisits({ navigation }) {
                 let newArray = []
                 if (!querySnapshot.empty) {
                     querySnapshot.forEach((docSnapShot) => {
+                        let rescheduleDate;
+                        let rescheduleTime;
                         console.log(docSnapShot.id)
-                        const date = docSnapShot.data().date.toDate();
-                        const time = docSnapShot.data().time.toDate();
+                        console.log('docSnapShot data: ', docSnapShot.data())
+                        console.log('docSnapShot date: ', docSnapShot.data().date)
+                        const date = docSnapShot.data().date
+                        const time = docSnapShot.data().time
+                        if (docSnapShot.data().rescheduleDate) {
+                            rescheduleDate = docSnapShot.data().rescheduleDate.toDate();
+                        }
+                        if (docSnapShot.data().rescheduleTime) {
+                            rescheduleTime = docSnapShot.data().rescheduleTime.toDate();
+                        }
                         newArray.push({
                             ...docSnapShot.data(),
                             id: docSnapShot.id,
-                            date: date.toLocaleDateString(),
-                            time: time.toLocaleTimeString(),
+                            date: date.toDate().toLocaleDateString(),
+                            time: time.toDate().toLocaleTimeString(),
+                            rescheduleDate: rescheduleDate?.toLocaleDateString() || '',
+                            rescheduleTime: rescheduleTime?.toLocaleTimeString() || ''
                         })
                     });
                 }
@@ -100,6 +113,21 @@ export default function ScheduledVisits({ navigation }) {
 
     }
 
+    async function getDataById(id, collectionName) {
+        let data = {}
+        try {
+            const docRef = doc(database, collectionName, id);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                data = docSnap.data()
+            }
+            return data
+        } catch (error) {
+            console.log("Error in getDataById with collectonName: ", collectionName)
+        }
+    }
+
+
     return (
         <View>
 
@@ -109,11 +137,92 @@ export default function ScheduledVisits({ navigation }) {
                 (
                     <FlatList data={visits}
                         renderItem={({ item }) => {
-                            console.log(item)
+                            console.log('item in Flatlist in ScheduledVisits: ', item)
+
+                            async function handleContactLandlord() {
+                                const listingId = item.listingId
+                                const listingData = await getDataById(listingId, 'Listing')
+                                const landlordId = listingData.createdBy
+                                const landLordData = await getDataById(landlordId, 'User')
+                                const landlordNumber = landLordData.phoneNumber
+                                const args = {
+                                    number: landlordNumber,
+                                    prompt: true
+                                }
+                                call(args).catch(console.error)
+                            }
+
+                            function renderRescheduleOptions() {
+                                const time = item.time
+                                const date = item.date
+                                const rescheduleDate = item.rescheduleDate
+                                const rescheduleTime = item.rescheduleTime
+                                if (date === rescheduleDate && time === rescheduleTime) {
+                                    return false
+                                }
+                                return true
+                            }
+
+                            async function handleAcceptReschedule() {
+                                try {
+                                    const userDocRef = doc(database, "User", user.uid);
+                                    const visitSubcollectionRef = collection(userDocRef, "ScheduledVisits");
+                                    const visitDocRef = doc(visitSubcollectionRef, item.id);
+
+                                    const docSnap = await getDoc(visitDocRef);
+                                    if (docSnap.exists()) {
+                                        visitData = docSnap.data();
+                                    }
+
+                                    console.log("visitData in handleAcceptReschedule: ", visitData)
+                                    await updateDoc(visitDocRef, {
+                                        date: visitData.rescheduleDate,
+                                        time: visitData.rescheduleTime,
+                                        rescheduleResponse: 'accepted'
+                                    });
+
+                                    const listingData = await getDataById(visitData.listingId, 'Listing')
+                                    console.log("existing visitRequest from listingData: ", listingData.visitRequests)
+                                    const updatedVisitRequests = listingData.visitRequests.map(request =>
+                                        request.id === visitData.id ? {
+                                            ...request,
+                                            date: item.rescheduleDate,
+                                            time: item.rescheduleTime,
+                                            rescheduleResponse: 'accepted'
+                                        } : request
+                                    );
+                                    console.log("updatedVisitRequests in handleAcceptReschedule: ", updatedVisitRequests)
+                                    const listingDocRef = doc(database, 'Listing', visitData.listingId);
+                                    await updateDoc(listingDocRef, { visitRequests: updatedVisitRequests });
+
+
+                                } catch (error) {
+                                    console.log("Error in handleAcceptReschedule: ", error)
+                                }
+                            }
+
                             return (
                                 <View style={styles.container}>
                                     <View style={styles.visitDetails}>
                                         <Visit visit={item} />
+                                        {item.status === 'rescheduled' && renderRescheduleOptions() && (
+                                            <View>
+                                                <Text style={[styles.info, { color: Colors.blue, fontWeight: '500' }]}>Requested Date: {item.rescheduleDate}</Text>
+                                                <Text style={[styles.info, { color: Colors.blue, fontWeight: '500' }]}>Requested Time: {item.rescheduleTime}</Text>
+                                            </View>
+
+                                        )}
+                                        <View style={styles.rescheduleRequestActionsContainer}>
+                                            <PressableItem onPress={() => { handleContactLandlord() }} style={[styles.rescheduleRequestActionsStyle, { width: '55%' }]} >
+                                                <Text style={{ color: Colors.background }}>Contact Landlord</Text>
+                                            </PressableItem>
+                                            {item.status === 'rescheduled' && renderRescheduleOptions() && (
+                                                <PressableItem onPress={() => { handleAcceptReschedule() }} style={[styles.rescheduleRequestActionsStyle, { width: '40%' }]} >
+                                                    <Text style={{ color: Colors.background }}>Accept</Text>
+                                                </PressableItem>
+                                            )}
+                                        </View>
+
                                     </View>
                                     <View style={styles.editDeleteButtonContainer}>
                                         <PressableItem onPress={() => { handleEditVisit(item.id) }} style={styles.editDeleteButtonStyle} >
@@ -161,5 +270,14 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'flex-end',
+    },
+    rescheduleRequestActionsContainer: {
+        flexDirection: 'row',
+    },
+    rescheduleRequestActionsStyle: {
+        marginLeft: 0,
+        backgroundColor: Colors.blue,
+        alignItems: 'center',
+        marginVertical: 7
     }
 })

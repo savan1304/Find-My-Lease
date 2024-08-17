@@ -32,9 +32,10 @@ export default function ScheduleVisit({ navigation }) {
         questions: '',
         setReminder: false,
         requester: user.uid,
-        status: '',
-        rescheduleDate: null,
-        rescheduleTime: null
+        status: 'pending',
+        rescheduleDate: '',
+        rescheduleTime: '',
+        rescheduleResponse: ''
     });
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showTimePicker, setShowTimePicker] = useState(false);
@@ -55,9 +56,10 @@ export default function ScheduleVisit({ navigation }) {
                 questions: visitData?.questions || '',
                 setReminder: visitData?.setReminder || false,
                 requester: user.uid,
-                status: '',
-                rescheduleDate: null,
-                rescheduleTime: null
+                status: 'pending',
+                rescheduleDate: '',
+                rescheduleTime: '',
+                rescheduleResponse: ''
             });
 
             await fetchImageUrls()
@@ -128,9 +130,10 @@ export default function ScheduleVisit({ navigation }) {
             questions: '',
             setReminder: false,
             requester: '',
-            status: '',
-            rescheduleDate: null,
-            rescheduleTime: null
+            status: 'pendng',
+            rescheduleDate: '',
+            rescheduleTime: '',
+            rescheduleResponse: ''
         });
 
     }
