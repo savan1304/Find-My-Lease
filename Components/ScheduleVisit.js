@@ -31,7 +31,10 @@ export default function ScheduleVisit({ navigation }) {
         time: new Date(),
         questions: '',
         setReminder: false,
-        requester: user.uid
+        requester: user.uid,
+        status: '',
+        rescheduleDate: null,
+        rescheduleTime: null
     });
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showTimePicker, setShowTimePicker] = useState(false);
@@ -42,7 +45,6 @@ export default function ScheduleVisit({ navigation }) {
 
     useEffect(() => {
         // Updating visit whenever visitData from route params changes
-
         async function populateData() {
             setVisit({
                 listingId: visitData?.listingId || listing.id,
@@ -52,7 +54,10 @@ export default function ScheduleVisit({ navigation }) {
                 time: visitData?.time ? new Date(visitData.time.seconds * 1000) : new Date(),
                 questions: visitData?.questions || '',
                 setReminder: visitData?.setReminder || false,
-                requester: user.uid
+                requester: user.uid,
+                status: '',
+                rescheduleDate: null,
+                rescheduleTime: null
             });
 
             await fetchImageUrls()
@@ -122,6 +127,10 @@ export default function ScheduleVisit({ navigation }) {
             time: new Date(),
             questions: '',
             setReminder: false,
+            requester: '',
+            status: '',
+            rescheduleDate: null,
+            rescheduleTime: null
         });
 
     }
@@ -199,7 +208,7 @@ export default function ScheduleVisit({ navigation }) {
                 console.log('visitID from newVsitDocRef after adding visit in ScheduledVisits: ', visitID)
                 updatedVisitRequests = [                // For storing the visit in visitRequests in 'Listing'
                     ...(listing.visitRequests || []),
-                    { ...visit, id: visitID }, // Include the visitId
+                    { ...visit, id: visitID },
                 ];
             }
 

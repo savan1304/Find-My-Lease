@@ -7,7 +7,7 @@ import { deleteFromDB } from '../Firebase/firestoreHelper';
 import { Colors } from '../Config/Colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { auth, database } from '../Firebase/firebaseSetup';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 
 export default function ScheduledVisits({ navigation }) {
     const [visits, setVisits] = useState([])
@@ -39,10 +39,29 @@ export default function ScheduledVisits({ navigation }) {
         return () => unsubscribe()  // Detaching the listener when no longer listening to the changes in data
     }, [])
 
-    function handleDeleteVisit(visitToBeDeletedID) {
-        console.log("Inside handleDeleteVisit")
-        const collectionName = `User/${user.uid}/ScheduledVisits`;
-        deleteFromDB(visitToBeDeletedID, collectionName)
+    async function handleDeleteVisit(visit) {
+        console.log("Inside handleDeleteVisit with visit: ", visit)
+
+        try {
+            const listingDocRef = doc(database, 'Listing', visit.listingId);
+            const listingDocSnap = await getDoc(listingDocRef);
+
+            if (!listingDocSnap.exists()) {
+                throw new Error("Listing not found");
+            }
+            const listingData = listingDocSnap.data();
+            const updatedVisitRequests = listingData.visitRequests.filter(
+                request => request.id !== visit.id
+            );
+            await updateDoc(listingDocRef, { visitRequests: updatedVisitRequests });
+            console.log("Visit deleted from visitRequests successfully");
+        } catch (error) {
+            console.log("Error deleting visit from visitRequests: ", error)
+        }
+
+        const visitCollectionName = `User/${user.uid}/ScheduledVisits`;
+        deleteFromDB(visit.id, visitCollectionName)
+
     }
 
 
@@ -100,7 +119,7 @@ export default function ScheduledVisits({ navigation }) {
                                         <PressableItem onPress={() => { handleEditVisit(item.id) }} style={styles.editDeleteButtonStyle} >
                                             <Icon name="pencil" size={24} color={Colors.blue} />
                                         </PressableItem>
-                                        <PressableItem onPress={() => { handleDeleteVisit(item.id) }} style={styles.editDeleteButtonStyle} >
+                                        <PressableItem onPress={() => { handleDeleteVisit(item) }} style={styles.editDeleteButtonStyle} >
                                             <Icon name="trash" size={24} color={Colors.red} />
                                         </PressableItem>
                                     </View>

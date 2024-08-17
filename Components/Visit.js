@@ -2,6 +2,9 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 const Visit = ({ visit }) => {
+
+    let visitStatus = visit.status
+    let status = visitStatus.charAt(0).toUpperCase() + visitStatus.slice(1);
     return (
         <View>
             <Text style={styles.info}>Location: {visit.listingLocation}</Text>
@@ -14,6 +17,7 @@ const Visit = ({ visit }) => {
             ) : (
                 <Text style={styles.info}>Reminder set: No</Text>
             )}
+            <Text style={styles.info}>Status: {status}</Text>
         </View>
     );
 };
