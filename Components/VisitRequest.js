@@ -20,15 +20,14 @@ const VisitRequestItem = ({ visit, listing }) => {
     // State for storing requester data and loading state
     const [requesterData, setRequesterData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
-    const [visitStatus, setVisitStatus] = useState(''); 
+    const [visitStatus, setVisitStatus] = useState('');
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showTimePicker, setShowTimePicker] = useState(false);
     const [newVisitDate, setNewVisitDate] = useState(visit.rescheduleDate ? new Date(visit.date.seconds * 1000) : new Date());
     const [newVisitTime, setNewVisitTime] = useState(visit.rescheduleTime ? new Date(visit.time.seconds * 1000) : new Date());
-    const user = auth.currentUser;
     const [updatedVisit, setUpdatedVisit] = useState({})
-    const [rescheduleDate, setRescheduleDate] = useState(null); 
-    const [rescheduleTime, setRescheduleTime] = useState(null); 
+    const [rescheduleDate, setRescheduleDate] = useState(null);
+    const [rescheduleTime, setRescheduleTime] = useState(null);
     async function getUpdatedVisitData() {
         try {
             const updatedVisitDocRef = await getVisitDocRefById(visit.id)
@@ -50,9 +49,12 @@ const VisitRequestItem = ({ visit, listing }) => {
     // updating rescheduleDate and rescheduleTime whenever updatedVisit changes
     useEffect(() => {
         if (Object.keys(updatedVisit).length !== 0) {
-            setRescheduleDate(new Date(updatedVisit.rescheduleDate.seconds * 1000));
-            setRescheduleTime(new Date(updatedVisit.rescheduleTime.seconds * 1000));
+            if (updatedVisit.rescheduleDate !== null && updatedVisit.rescheduleTime !== null) {
+                setRescheduleDate(new Date(updatedVisit.rescheduleDate.seconds * 1000));
+                setRescheduleTime(new Date(updatedVisit.rescheduleTime.seconds * 1000));
+            }
             setVisitStatus(updatedVisit.status)
+
         } else {
             // Reset rescheduleDate and rescheduleTime if updatedVisit is empty
             setRescheduleDate(null);
@@ -108,12 +110,9 @@ const VisitRequestItem = ({ visit, listing }) => {
 
     const handleDateChange = (event, selectedDate) => {
         setShowDatePicker(false);
-        if (selectedDate) {
+        if (event.type === 'set' && selectedDate) {
             setNewVisitDate(selectedDate);
-            if (selectedDate) {
-                setNewVisitDate(selectedDate);
-                setShowTimePicker(true); // Showing TimePicker after date selection
-            }
+            setShowTimePicker(true);
         }
     };
 
@@ -181,7 +180,7 @@ const VisitRequestItem = ({ visit, listing }) => {
                     </View>
                 )}
             </View>
-            
+
             <View style={styles.editDeleteButtonContainer}>
                 {visitStatus === 'approved' ? (
                     <PressableItem onPress={() => { console.log("pressed on already approved request") }} style={[styles.approveButtonStyle, { backgroundColor: Colors.shadowColor, width: '75%' }]} >
@@ -265,7 +264,7 @@ const styles = StyleSheet.create({
     },
     approveButtonStyle: {
         margin: 5,
-        height: '20%',
+        height: 40,
         width: '65%',
         justifyContent: 'center',
         alignItems: 'center',
