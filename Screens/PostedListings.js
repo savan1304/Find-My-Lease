@@ -29,25 +29,38 @@ export default function PostedListings({ navigation }) {
           });
         }
         setListings(newArray);
+
       }, (e) => { console.log(e) })
 
 
     return () => unsubscribe()  // Detaching the listener when no longer listening to the changes in data
   }, [])
 
-  
+
+  // store visitRequests array as a Listing field and fetch it from firestore, and display its count
+  // add approved boolean field in ScheduledVisits collection, and set it true if landlord approves it, and display approval status (approved, pending, reschedule etc) in ScheduledVisits screen
+
   function handleDeleteListing(listingToBeDeletedID) {
     console.log("Inside handleDeleteListing")
     deleteFromDB(listingToBeDeletedID, 'Listing')
   }
 
+  async function getListingDocSnap(listingId) {
+    try {
+      const listingRef = doc(database, 'Listing', listingId);
+      const docSnap = await getDoc(listingRef);
+      return docSnap
+    } catch (error) {
+      console.log("error while getting docSnap for listing: ", error)
+    }
+  }
+
+
   async function handleEditListing(listingToBeEditedID) {
     console.log("Inside handleEditListing")
 
     try {
-      const listingRef = doc(database, 'Listing', listingToBeEditedID);
-      const docSnap = await getDoc(listingRef);
-
+      const docSnap = await getListingDocSnap(listingToBeEditedID)
       if (docSnap.exists()) {
         const listingData = docSnap.data();
         listingData.id = listingToBeEditedID
@@ -61,9 +74,21 @@ export default function PostedListings({ navigation }) {
 
   }
 
-  function handlePostiveVisitRequestCounterPress(visitRequest) {
+  async function handlePostiveVisitRequestCounterPress(visitRequest, listingId) {
     console.log("visit request counter pressed with visitRequest: ", visitRequest)
-    navigation.navigate('VisitRequests', { visitRequest: visitRequest });
+
+    try {
+      let listingData = {}
+      const docSnap = await getListingDocSnap(listingId)
+      console.log('docSnap inside handlePostiveVisitRequestCounterPress from getListingDocSnap: ', docSnap)
+      if (docSnap.exists()) {
+        listingData = docSnap.data();
+      }
+      navigation.navigate('VisitRequests', { visitRequest: visitRequest, listingData: listingData });
+    }
+    catch (error) {
+      console.log("Error navigating to VisitRequests in handlePostiveVisitRequestCounterPress: ", error)
+    }
   }
 
   function handleZeroVisitRequestCounterPress() {
@@ -89,7 +114,7 @@ export default function PostedListings({ navigation }) {
                     <Text style={styles.info}>Price: {item.price}</Text>
                     <Text style={styles.info}>Type: {item.type}</Text>
                     {item.visitRequests ? (
-                      <PressableItem onPress={() => { handlePostiveVisitRequestCounterPress(item.visitRequests) }} style={[styles.editDeleteButtonStyle, { backgroundColor: Colors.shadowColor, marginHorizontal: 0, marginVertical: 5, width: '64%' }]} >
+                      <PressableItem onPress={async () => { await handlePostiveVisitRequestCounterPress(item.visitRequests, item.id) }} style={[styles.editDeleteButtonStyle, { backgroundColor: Colors.shadowColor, marginHorizontal: 0, marginVertical: 5, width: '64%' }]} >
                         <Text style={{ color: Colors.background }}>Viewing Requests: {item.visitRequests.length}</Text>
                       </PressableItem>
                     ) : (

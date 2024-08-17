@@ -19,6 +19,7 @@ import Saved from './Screens/Saved';
 import * as Notifications from 'expo-notifications';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { AuthProvider, AuthContext } from './Components/AuthContext';
+import VisitRequest from './Components/VisitRequest';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -45,6 +46,7 @@ const ProfileStackScreen = () => (
     <MainStack.Screen name="HouseDetails" component={HouseDetails} options={{ title: 'House Details' }} />
     <MainStack.Screen name="ScheduledVisits" component={ScheduledVisits} options={{ title: 'Scheduled Visits' }} />
     <MainStack.Screen name="ScheduleVisit" component={ScheduleVisit} options={{ title: 'Schedule a Visit' }} />
+    <MainStack.Screen name="VisitRequests" component={VisitRequest} options={{ title: 'Visit Requests' }} />
   </MainStack.Navigator>
 );
 
@@ -139,7 +141,7 @@ const AppContent = () => {
     <Stack.Navigator>
       <Stack.Screen
         name="Root"
-        component={Tabs} 
+        component={Tabs}
         options={({ route, navigation }) => ({
           headerRight: () => (
             <View style={{ flexDirection: 'row', marginRight: 10 }}>
