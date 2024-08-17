@@ -13,21 +13,31 @@ const VisitRequestItem = ({ visit, listing }) => {
 
     console.log("inside VisitRequestItem with visit: ", visit)
     console.log("inside VisitRequestItem with listing: ", listing)
-    // Extracting and formatting date and time
-    const visitDate = new Date(visit.date.seconds * 1000);
-    const visitTime = new Date(visit.time.seconds * 1000);
 
     // State for storing requester data and loading state
     const [requesterData, setRequesterData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+
     const [visitStatus, setVisitStatus] = useState('');
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showTimePicker, setShowTimePicker] = useState(false);
     const [newVisitDate, setNewVisitDate] = useState(visit.rescheduleDate ? new Date(visit.date.seconds * 1000) : new Date());
     const [newVisitTime, setNewVisitTime] = useState(visit.rescheduleTime ? new Date(visit.time.seconds * 1000) : new Date());
     const [updatedVisit, setUpdatedVisit] = useState({})
-    const [rescheduleDate, setRescheduleDate] = useState(null);
-    const [rescheduleTime, setRescheduleTime] = useState(null);
+
+    const visitDate = new Date(visit.date.seconds * 1000);
+    const visitTime = new Date(visit.time.seconds * 1000);
+
+
+    let updatedVisitDate = ''
+    let updatedVisitTime = ''
+    if (Object.keys(updatedVisit).length !== 0) {
+        updatedVisitDate = new Date(updatedVisit.date.seconds * 1000);
+        updatedVisitTime = new Date(updatedVisit.time.seconds * 1000);
+
+    }
+
+
     async function getUpdatedVisitData() {
         try {
             const updatedVisitDocRef = await getVisitDocRefById(visit.id)
@@ -41,24 +51,20 @@ const VisitRequestItem = ({ visit, listing }) => {
         }
     }
 
+
     useEffect(() => {
         // Fetching updated visit data when the component mounts on the first render
         getUpdatedVisitData();
     }, []);
 
-    // updating rescheduleDate and rescheduleTime whenever updatedVisit changes
+    useEffect(() => {
+        updateDateAndTimeInVisitRequests()
+    }, [updatedVisit])
+
+    // updating visitStatus whenever updatedVisit changes
     useEffect(() => {
         if (Object.keys(updatedVisit).length !== 0) {
-            if (updatedVisit.rescheduleDate !== null && updatedVisit.rescheduleTime !== null) {
-                setRescheduleDate(new Date(updatedVisit.rescheduleDate.seconds * 1000));
-                setRescheduleTime(new Date(updatedVisit.rescheduleTime.seconds * 1000));
-            }
             setVisitStatus(updatedVisit.status)
-
-        } else {
-            // Reset rescheduleDate and rescheduleTime if updatedVisit is empty
-            setRescheduleDate(null);
-            setRescheduleTime(null);
         }
     }, [updatedVisit]);
     console.log("updated visit value: ", updatedVisit)
@@ -93,12 +99,23 @@ const VisitRequestItem = ({ visit, listing }) => {
         }
     }
 
+    console.log("visit status: ", visitStatus)
 
     async function handleApprove(visitId) {
         try {
             const visitDocRef = await getVisitDocRefById(visitId)
             console.log("approving the visit with: ", visitId)
             await updateDoc(visitDocRef, { status: 'approved' });
+
+
+            const updatedVisitRequests = listing.visitRequests.map(request =>
+                request.id === visitId ? { ...request, status: 'approved' } : request
+            );
+
+            const listingDocRef = doc(database, 'Listing', visit.listingId);
+            await updateDoc(listingDocRef, { visitRequests: updatedVisitRequests });
+
+            getUpdatedVisitData()
         } catch (error) {
             console.log("Error inside handleApprove: ", error)
         }
@@ -120,29 +137,25 @@ const VisitRequestItem = ({ visit, listing }) => {
         setShowTimePicker(false);
         if (selectedTime) {
             setNewVisitTime(selectedTime);
-
-            const combinedDateTime = new Date(newVisitDate);
-            combinedDateTime.setHours(selectedTime.getHours(), selectedTime.getMinutes(), selectedTime.getSeconds());
-
-            requestReschedule(visitId, combinedDateTime);
+            requestReschedule(visitId, newVisitDate, selectedTime);
         }
     };
 
-    async function requestReschedule(visitId, newDateTime) {
-        console.log("inside requestReschedule with new visit Date: ", newVisitDate)
-        console.log("inside requestReschedule with new visit Time: ", newVisitTime)
+    async function requestReschedule(visitId, newDate, newTime) {
+        console.log("inside requestReschedule with new visit Date: ", newDate)
+        console.log("inside requestReschedule with new visit Time: ", newTime)
         try {
             const visitDocRef = await getVisitDocRefById(visitId)
 
-            // Updating Firebase with the combined date and time for reschedule request
             await updateDoc(visitDocRef, {
-                rescheduleDate: newDateTime,
-                rescheduleTime: newDateTime,
-                status: 'rescheduled'
+                rescheduleDate: newDate,
+                rescheduleTime: newTime,
+                status: 'rescheduled',
+                rescheduleResponse: 'pending'
             });
 
             const updatedVisitRequests = listing.visitRequests.map(request =>
-                request.id === visitId ? { ...request, rescheduleDate: newDateTime, rescheduleTime: newDateTime, status: 'rescheduled' } : request
+                request.id === visitId ? { ...request, rescheduleDate: newDate, rescheduleTime: newTime, status: 'rescheduled' } : request
             );
 
             const listingDocRef = doc(database, 'Listing', visit.listingId);
@@ -155,12 +168,52 @@ const VisitRequestItem = ({ visit, listing }) => {
         }
     }
 
+    async function updateDateAndTimeInVisitRequests() {
+        try {
+            if (Object.keys(updatedVisit).length !== 0) {
+                const updatedVisitRequests = listing.visitRequests.map(request =>
+                    request.id === visit.id ? { ...request, date: updatedVisit.rescheduleDate, time: updatedVisit.rescheduleTime, status: 'rescheduled' } : request
+                );
+
+                const listingDocRef = doc(database, 'Listing', visit.listingId);
+                await updateDoc(listingDocRef, { visitRequests: updatedVisitRequests });
+            }
+        } catch (error) {
+            console.log("Error in updateDateAndTimeInVisitRequests: ", error)
+        }
+    }
+
+    function checkRescheduleDateTimeDisplay() {
+        if (
+            Object.keys(updatedVisit).length !== 0 && (updatedVisit.rescheduleDate !== '' && updatedVisit.rescheduleTime !== '') &&
+            (
+                (updatedVisit.rescheduleDate.seconds !== updatedVisit.date.seconds ||
+                    updatedVisit.rescheduleDate.nanoseconds !== updatedVisit.date.nanoseconds) ||
+                (updatedVisit.rescheduleTime.seconds !== updatedVisit.time.seconds ||
+                    updatedVisit.rescheduleTime.nanoseconds !== updatedVisit.time.nanoseconds)
+            )
+        ) {
+            console.log('checkRescheduleDateTimeDisplay returning true');
+            return true;
+        }
+        console.log('checkRescheduleDateTimeDisplay returning false');
+        return false;
+    }
 
     return (
         <View style={styles.container}>
             <View style={styles.listingDetails}>
-                <Text style={styles.info}>Date: {visitDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</Text>
-                <Text style={styles.info}>Time: {visitTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</Text>
+                {Object.keys(updatedVisit).length !== 0 ? (
+                    <>
+                        <Text style={styles.info}>Date: {updatedVisitDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</Text>
+                        <Text style={styles.info}>Time: {updatedVisitTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</Text>
+                    </>
+                ) : (
+                    <>
+                        <Text style={styles.info}>Date: {visitDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</Text>
+                        <Text style={styles.info}>Time: {visitTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</Text>
+                    </>
+                )}
                 <Text style={styles.info}>Questions: {visit.questions}</Text>
                 {isLoading ? (
                     <Text>Loading requester data...</Text>
@@ -172,10 +225,10 @@ const VisitRequestItem = ({ visit, listing }) => {
                         <Text style={styles.info}>Phone: {requesterData.phoneNumber}</Text>
                     </View>
                 )}
-                {(rescheduleDate !== null && rescheduleTime !== null) && (
+                {checkRescheduleDateTimeDisplay() && (
                     <View style={{ width: 312 }}>
                         <Text style={styles.info}>
-                            Rescheduled to: {rescheduleTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })} on {rescheduleDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                            Rescheduled to: {new Date(updatedVisit.rescheduleDate.seconds * 1000).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })} at {new Date(updatedVisit.rescheduleTime.seconds * 1000).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
                         </Text>
                     </View>
                 )}
