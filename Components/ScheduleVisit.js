@@ -42,7 +42,6 @@ export default function ScheduleVisit({ navigation }) {
     const [showTimePicker, setShowTimePicker] = useState(false);
 
     const [imageUrls, setImageUrls] = useState([]); // Storing fetched image URLs
-    // const [listingDetails, setListingDetails] = useState({})
 
 
     useEffect(() => {

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import PressableItem from '../Components/PressableItem';
 import Visit from '../Components/Visit';
 import { collection, onSnapshot, query } from 'firebase/firestore';
-import { deleteFromDB, getDataById, getVisitDataById } from '../Firebase/firestoreHelper';
+import { deleteFromDB, getDataById, getVisitDataById, getVisitDocRefById } from '../Firebase/firestoreHelper';
 import { Colors } from '../Config/Colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { auth, database } from '../Firebase/firebaseSetup';
@@ -154,9 +154,7 @@ export default function ScheduledVisits({ navigation }) {
                                     const visitData = await getVisitDataById(item.id, user.uid);
                                     console.log("visitData in handleAcceptReschedule: ", visitData)
 
-                                    const userDocRef = doc(database, "User", user.uid);
-                                    const visitSubcollectionRef = collection(userDocRef, "ScheduledVisits");
-                                    const visitDocRef = doc(visitSubcollectionRef, item.id);
+                                    const visitDocRef = getVisitDocRefById(item.id, user.uid)
                                     await updateDoc(visitDocRef, {
                                         date: visitData.rescheduleDate,
                                         time: visitData.rescheduleTime,
