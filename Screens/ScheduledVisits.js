@@ -56,29 +56,7 @@ export default function ScheduledVisits({ navigation }) {
 
 
     // async function handleDeleteVisit(visit) {
-    //     console.log("Inside handleDeleteVisit with visit: ", visit)
 
-    //     try {
-    //         const listingDocRef = doc(database, 'Listing', visit.listingId);
-    //         const listingDocSnap = await getDoc(listingDocRef);
-
-    //         if (!listingDocSnap.exists()) {
-    //             throw new Error("Listing not found");
-    //         }
-    //         const listingData = listingDocSnap.data();
-    //         const updatedVisitRequests = listingData.visitRequests.filter(
-    //             request => request.id !== visit.id
-    //         );
-    //         await updateDoc(listingDocRef, { visitRequests: updatedVisitRequests });
-    //         console.log("Visit deleted from visitRequests successfully");
-    //     } catch (error) {
-    //         console.log("Error deleting visit from visitRequests: ", error)
-    //     }
-
-    //     const visitCollectionName = `User/${user.uid}/ScheduledVisits`;
-    //     deleteFromDB(visit.id, visitCollectionName)
-
-    // }
     async function handleDeleteVisit(visit) {
         console.log("Inside handleDeleteVisit with visit: ", visit)
 
