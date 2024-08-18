@@ -236,7 +236,7 @@ export default function ScheduleVisit({ navigation }) {
                     {
                         text: "Save",
                         onPress: async () => {
-                            saveVisit()
+                            await saveVisit()
                         },
                     },
                 ]
