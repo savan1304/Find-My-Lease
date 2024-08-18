@@ -38,7 +38,24 @@ export default function PostedListings({ navigation }) {
 
   function handleDeleteListing(listingToBeDeletedID) {
     console.log("Inside handleDeleteListing")
-    deleteFromDB(listingToBeDeletedID, 'Listing')
+
+    Alert.alert(
+      "Confirm Delete",
+      "Are you sure you want to delete this listing?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          onPress: () => {
+            deleteFromDB(listingToBeDeletedID, 'Listing');
+          },
+          style: "destructive",
+        },
+      ]
+    );
   }
 
 

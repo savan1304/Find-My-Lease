@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, FlatList } from 'react-native'
+import { StyleSheet, Text, View, FlatList, Alert } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import PressableItem from '../Components/PressableItem';
 import Visit from '../Components/Visit';
@@ -54,30 +54,69 @@ export default function ScheduledVisits({ navigation }) {
         return () => unsubscribe()  // Detaching the listener when no longer listening to the changes in data
     }, [])
 
-    
+
+    // async function handleDeleteVisit(visit) {
+    //     console.log("Inside handleDeleteVisit with visit: ", visit)
+
+    //     try {
+    //         const listingDocRef = doc(database, 'Listing', visit.listingId);
+    //         const listingDocSnap = await getDoc(listingDocRef);
+
+    //         if (!listingDocSnap.exists()) {
+    //             throw new Error("Listing not found");
+    //         }
+    //         const listingData = listingDocSnap.data();
+    //         const updatedVisitRequests = listingData.visitRequests.filter(
+    //             request => request.id !== visit.id
+    //         );
+    //         await updateDoc(listingDocRef, { visitRequests: updatedVisitRequests });
+    //         console.log("Visit deleted from visitRequests successfully");
+    //     } catch (error) {
+    //         console.log("Error deleting visit from visitRequests: ", error)
+    //     }
+
+    //     const visitCollectionName = `User/${user.uid}/ScheduledVisits`;
+    //     deleteFromDB(visit.id, visitCollectionName)
+
+    // }
     async function handleDeleteVisit(visit) {
         console.log("Inside handleDeleteVisit with visit: ", visit)
 
-        try {
-            const listingDocRef = doc(database, 'Listing', visit.listingId);
-            const listingDocSnap = await getDoc(listingDocRef);
+        Alert.alert(
+            "Confirm Delete",
+            "Are you sure you want to delete this visit?",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel",
+                },
+                {
+                    text: "Delete",
+                    onPress: async () => {
+                        try {
+                            const listingDocRef = doc(database, 'Listing', visit.listingId);
+                            const listingDocSnap = await getDoc(listingDocRef);
 
-            if (!listingDocSnap.exists()) {
-                throw new Error("Listing not found");
-            }
-            const listingData = listingDocSnap.data();
-            const updatedVisitRequests = listingData.visitRequests.filter(
-                request => request.id !== visit.id
-            );
-            await updateDoc(listingDocRef, { visitRequests: updatedVisitRequests });
-            console.log("Visit deleted from visitRequests successfully");
-        } catch (error) {
-            console.log("Error deleting visit from visitRequests: ", error)
-        }
+                            if (!listingDocSnap.exists()) {
+                                throw new Error("Listing not found");
+                            }
+                            const listingData = listingDocSnap.data();
+                            const updatedVisitRequests = listingData.visitRequests.filter(
+                                request => request.id !== visit.id
+                            );
+                            await updateDoc(listingDocRef, { visitRequests: updatedVisitRequests });
+                            console.log("Visit deleted from visitRequests successfully");
+                        } catch (error) {
+                            console.log("Error deleting visit from visitRequests: ", error)
+                        }
 
-        const visitCollectionName = `User/${user.uid}/ScheduledVisits`;
-        deleteFromDB(visit.id, visitCollectionName)
-
+                        const visitCollectionName = `User/${user.uid}/ScheduledVisits`;
+                        deleteFromDB(visit.id, visitCollectionName)
+                    },
+                    style: "destructive", // Optional: to visually indicate a destructive action
+                },
+            ]
+        );
     }
 
 
@@ -116,7 +155,7 @@ export default function ScheduledVisits({ navigation }) {
 
     }
 
-    
+
     async function getDataById(id, collectionName) {
         let data = {}
         try {
