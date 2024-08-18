@@ -7,8 +7,8 @@ import { Colors } from '../Config/Colors';
 import Checkbox from 'expo-checkbox';
 import * as ImagePicker from "expo-image-picker"
 import PressableItem from './PressableItem';
-import { writeToDB } from '../Firebase/firestoreHelper';
-import { storage, database } from '../Firebase/firebaseSetup';
+import { writeToDB } from '../Firebase/firestoreHelper';	
+import { storage, database, auth } from '../Firebase/firebaseSetup';
 import { ref, uploadBytesResumable } from 'firebase/storage';
 import { doc, updateDoc } from 'firebase/firestore';
 import { useRoute } from '@react-navigation/native';
@@ -18,6 +18,7 @@ import { getDownloadURL } from 'firebase/storage';
 
 export default function PostListing({ navigation }) {
 
+    const user = auth.currentUser
     const route = useRoute();
     const { listingData = {} } = route.params || {};
     console.log("received listingData in PostListing: ", listingData)
@@ -36,6 +37,7 @@ export default function PostListing({ navigation }) {
         year: '',
         tenantGender: '',
         imageUris: [],
+        createdBy: user.uid
     });
     const [open, setOpen] = useState(false);
     const [type, setType] = useState('');
@@ -67,7 +69,8 @@ export default function PostListing({ navigation }) {
                 type: listingData?.type || '',
                 year: listingData?.year || '',
                 tenantGender: listingData?.tenantGender || '',
-                imageUris: fetchedImageUrls
+                imageUris: fetchedImageUrls,
+                createdBy: user.uid
             });
         }
         populateData()
@@ -75,6 +78,7 @@ export default function PostListing({ navigation }) {
 
 
     console.log("form data after use effect: ", formData)
+
 
     async function fetchImageUrls() {
         console.log("entered fetchImageUrls function with listingData: ", listingData)
@@ -93,6 +97,7 @@ export default function PostListing({ navigation }) {
         }
         return []
     }
+
 
     useEffect(() => {
         console.log("enteredLocation inside useEffect: ", enteredLocation)
@@ -114,8 +119,6 @@ export default function PostListing({ navigation }) {
     }, [enteredLocation])
 
 
-
-
     function reset() {
         setFormData({
             price: '',
@@ -132,8 +135,8 @@ export default function PostListing({ navigation }) {
             tenantGender: '',
             imageUris: [],
         });
-
     }
+
 
     async function imageUriHandler(newImageUris) {
         console.log("inside imageUriHandler: ", newImageUris);
@@ -144,6 +147,7 @@ export default function PostListing({ navigation }) {
         }));
     }
 
+
     async function handleDataChange(field, newValue) {
 
         setFormData(prevFormData => ({
@@ -152,9 +156,11 @@ export default function PostListing({ navigation }) {
         }));
     };
 
+
     function handleLocationBlur() {
         setEnteredLocation(formData.location)
     }
+
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -182,7 +188,6 @@ export default function PostListing({ navigation }) {
     }
 
 
-
     async function retrieveAndUploadImage(imageUri) {
         console.log("inside retrieveAndUploadImage uri: ", imageUri)
         try {
@@ -201,6 +206,7 @@ export default function PostListing({ navigation }) {
             console.log("retrive and upload image error: ", error)
         }
     }
+
 
     const handleSave = useCallback(async () => {
 
@@ -231,11 +237,13 @@ export default function PostListing({ navigation }) {
 
     }, [images, formData]); // Including dependencies that should trigger a re-render
 
+
     useEffect(() => {
         if (images.length > 0) {
             console.log("images inside useEffect: ", images);
         }
     }, [images]);
+
 
     const renderImage = ({ item }) => (
         <Image source={{ uri: item.uri || item }}
@@ -243,9 +251,10 @@ export default function PostListing({ navigation }) {
     );
 
 
-
     return (
         <SafeAreaView style={appStyles.postListingContainer}>
+
+
 
             {(images.length > 0 || formData.imageUris.length > 0) ? (
                 <View style={appStyles.postImageContainerAfterImageClicked}>
