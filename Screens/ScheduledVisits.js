@@ -14,6 +14,8 @@ import call from 'react-native-phone-call'
 export default function ScheduledVisits({ navigation }) {
     const [visits, setVisits] = useState([])
     const user = auth.currentUser;
+
+
     useEffect(() => {
         const unsubscribe = onSnapshot(query(
             collection(database, 'User', user.uid, 'ScheduledVisits')),
@@ -52,6 +54,7 @@ export default function ScheduledVisits({ navigation }) {
         return () => unsubscribe()  // Detaching the listener when no longer listening to the changes in data
     }, [])
 
+    
     async function handleDeleteVisit(visit) {
         console.log("Inside handleDeleteVisit with visit: ", visit)
 
@@ -113,6 +116,7 @@ export default function ScheduledVisits({ navigation }) {
 
     }
 
+    
     async function getDataById(id, collectionName) {
         let data = {}
         try {

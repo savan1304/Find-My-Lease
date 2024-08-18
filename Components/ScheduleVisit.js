@@ -119,6 +119,7 @@ export default function ScheduleVisit({ navigation }) {
 
     }
 
+
     function reset() {
         setVisit({
             listingId: '',
@@ -138,6 +139,7 @@ export default function ScheduleVisit({ navigation }) {
 
     }
 
+
     const handleDateChange = (event, selectedDate) => {
         setShowDatePicker(false);
         if (selectedDate) {
@@ -154,6 +156,7 @@ export default function ScheduleVisit({ navigation }) {
             }));
         }
     };
+
 
     const handleTimeChange = (event, selectedTime) => {
         setShowTimePicker(false);
@@ -180,6 +183,7 @@ export default function ScheduleVisit({ navigation }) {
         reset()
     }
 
+
     async function handleSubmit() {
         console.log("scheduled a visit: ", visit);
         try {
@@ -190,11 +194,12 @@ export default function ScheduleVisit({ navigation }) {
             let visitID = ''
             let updatedVisitRequests = []
             if (visitData.id) {
-                const userDocRef = doc(database, "User", user.uid);
+                const userDocRef = doc(database, "User", user.uid); // storing the changes in 'ScheduledVisits'
                 const visitSubcollectionRef = collection(userDocRef, "ScheduledVisits");
                 const visitDocRef = doc(visitSubcollectionRef, visitData.id);
                 console.log("updating the visit with: ", visit)
-                await updateDoc(visitDocRef, visit);    // storing the changes in 'ScheduledVisits'
+                await updateDoc(visitDocRef, visit);
+
                 updatedVisitRequests = listingData.visitRequests.map(request => {   // For updating the changes in visitRequests in 'Listing'
                     if (request.id === visitData.id) {
                         return { ...request, ...visit }; // Merge updated data
@@ -209,6 +214,7 @@ export default function ScheduleVisit({ navigation }) {
                 const newVisitDocRef = await addDoc(scheduledVisitsCollectionRef, visit);   // creating a visit in 'ScheduledVisits'
                 visitID = newVisitDocRef.id
                 console.log('visitID from newVsitDocRef after adding visit in ScheduledVisits: ', visitID)
+                
                 updatedVisitRequests = [                // For storing the visit in visitRequests in 'Listing'
                     ...(listing.visitRequests || []),
                     { ...visit, id: visitID },
@@ -238,13 +244,17 @@ export default function ScheduleVisit({ navigation }) {
         }
     }
 
+
     const renderImage = ({ item }) => (
         <Image source={{ uri: item }} style={{ width: 250, height: 150, margin: 5 }} />
     );
 
     console.log("inside ScheduleVisit with listing: ", listing)
+
+
     return (
         <View style={appStyles.container}>
+
             <View style={appStyles.visitLocationAndPriceContainer}>
                 <View style={appStyles.locationOrPriceContainer1}>
                     <Text style={[appStyles.title, { color: Colors.shadowColor }]}>{visit.listingLocation}</Text>
@@ -270,13 +280,13 @@ export default function ScheduleVisit({ navigation }) {
                 </>
             )}
 
-
             <View style={appStyles.addItemContainer}>
                 <Text style={appStyles.addTitles}>Date (dd/mm/yyy)</Text>
                 <TouchableOpacity onPress={() => setShowDatePicker(true)} style={[appStyles.addInput, { width: '35%', height: '100%', alignItems: 'center' }]}>
                     <Text style={appStyles.addTitles}>{visit.date.toLocaleDateString()}</Text>
                 </TouchableOpacity>
             </View>
+
             {showDatePicker && (
                 <DateTimePicker
                     testID="datePicker"
@@ -294,6 +304,7 @@ export default function ScheduleVisit({ navigation }) {
                     <Text style={appStyles.addTitles}>{visit.time.toLocaleTimeString()}</Text>
                 </TouchableOpacity>
             </View>
+
             {showTimePicker && (
                 <DateTimePicker
                     testID="timePicker"
@@ -318,7 +329,6 @@ export default function ScheduleVisit({ navigation }) {
                     />
                 </View>
             </View>
-
 
             <View style={[appStyles.addItemContainer, { alignItems: 'center' }]}>
                 <Text style={[appStyles.addTitles, { padding: 0, margin: 0 }]}>Set reminder 1 day before?</Text>

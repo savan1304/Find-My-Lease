@@ -79,6 +79,7 @@ export default function PostListing({ navigation }) {
 
     console.log("form data after use effect: ", formData)
 
+
     async function fetchImageUrls() {
         console.log("entered fetchImageUrls function with listingData: ", listingData)
         if (listingData && listingData.imageUris && listingData.imageUris.length > 0) {
@@ -96,6 +97,7 @@ export default function PostListing({ navigation }) {
         }
         return []
     }
+
 
     useEffect(() => {
         console.log("enteredLocation inside useEffect: ", enteredLocation)
@@ -117,8 +119,6 @@ export default function PostListing({ navigation }) {
     }, [enteredLocation])
 
 
-
-
     function reset() {
         setFormData({
             price: '',
@@ -135,8 +135,8 @@ export default function PostListing({ navigation }) {
             tenantGender: '',
             imageUris: [],
         });
-
     }
+
 
     async function imageUriHandler(newImageUris) {
         console.log("inside imageUriHandler: ", newImageUris);
@@ -147,6 +147,7 @@ export default function PostListing({ navigation }) {
         }));
     }
 
+
     async function handleDataChange(field, newValue) {
 
         setFormData(prevFormData => ({
@@ -155,9 +156,11 @@ export default function PostListing({ navigation }) {
         }));
     };
 
+
     function handleLocationBlur() {
         setEnteredLocation(formData.location)
     }
+
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -185,7 +188,6 @@ export default function PostListing({ navigation }) {
     }
 
 
-
     async function retrieveAndUploadImage(imageUri) {
         console.log("inside retrieveAndUploadImage uri: ", imageUri)
         try {
@@ -204,6 +206,7 @@ export default function PostListing({ navigation }) {
             console.log("retrive and upload image error: ", error)
         }
     }
+
 
     const handleSave = useCallback(async () => {
 
@@ -234,11 +237,13 @@ export default function PostListing({ navigation }) {
 
     }, [images, formData]); // Including dependencies that should trigger a re-render
 
+
     useEffect(() => {
         if (images.length > 0) {
             console.log("images inside useEffect: ", images);
         }
     }, [images]);
+
 
     const renderImage = ({ item }) => (
         <Image source={{ uri: item.uri || item }}
@@ -246,9 +251,10 @@ export default function PostListing({ navigation }) {
     );
 
 
-
     return (
         <SafeAreaView style={appStyles.postListingContainer}>
+
+
 
             {(images.length > 0 || formData.imageUris.length > 0) ? (
                 <View style={appStyles.postImageContainerAfterImageClicked}>

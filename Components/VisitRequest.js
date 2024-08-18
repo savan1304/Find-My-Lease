@@ -28,13 +28,11 @@ const VisitRequestItem = ({ visit, listing }) => {
     const visitDate = new Date(visit.date.seconds * 1000);
     const visitTime = new Date(visit.time.seconds * 1000);
 
-
     let updatedVisitDate = ''
     let updatedVisitTime = ''
     if (Object.keys(updatedVisit).length !== 0) {
         updatedVisitDate = new Date(updatedVisit.date.seconds * 1000);
         updatedVisitTime = new Date(updatedVisit.time.seconds * 1000);
-
     }
 
 
@@ -53,13 +51,14 @@ const VisitRequestItem = ({ visit, listing }) => {
 
 
     useEffect(() => {
-        // Fetching updated visit data when the component mounts on the first render
-        getUpdatedVisitData();
+        getUpdatedVisitData();   // Fetching updated visit data when the component mounts on the first render
     }, []);
+
 
     useEffect(() => {
         updateDateAndTimeInVisitRequests()
     }, [updatedVisit])
+
 
     // updating visitStatus whenever updatedVisit changes
     useEffect(() => {
@@ -68,6 +67,7 @@ const VisitRequestItem = ({ visit, listing }) => {
         }
     }, [updatedVisit]);
     console.log("updated visit value: ", updatedVisit)
+
 
     useEffect(() => {
         // Fetching requester data
@@ -88,6 +88,7 @@ const VisitRequestItem = ({ visit, listing }) => {
         fetchRequesterData();
     }, [visit.requester]); // Running this effect whenever visit.requester changes
 
+
     async function getVisitDocRefById(visitId) {
         try {
             const userDocRef = doc(database, "User", visit.requester);
@@ -101,29 +102,31 @@ const VisitRequestItem = ({ visit, listing }) => {
 
     console.log("visit status: ", visitStatus)
 
+
     async function handleApprove(visitId) {
         try {
             const visitDocRef = await getVisitDocRefById(visitId)
             console.log("approving the visit with: ", visitId)
             await updateDoc(visitDocRef, { status: 'approved' });
 
-
             const updatedVisitRequests = listing.visitRequests.map(request =>
                 request.id === visitId ? { ...request, status: 'approved' } : request
             );
-
             const listingDocRef = doc(database, 'Listing', visit.listingId);
             await updateDoc(listingDocRef, { visitRequests: updatedVisitRequests });
 
             getUpdatedVisitData()
+
         } catch (error) {
             console.log("Error inside handleApprove: ", error)
         }
     }
 
+
     async function handleReschedule(visitId) {
         setShowDatePicker(true);
     }
+
 
     const handleDateChange = (event, selectedDate) => {
         setShowDatePicker(false);
@@ -133,6 +136,7 @@ const VisitRequestItem = ({ visit, listing }) => {
         }
     };
 
+
     const handleTimeChange = (event, selectedTime, visitId) => {
         setShowTimePicker(false);
         if (selectedTime) {
@@ -140,6 +144,7 @@ const VisitRequestItem = ({ visit, listing }) => {
             requestReschedule(visitId, newVisitDate, selectedTime);
         }
     };
+
 
     async function requestReschedule(visitId, newDate, newTime) {
         console.log("inside requestReschedule with new visit Date: ", newDate)
@@ -168,6 +173,7 @@ const VisitRequestItem = ({ visit, listing }) => {
         }
     }
 
+
     async function updateDateAndTimeInVisitRequests() {
         try {
             if (Object.keys(updatedVisit).length !== 0) {
@@ -182,6 +188,7 @@ const VisitRequestItem = ({ visit, listing }) => {
             console.log("Error in updateDateAndTimeInVisitRequests: ", error)
         }
     }
+
 
     function checkRescheduleDateTimeDisplay() {
         if (
@@ -200,9 +207,11 @@ const VisitRequestItem = ({ visit, listing }) => {
         return false;
     }
 
+
     return (
         <View style={styles.container}>
             <View style={styles.listingDetails}>
+
                 {Object.keys(updatedVisit).length !== 0 ? (
                     <>
                         <Text style={styles.info}>Date: {updatedVisitDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</Text>
@@ -214,7 +223,9 @@ const VisitRequestItem = ({ visit, listing }) => {
                         <Text style={styles.info}>Time: {visitTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</Text>
                     </>
                 )}
+
                 <Text style={styles.info}>Questions: {visit.questions}</Text>
+
                 {isLoading ? (
                     <Text>Loading requester data...</Text>
                 ) : (
@@ -225,6 +236,7 @@ const VisitRequestItem = ({ visit, listing }) => {
                         <Text style={styles.info}>Phone: {requesterData.phoneNumber}</Text>
                     </View>
                 )}
+
                 {checkRescheduleDateTimeDisplay() && (
                     <View style={{ width: 312 }}>
                         <Text style={styles.info}>
@@ -238,9 +250,12 @@ const VisitRequestItem = ({ visit, listing }) => {
                         Reschedule response: {updatedVisit.rescheduleResponse.charAt(0).toUpperCase() + updatedVisit.rescheduleResponse.slice(1)}
                     </Text>
                 )}
+
             </View>
 
+
             <View style={styles.editDeleteButtonContainer}>
+
                 {visitStatus === 'approved' ? (
                     <PressableItem onPress={() => { console.log("pressed on already approved request") }} style={[styles.approveButtonStyle, { backgroundColor: Colors.shadowColor, width: '75%' }]} >
                         <Text style={{ color: Colors.background }}>Approved</Text>
@@ -250,6 +265,7 @@ const VisitRequestItem = ({ visit, listing }) => {
                     </PressableItem>
                 )
                 }
+
                 <PressableItem onPress={() => { handleReschedule(visit.id) }} style={[styles.approveButtonStyle, { backgroundColor: Colors.yellow, width: '85%' }]} >
                     <Text style={{ color: Colors.background }}>Reschedule</Text>
                 </PressableItem>
@@ -283,8 +299,7 @@ const VisitRequestItem = ({ visit, listing }) => {
 };
 
 
-export default function VisitRequest({ navigation }) {
-    const user = auth.currentUser;
+export default function VisitRequest() {
     const route = useRoute();
     const { visitRequest = [] } = route.params || [];
     const { listingData = {} } = route.params || {};
