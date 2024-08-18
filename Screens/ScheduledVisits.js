@@ -55,8 +55,6 @@ export default function ScheduledVisits({ navigation }) {
     }, [])
 
 
-    // async function handleDeleteVisit(visit) {
-
     async function handleDeleteVisit(visit) {
         console.log("Inside handleDeleteVisit with visit: ", visit)
 
