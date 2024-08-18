@@ -89,7 +89,7 @@ export default function PostedListings({ navigation }) {
 
   async function handlePostiveVisitRequestCounterPress(visitRequest, listingId) {
     console.log("visit request counter pressed with visitRequest: ", visitRequest)
-
+    console.log("visit request counter pressed with listingId: ", listingId)
     try {
       let listingData = {}
       const docSnap = await getListingDocSnap(listingId)
@@ -97,6 +97,7 @@ export default function PostedListings({ navigation }) {
       if (docSnap.exists()) {
         listingData = docSnap.data();
       }
+      console.log('listingData before navigating to VisitRequests inside handlePostiveVisitRequestCounterPress: ', listingData)
       navigation.navigate('VisitRequests', { visitRequest: visitRequest, listingData: listingData });
     }
     catch (error) {
@@ -111,7 +112,7 @@ export default function PostedListings({ navigation }) {
     ]);
   }
 
-
+  console.log('listingss value in PostedListing: ', listings)
   return (
     <View>
 
@@ -121,7 +122,7 @@ export default function PostedListings({ navigation }) {
         (
           <FlatList data={listings}
             renderItem={({ item }) => {
-              console.log(item)
+              console.log("item value inside PostedListing FlatList: ", item)
               return (
                 <View style={styles.container}>
                   <View style={styles.listingDetails}>
