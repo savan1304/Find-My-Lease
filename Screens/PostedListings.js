@@ -10,7 +10,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 
 export default function PostedListings({ navigation }) {
-
   const [listings, setListings] = useState([])
   const user = auth.currentUser
 
@@ -37,13 +36,11 @@ export default function PostedListings({ navigation }) {
   }, [])
 
 
-  // store visitRequests array as a Listing field and fetch it from firestore, and display its count
-  // add approved boolean field in ScheduledVisits collection, and set it true if landlord approves it, and display approval status (approved, pending, reschedule etc) in ScheduledVisits screen
-
   function handleDeleteListing(listingToBeDeletedID) {
     console.log("Inside handleDeleteListing")
     deleteFromDB(listingToBeDeletedID, 'Listing')
   }
+
 
   async function getListingDocSnap(listingId) {
     try {
@@ -67,12 +64,11 @@ export default function PostedListings({ navigation }) {
         console.log("listingData before navigating to PostListing page: ", listingData)
         navigation.navigate('PostListing', { listingData: listingData });
       }
-
     } catch (error) {
       console.error('Error in navigating to editing listing page:', error);
     }
-
   }
+
 
   async function handlePostiveVisitRequestCounterPress(visitRequest, listingId) {
     console.log("visit request counter pressed with visitRequest: ", visitRequest)
@@ -91,11 +87,13 @@ export default function PostedListings({ navigation }) {
     }
   }
 
+
   function handleZeroVisitRequestCounterPress() {
     Alert.alert('No requests', 'There are no viewing requests for this listing yet.', [
       { text: 'Ok', style: 'default' },
     ]);
   }
+
 
   return (
     <View>
