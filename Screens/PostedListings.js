@@ -1,9 +1,8 @@
 import { StyleSheet, Text, View, FlatList, Alert } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import { deleteFromDB } from '../Firebase/firestoreHelper';
+import { deleteFromDB, getDataById } from '../Firebase/firestoreHelper';
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { auth, database } from '../Firebase/firebaseSetup';
-import { doc, getDoc } from 'firebase/firestore';
 import PressableItem from '../Components/PressableItem';
 import { Colors } from '../Config/Colors';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -59,28 +58,15 @@ export default function PostedListings({ navigation }) {
   }
 
 
-  async function getListingDocSnap(listingId) {
-    try {
-      const listingRef = doc(database, 'Listing', listingId);
-      const docSnap = await getDoc(listingRef);
-      return docSnap
-    } catch (error) {
-      console.log("error while getting docSnap for listing: ", error)
-    }
-  }
-
-
   async function handleEditListing(listingToBeEditedID) {
     console.log("Inside handleEditListing")
 
     try {
-      const docSnap = await getListingDocSnap(listingToBeEditedID)
-      if (docSnap.exists()) {
-        const listingData = docSnap.data();
+        const listingData = await getDataById(listingToBeEditedID, 'Listing')
         listingData.id = listingToBeEditedID
         console.log("listingData before navigating to PostListing page: ", listingData)
         navigation.navigate('PostListing', { listingData: listingData });
-      }
+      // }
     } catch (error) {
       console.error('Error in navigating to editing listing page:', error);
     }
@@ -92,11 +78,7 @@ export default function PostedListings({ navigation }) {
     console.log("visit request counter pressed with listingId: ", listingId)
     try {
       let listingData = {}
-      const docSnap = await getListingDocSnap(listingId)
-      console.log('docSnap inside handlePostiveVisitRequestCounterPress from getListingDocSnap: ', docSnap)
-      if (docSnap.exists()) {
-        listingData = docSnap.data();
-      }
+      listingData = await getDataById(listingId, 'Listing')
       console.log('listingData before navigating to VisitRequests inside handlePostiveVisitRequestCounterPress: ', listingData)
       navigation.navigate('VisitRequests', { visitRequest: visitRequest, listingData: listingData });
     }
