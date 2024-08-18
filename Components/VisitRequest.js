@@ -232,6 +232,12 @@ const VisitRequestItem = ({ visit, listing }) => {
                         </Text>
                     </View>
                 )}
+
+                {(Object.keys(updatedVisit).length !== 0 && updatedVisit.rescheduleResponse !== '') && (
+                    <Text style={styles.info}>
+                        Reschedule response: {updatedVisit.rescheduleResponse.charAt(0).toUpperCase() + updatedVisit.rescheduleResponse.slice(1)}
+                    </Text>
+                )}
             </View>
 
             <View style={styles.editDeleteButtonContainer}>
