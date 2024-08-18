@@ -139,7 +139,7 @@ const VisitRequestItem = ({ visit, listing }) => {
 
     const handleTimeChange = (event, selectedTime, visitId) => {
         setShowTimePicker(false);
-        if (selectedTime) {
+        if (event.type === 'set' && selectedTime) {
             setNewVisitTime(selectedTime);
             requestReschedule(visitId, newVisitDate, selectedTime);
         }
