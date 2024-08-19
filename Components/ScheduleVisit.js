@@ -175,9 +175,25 @@ export default function ScheduleVisit({ navigation }) {
                 rescheduleTime: visitData.rescheduleTime,
                 status: visitData.status
             };
+            console.log("visit value after editing: ", visit)
 
-            if (visit.date !== visit.rescheduleDate && visit.time !== visit.rescheduleDate) {
-                updatedVisit.rescheduleResponse = 'pending';
+            if (visitData.rescheduleDate !== '' && visitData.rescheduleTime !== '') {
+                const visitDataRescheduleDateString = visitData.rescheduleDate.toDate().toLocaleDateString('en-GB');
+                const visitDataRescheduleTimeString = visitData.rescheduleTime.toDate().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+                const visitDateString = visit.date.toLocaleDateString('en-GB');
+                const visitTimeString = visit.time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+                if (visitDateString !== visitDataRescheduleDateString || visitTimeString !== visitDataRescheduleTimeString) {
+                    console.log('setting updatedVisit rescheduleResponse to pending')
+                    updatedVisit.rescheduleResponse = 'pending';
+                } else {
+                    if (visitDateString === visitDataRescheduleDateString && visitTimeString === visitDataRescheduleTimeString) {
+                        console.log('setting updatedVisit rescheduleResponse to empty string')
+                        updatedVisit.rescheduleResponse = ''
+                    }
+                }
+
             }
 
             console.log("updating the visit with: ", updatedVisit)

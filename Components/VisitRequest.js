@@ -115,7 +115,7 @@ const VisitRequestItem = ({ visit, listing }) => {
                 // Reschedule request exists but not accepted
                 Alert.alert(
                     "Confirm Approval",
-                    "The requester has not accepted the reschedule request yet. Do you want to approve the visit with the current displayed time?",
+                    "The requester has not accepted the reschedule request yet. Do you want to approve the visit with the current displayed date and time?",
                     [
                         {
                             text: "Cancel",
@@ -241,7 +241,7 @@ const VisitRequestItem = ({ visit, listing }) => {
         }
     }
 
-    
+
     function isCurrentAndRescheduleSame() {
         if (Object.keys(updatedVisit).length !== 0 && updatedVisit.date !== '' && updatedVisit.time !== '' && updatedVisit.rescheduleDate !== '' && updatedVisit.rescheduleTime !== '') {
             const updatedVisitDateString = updatedVisit.date.toDate().toLocaleDateString('en-GB'); // dd/mm/yyyy
@@ -320,7 +320,7 @@ const VisitRequestItem = ({ visit, listing }) => {
                     </View>
                 )}
 
-                {checkRescheduleResponseDisplay() && (
+                {(checkRescheduleResponseDisplay() || updatedVisit.rescheduleResponse === 'accepted' || updatedVisit.rescheduleResponse === 'pending') && (
                     <Text style={styles.info}>
                         Reschedule response: {updatedVisit.rescheduleResponse.charAt(0).toUpperCase() + updatedVisit.rescheduleResponse.slice(1)}
                     </Text>
