@@ -176,7 +176,7 @@ export default function ScheduleVisit({ navigation }) {
                 status: visitData.status
             };
 
-            if (visit.date !== visit.rescheduleDate && visit.time !== visit.rescheduleDate) {   // This will not work if landlord approves the visit before update is done from this function, Then the user will see status as reschedule even if it was approved, better pass status = visitData.status entirely in the previous updatedVisit.
+            if (visit.date !== visit.rescheduleDate && visit.time !== visit.rescheduleDate) {
                 updatedVisit.rescheduleResponse = 'pending';
             }
 
