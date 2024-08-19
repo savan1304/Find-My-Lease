@@ -241,6 +241,7 @@ const VisitRequestItem = ({ visit, listing }) => {
         }
     }
 
+    
     function isCurrentAndRescheduleSame() {
         if (Object.keys(updatedVisit).length !== 0 && updatedVisit.date !== '' && updatedVisit.time !== '' && updatedVisit.rescheduleDate !== '' && updatedVisit.rescheduleTime !== '') {
             const updatedVisitDateString = updatedVisit.date.toDate().toLocaleDateString('en-GB'); // dd/mm/yyyy
