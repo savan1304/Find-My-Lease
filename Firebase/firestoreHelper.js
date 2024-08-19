@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc, updateDoc, getDocs, query, where, setDoc  } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, updateDoc, getDocs, query, where, setDoc, getDoc } from "firebase/firestore";
 import { database } from "./firebaseSetup";
 
 export async function writeToDB(data, collectionName) {
@@ -52,4 +52,47 @@ export async function editToDB(id, data, collectionName) {
         console.log("Error in editing the document", error);
     }
 
+}
+
+
+export async function getDataById(id, collectionName) {
+    let data = {}
+    try {
+        const docRef = doc(database, collectionName, id);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            data = docSnap.data()
+        }
+        return data
+    } catch (error) {
+        console.log("Error in getDataById: ", error)
+    }
+}
+
+export async function getVisitDataById(visitId, userId) {
+    let visitData = {}
+    try {
+        const userDocRef = doc(database, "User", userId);
+        const visitSubcollectionRef = collection(userDocRef, "ScheduledVisits");
+        const visitDocRef = doc(visitSubcollectionRef, visitId);
+        const docSnap = await getDoc(visitDocRef);
+
+        if (docSnap.exists()) {
+            visitData = docSnap.data();
+        }
+        return visitData
+    } catch (error) {
+        console.log("Error in getVisitDataById: ", error)
+    }
+}
+
+export function getVisitDocRefById(visitId, userId) {
+    try {
+        const userDocRef = doc(database, "User", userId);
+        const visitSubcollectionRef = collection(userDocRef, "ScheduledVisits");
+        const visitDocRef = doc(visitSubcollectionRef, visitId);
+        return visitDocRef
+    } catch (error) {
+        console.log("Error in getVisitDocRefById: ", error)
+    }
 }
