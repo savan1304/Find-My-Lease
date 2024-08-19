@@ -62,10 +62,10 @@ export default function PostedListings({ navigation }) {
     console.log("Inside handleEditListing")
 
     try {
-        const listingData = await getDataById(listingToBeEditedID, 'Listing')
-        listingData.id = listingToBeEditedID
-        console.log("listingData before navigating to PostListing page: ", listingData)
-        navigation.navigate('PostListing', { listingData: listingData });
+      const listingData = await getDataById(listingToBeEditedID, 'Listing')
+      listingData.id = listingToBeEditedID
+      console.log("listingData before navigating to PostListing page: ", listingData)
+      navigation.navigate('PostListing', { listingData: listingData });
       // }
     } catch (error) {
       console.error('Error in navigating to editing listing page:', error);
@@ -109,7 +109,7 @@ export default function PostedListings({ navigation }) {
                 <View style={styles.container}>
                   <View style={styles.listingDetails}>
                     <Text style={styles.info}>Location: {item.location}</Text>
-                    <Text style={styles.info}>Price: {item.price}</Text>
+                    <Text style={styles.info}>Price: C$ {item.price}/mo</Text>
                     <Text style={styles.info}>Type: {item.type}</Text>
                     {item.visitRequests ? (
                       <PressableItem onPress={async () => { await handlePostiveVisitRequestCounterPress(item.visitRequests, item.id) }} style={[styles.editDeleteButtonStyle, { backgroundColor: Colors.shadowColor, marginHorizontal: 0, marginVertical: 5, width: '64%' }]} >

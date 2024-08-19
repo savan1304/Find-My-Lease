@@ -173,10 +173,11 @@ export default function ScheduleVisit({ navigation }) {
                 ...visit, // Including all existing properties from the original 'visit'
                 rescheduleDate: visitData.rescheduleDate,
                 rescheduleTime: visitData.rescheduleTime,
+                status: visitData.status
             };
 
-            if (visitData.status === 'rescheduled') {
-                updatedVisit.status = 'rescheduled';
+            if (visit.date !== visit.rescheduleDate && visit.time !== visit.rescheduleDate) {   // This will not work if landlord approves the visit before update is done from this function, Then the user will see status as reschedule even if it was approved, better pass status = visitData.status entirely in the previous updatedVisit.
+                updatedVisit.rescheduleResponse = 'pending';
             }
 
             console.log("updating the visit with: ", updatedVisit)
