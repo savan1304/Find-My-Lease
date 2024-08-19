@@ -92,7 +92,7 @@ const VisitRequestItem = ({ visit, listing }) => {
     console.log("visit status: ", visitStatus)
 
 
-    async function approveVisitInScheduleVisitAndVisitRequests(visitId) {
+    async function approveVisitInScheduledVisitsAndVisitRequests(visitId) {
         try {
             const visitDocRef = getVisitDocRefById(visitId, visit.requester)
             console.log("approving the visit with: ", visitId)
@@ -124,7 +124,7 @@ const VisitRequestItem = ({ visit, listing }) => {
                         {
                             text: "Approve",
                             onPress: async () => {
-                                await approveVisitInScheduleVisitAndVisitRequests(visitId)
+                                await approveVisitInScheduledVisitsAndVisitRequests(visitId)
                                 getUpdatedVisitData();
                             },
                         },
@@ -143,7 +143,7 @@ const VisitRequestItem = ({ visit, listing }) => {
                         {
                             text: "Approve",
                             onPress: async () => {
-                                await approveVisitInScheduleVisitAndVisitRequests(visitId)
+                                await approveVisitInScheduledVisitsAndVisitRequests(visitId)
                                 getUpdatedVisitData();
                             },
                         },
@@ -180,25 +180,50 @@ const VisitRequestItem = ({ visit, listing }) => {
 
 
     async function requestReschedule(visitId, newDate, newTime) {
-        console.log("inside requestReschedule with new visit Date: ", newDate)
-        console.log("inside requestReschedule with new visit Time: ", newTime)
+
+        const currentVisitDateString = updatedVisit.date.toDate().toLocaleDateString('en-GB'); // dd/mm/yyyy
+        const currentVisitTimeString = updatedVisit.time.toDate().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }); // hh:mm AM/PM
+
+        const newVisitDateString = newDate.toLocaleDateString('en-GB');
+        const newVisitTimeString = newTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+        console.log("inside requestReschedule with current visit Date: ", currentVisitDateString)
+        console.log("inside requestReschedule with new visit Date: ", newVisitDateString)
+        console.log("inside requestReschedule with current visit time: ", currentVisitTimeString)
+        console.log("inside requestReschedule with new visit Time: ", newVisitTimeString)
+
         try {
-            const visitDocRef = getVisitDocRefById(visitId, visit.requester)
-            await updateDoc(visitDocRef, {
-                rescheduleDate: newDate,
-                rescheduleTime: newTime,
-                status: 'rescheduled',
-                rescheduleResponse: 'pending'
-            });
+            if (currentVisitDateString === newVisitDateString && currentVisitTimeString === newVisitTimeString) {
+                Alert.alert(
+                    "No change in date or time",
+                    "The selected date and time for reschedule is same as current. Please choose a different date or time.",
+                    [
+                        {
+                            text: "Ok",
+                            onPress: async () => {
+                                await handleReschedule()
+                            },
+                        },
+                    ]
+                );
+            } else {
+                const visitDocRef = getVisitDocRefById(visitId, visit.requester)
+                await updateDoc(visitDocRef, {
+                    rescheduleDate: newDate,
+                    rescheduleTime: newTime,
+                    status: 'rescheduled',
+                    rescheduleResponse: 'pending'
+                });
 
-            const updatedVisitRequests = listing.visitRequests.map(request =>
-                request.id === visitId ? { ...request, rescheduleDate: newDate, rescheduleTime: newTime, status: 'rescheduled' } : request
-            );
+                const updatedVisitRequests = listing.visitRequests.map(request =>
+                    request.id === visitId ? { ...request, rescheduleDate: newDate, rescheduleTime: newTime, status: 'rescheduled' } : request
+                );
 
-            const listingDocRef = doc(database, 'Listing', visit.listingId);
-            await updateDoc(listingDocRef, { visitRequests: updatedVisitRequests });
+                const listingDocRef = doc(database, 'Listing', visit.listingId);
+                await updateDoc(listingDocRef, { visitRequests: updatedVisitRequests });
 
-            getUpdatedVisitData();
+                getUpdatedVisitData();
+            }
 
         } catch (error) {
             console.log("Error inside requestReschedule: ", error)
