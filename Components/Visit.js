@@ -9,7 +9,7 @@ const Visit = ({ visit }) => {
     return (
         <View>
             <Text style={styles.info}>Location: {visit.listingLocation}</Text>
-            <Text style={styles.info}>Price: {visit.listingPrice}</Text>
+            <Text style={styles.info}>Price: C$ {visit.listingPrice}/mo</Text>
             <Text style={styles.info}>Date: {visit.date}</Text>
             <Text style={styles.info}>Time: {visit.time}</Text>
             <Text style={styles.info}>Questions: {visit.questions}</Text>
