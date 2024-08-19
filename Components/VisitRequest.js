@@ -187,11 +187,6 @@ const VisitRequestItem = ({ visit, listing }) => {
         const newVisitDateString = newDate.toLocaleDateString('en-GB');
         const newVisitTimeString = newTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
-        console.log("inside requestReschedule with current visit Date: ", currentVisitDateString)
-        console.log("inside requestReschedule with new visit Date: ", newVisitDateString)
-        console.log("inside requestReschedule with current visit time: ", currentVisitTimeString)
-        console.log("inside requestReschedule with new visit Time: ", newVisitTimeString)
-
         try {
             if (currentVisitDateString === newVisitDateString && currentVisitTimeString === newVisitTimeString) {
                 Alert.alert(
@@ -246,16 +241,26 @@ const VisitRequestItem = ({ visit, listing }) => {
         }
     }
 
+    function isCurrentAndRescheduleSame() {
+        if (Object.keys(updatedVisit).length !== 0 && updatedVisit.date !== '' && updatedVisit.time !== '' && updatedVisit.rescheduleDate !== '' && updatedVisit.rescheduleTime !== '') {
+            const updatedVisitDateString = updatedVisit.date.toDate().toLocaleDateString('en-GB'); // dd/mm/yyyy
+            const updatedVisitTimeString = updatedVisit.time.toDate().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }); // hh:mm AM/PM
+
+            const updatedVisitRescheduleDateString = updatedVisit.rescheduleDate.toDate().toLocaleDateString('en-GB');
+            const updatedVisitRescheduleTimeString = updatedVisit.rescheduleTime.toDate().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+            if (updatedVisitDateString === updatedVisitRescheduleDateString && updatedVisitTimeString === updatedVisitRescheduleTimeString) {
+                return true
+            }
+        }
+        return false
+    }
+
 
     function checkRescheduleDateTimeDisplay() {
         if (
             Object.keys(updatedVisit).length !== 0 && (updatedVisit.rescheduleDate !== '' && updatedVisit.rescheduleTime !== '' && visitStatus !== 'approved') &&
-            (
-                (updatedVisit.rescheduleDate.seconds !== updatedVisit.date.seconds ||
-                    updatedVisit.rescheduleDate.nanoseconds !== updatedVisit.date.nanoseconds) ||
-                (updatedVisit.rescheduleTime.seconds !== updatedVisit.time.seconds ||
-                    updatedVisit.rescheduleTime.nanoseconds !== updatedVisit.time.nanoseconds)
-            )
+            !isCurrentAndRescheduleSame()
         ) {
             console.log('checkRescheduleDateTimeDisplay returning true');
             return true;
@@ -266,7 +271,9 @@ const VisitRequestItem = ({ visit, listing }) => {
 
 
     function checkRescheduleResponseDisplay() {
-        if (Object.keys(updatedVisit).length !== 0 && updatedVisit.rescheduleResponse !== '' && visitStatus !== 'approved') {
+        if (Object.keys(updatedVisit).length !== 0 && (updatedVisit.rescheduleResponse !== '' && visitStatus !== 'approved') &&
+            !isCurrentAndRescheduleSame()
+        ) {
             console.log('checkRescheduleResponseDisplay returning true');
             return true;
         }
