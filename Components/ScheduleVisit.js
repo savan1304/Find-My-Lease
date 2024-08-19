@@ -168,12 +168,23 @@ export default function ScheduleVisit({ navigation }) {
         let updatedVisitRequests = []
         if (visitData.id) {
             const visitDocRef = getVisitDocRefById(visitData.id, user.uid)
-            console.log("updating the visit with: ", visit)
-            await updateDoc(visitDocRef, visit);
+
+            const updatedVisit = {
+                ...visit, // Including all existing properties from the original 'visit'
+                rescheduleDate: visitData.rescheduleDate,
+                rescheduleTime: visitData.rescheduleTime,
+            };
+
+            if (visitData.status === 'rescheduled') {
+                updatedVisit.status = 'rescheduled';
+            }
+
+            console.log("updating the visit with: ", updatedVisit)
+            await updateDoc(visitDocRef, updatedVisit);
 
             updatedVisitRequests = listingData.visitRequests.map(request => {   // For updating the changes in visitRequests in 'Listing'
                 if (request.id === visitData.id) {
-                    return { ...request, ...visit }; // Merge updated data
+                    return { ...request, ...updatedVisit }; // Merge updated data
                 } else {
                     return request;
                 }
