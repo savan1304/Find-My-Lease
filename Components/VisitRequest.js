@@ -1,12 +1,12 @@
-import { StyleSheet, Text, View, FlatList } from 'react-native'
+import { StyleSheet, Text, View, FlatList, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useRoute } from '@react-navigation/native'
-import { auth } from '../Firebase/firebaseSetup'
-import { collection, doc, getDoc, updateDoc } from 'firebase/firestore'
+import { doc, updateDoc } from 'firebase/firestore'
 import { database } from '../Firebase/firebaseSetup'
 import PressableItem from './PressableItem'
 import { Colors } from '../Config/Colors'
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { getDataById, getVisitDataById, getVisitDocRefById } from '../Firebase/firestoreHelper'
 
 
 const VisitRequestItem = ({ visit, listing }) => {
@@ -38,11 +38,9 @@ const VisitRequestItem = ({ visit, listing }) => {
 
     async function getUpdatedVisitData() {
         try {
-            const updatedVisitDocRef = await getVisitDocRefById(visit.id)
-            console.log("updtedVisitDocRef", updatedVisitDocRef)
-            const updateddocSnap = await getDoc(updatedVisitDocRef);
-            if (updateddocSnap.exists()) {
-                setUpdatedVisit(updateddocSnap.data());
+            const updatedVisitData = await getVisitDataById(visit.id, visit.requester)
+            if (Object.keys(updatedVisitData).length !== 0) {
+                setUpdatedVisit(updatedVisitData);
             }
         } catch (error) {
             console.log("Error while fetching updatedVisitData: ", error)
@@ -56,8 +54,10 @@ const VisitRequestItem = ({ visit, listing }) => {
 
 
     useEffect(() => {
-        updateDateAndTimeInVisitRequests()
-    }, [updatedVisit])
+        if (updatedVisit.rescheduleResponse === 'accepted' || updatedVisit.status === 'approved') {
+            updateDateAndTimeInVisitRequests()
+        }
+    }, [])
 
 
     // updating visitStatus whenever updatedVisit changes
@@ -74,10 +74,10 @@ const VisitRequestItem = ({ visit, listing }) => {
         const fetchRequesterData = async () => {
             if (visit.requester) {
                 setIsLoading(true);
-                const requesterDocRef = doc(database, "User", visit.requester);
-                const docSnap = await getDoc(requesterDocRef);
-                if (docSnap.exists()) {
-                    setRequesterData(docSnap.data());
+
+                const requesterDetails = await getDataById(visit.requester, "User")
+                if (Object.keys(requesterDetails).length !== 0) {
+                    setRequesterData(requesterDetails);
                 } else {
                     console.log("Requester information is missing for this visit request.");
                 }
@@ -89,23 +89,12 @@ const VisitRequestItem = ({ visit, listing }) => {
     }, [visit.requester]); // Running this effect whenever visit.requester changes
 
 
-    async function getVisitDocRefById(visitId) {
-        try {
-            const userDocRef = doc(database, "User", visit.requester);
-            const visitSubcollectionRef = collection(userDocRef, "ScheduledVisits");
-            const visitDocRef = doc(visitSubcollectionRef, visitId);
-            return visitDocRef
-        } catch (error) {
-            console.log("Error in getVisitDocRefById: ", error)
-        }
-    }
-
     console.log("visit status: ", visitStatus)
 
 
-    async function handleApprove(visitId) {
+    async function approveVisitInScheduledVisitsAndVisitRequests(visitId) {
         try {
-            const visitDocRef = await getVisitDocRefById(visitId)
+            const visitDocRef = getVisitDocRefById(visitId, visit.requester)
             console.log("approving the visit with: ", visitId)
             await updateDoc(visitDocRef, { status: 'approved' });
 
@@ -114,16 +103,60 @@ const VisitRequestItem = ({ visit, listing }) => {
             );
             const listingDocRef = doc(database, 'Listing', visit.listingId);
             await updateDoc(listingDocRef, { visitRequests: updatedVisitRequests });
-
-            getUpdatedVisitData()
-
         } catch (error) {
-            console.log("Error inside handleApprove: ", error)
+            console.log('Error in approveVisitInScheduleVisitAndVisitRequests: ', error)
         }
     }
 
 
-    async function handleReschedule(visitId) {
+    async function handleApprove(visitId) {
+        try {
+            if (updatedVisit.rescheduleResponse && updatedVisit.rescheduleResponse !== '' && updatedVisit.rescheduleResponse !== 'accepted') {
+                // Reschedule request exists but not accepted
+                Alert.alert(
+                    "Confirm Approval",
+                    "The requester has not accepted the reschedule request yet. Do you want to approve the visit with the current displayed date and time?",
+                    [
+                        {
+                            text: "Cancel",
+                            style: "cancel",
+                        },
+                        {
+                            text: "Approve",
+                            onPress: async () => {
+                                await approveVisitInScheduledVisitsAndVisitRequests(visitId)
+                                getUpdatedVisitData();
+                            },
+                        },
+                    ]
+                );
+            } else {
+                // No reschedule request or it's accepted
+                Alert.alert(
+                    "Confirm Approval",
+                    "Are you sure you want to approve this visit?",
+                    [
+                        {
+                            text: "Cancel",
+                            style: "cancel",
+                        },
+                        {
+                            text: "Approve",
+                            onPress: async () => {
+                                await approveVisitInScheduledVisitsAndVisitRequests(visitId)
+                                getUpdatedVisitData();
+                            },
+                        },
+                    ]
+                );
+            }
+        } catch (error) {
+            console.log("Error inside handleApprove: ", error);
+        }
+    }
+
+
+    async function handleReschedule() {
         setShowDatePicker(true);
     }
 
@@ -147,26 +180,45 @@ const VisitRequestItem = ({ visit, listing }) => {
 
 
     async function requestReschedule(visitId, newDate, newTime) {
-        console.log("inside requestReschedule with new visit Date: ", newDate)
-        console.log("inside requestReschedule with new visit Time: ", newTime)
+
+        const currentVisitDateString = updatedVisit.date.toDate().toLocaleDateString('en-GB'); // dd/mm/yyyy
+        const currentVisitTimeString = updatedVisit.time.toDate().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }); // hh:mm AM/PM
+
+        const newVisitDateString = newDate.toLocaleDateString('en-GB');
+        const newVisitTimeString = newTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
         try {
-            const visitDocRef = await getVisitDocRefById(visitId)
+            if (currentVisitDateString === newVisitDateString && currentVisitTimeString === newVisitTimeString) {
+                Alert.alert(
+                    "No change in date or time",
+                    "The selected date and time for reschedule is same as current. Please choose a different date or time.",
+                    [
+                        {
+                            text: "Ok",
+                            onPress: async () => {
+                                await handleReschedule()
+                            },
+                        },
+                    ]
+                );
+            } else {
+                const visitDocRef = getVisitDocRefById(visitId, visit.requester)
+                await updateDoc(visitDocRef, {
+                    rescheduleDate: newDate,
+                    rescheduleTime: newTime,
+                    status: 'rescheduled',
+                    rescheduleResponse: 'pending'
+                });
 
-            await updateDoc(visitDocRef, {
-                rescheduleDate: newDate,
-                rescheduleTime: newTime,
-                status: 'rescheduled',
-                rescheduleResponse: 'pending'
-            });
+                const updatedVisitRequests = listing.visitRequests.map(request =>
+                    request.id === visitId ? { ...request, rescheduleDate: newDate, rescheduleTime: newTime, status: 'rescheduled' } : request
+                );
 
-            const updatedVisitRequests = listing.visitRequests.map(request =>
-                request.id === visitId ? { ...request, rescheduleDate: newDate, rescheduleTime: newTime, status: 'rescheduled' } : request
-            );
+                const listingDocRef = doc(database, 'Listing', visit.listingId);
+                await updateDoc(listingDocRef, { visitRequests: updatedVisitRequests });
 
-            const listingDocRef = doc(database, 'Listing', visit.listingId);
-            await updateDoc(listingDocRef, { visitRequests: updatedVisitRequests });
-
-            getUpdatedVisitData();
+                getUpdatedVisitData();
+            }
 
         } catch (error) {
             console.log("Error inside requestReschedule: ", error)
@@ -190,21 +242,44 @@ const VisitRequestItem = ({ visit, listing }) => {
     }
 
 
+    function isCurrentAndRescheduleSame() {
+        if (Object.keys(updatedVisit).length !== 0 && updatedVisit.date !== '' && updatedVisit.time !== '' && updatedVisit.rescheduleDate !== '' && updatedVisit.rescheduleTime !== '') {
+            const updatedVisitDateString = updatedVisit.date.toDate().toLocaleDateString('en-GB'); // dd/mm/yyyy
+            const updatedVisitTimeString = updatedVisit.time.toDate().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }); // hh:mm AM/PM
+
+            const updatedVisitRescheduleDateString = updatedVisit.rescheduleDate.toDate().toLocaleDateString('en-GB');
+            const updatedVisitRescheduleTimeString = updatedVisit.rescheduleTime.toDate().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+            if (updatedVisitDateString === updatedVisitRescheduleDateString && updatedVisitTimeString === updatedVisitRescheduleTimeString) {
+                return true
+            }
+        }
+        return false
+    }
+
+
     function checkRescheduleDateTimeDisplay() {
         if (
-            Object.keys(updatedVisit).length !== 0 && (updatedVisit.rescheduleDate !== '' && updatedVisit.rescheduleTime !== '') &&
-            (
-                (updatedVisit.rescheduleDate.seconds !== updatedVisit.date.seconds ||
-                    updatedVisit.rescheduleDate.nanoseconds !== updatedVisit.date.nanoseconds) ||
-                (updatedVisit.rescheduleTime.seconds !== updatedVisit.time.seconds ||
-                    updatedVisit.rescheduleTime.nanoseconds !== updatedVisit.time.nanoseconds)
-            )
+            Object.keys(updatedVisit).length !== 0 && (updatedVisit.rescheduleDate !== '' && updatedVisit.rescheduleTime !== '' && visitStatus !== 'approved') &&
+            !isCurrentAndRescheduleSame()
         ) {
             console.log('checkRescheduleDateTimeDisplay returning true');
             return true;
         }
         console.log('checkRescheduleDateTimeDisplay returning false');
         return false;
+    }
+
+
+    function checkRescheduleResponseDisplay() {
+        if (Object.keys(updatedVisit).length !== 0 && (updatedVisit.rescheduleResponse !== '' && visitStatus !== 'approved') &&
+            !isCurrentAndRescheduleSame()
+        ) {
+            console.log('checkRescheduleResponseDisplay returning true');
+            return true;
+        }
+        console.log('checkRescheduleResponseDisplay returning false');
+        return false
     }
 
 
@@ -245,7 +320,7 @@ const VisitRequestItem = ({ visit, listing }) => {
                     </View>
                 )}
 
-                {(Object.keys(updatedVisit).length !== 0 && updatedVisit.rescheduleResponse !== '') && (
+                {(checkRescheduleResponseDisplay() || updatedVisit.rescheduleResponse === 'accepted' || updatedVisit.rescheduleResponse === 'pending') && (
                     <Text style={styles.info}>
                         Reschedule response: {updatedVisit.rescheduleResponse.charAt(0).toUpperCase() + updatedVisit.rescheduleResponse.slice(1)}
                     </Text>
@@ -266,7 +341,7 @@ const VisitRequestItem = ({ visit, listing }) => {
                 )
                 }
 
-                <PressableItem onPress={() => { handleReschedule(visit.id) }} style={[styles.approveButtonStyle, { backgroundColor: Colors.yellow, width: '85%' }]} >
+                <PressableItem onPress={() => { handleReschedule() }} style={[styles.approveButtonStyle, { backgroundColor: Colors.yellow, width: '85%' }]} >
                     <Text style={{ color: Colors.background }}>Reschedule</Text>
                 </PressableItem>
 

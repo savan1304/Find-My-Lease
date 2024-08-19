@@ -3,11 +3,11 @@ import React, { useState, useEffect } from 'react'
 import PressableItem from '../Components/PressableItem';
 import Visit from '../Components/Visit';
 import { collection, onSnapshot, query } from 'firebase/firestore';
-import { deleteFromDB } from '../Firebase/firestoreHelper';
+import { deleteFromDB, getDataById, getVisitDataById, getVisitDocRefById } from '../Firebase/firestoreHelper';
 import { Colors } from '../Config/Colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { auth, database } from '../Firebase/firebaseSetup';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc } from 'firebase/firestore';
 import call from 'react-native-phone-call'
 
 
@@ -70,16 +70,12 @@ export default function ScheduledVisits({ navigation }) {
                     text: "Delete",
                     onPress: async () => {
                         try {
-                            const listingDocRef = doc(database, 'Listing', visit.listingId);
-                            const listingDocSnap = await getDoc(listingDocRef);
-
-                            if (!listingDocSnap.exists()) {
-                                throw new Error("Listing not found");
-                            }
-                            const listingData = listingDocSnap.data();
+                            const listingData = await getDataById(visit.listingId, 'Listing')
                             const updatedVisitRequests = listingData.visitRequests.filter(
                                 request => request.id !== visit.id
                             );
+
+                            const listingDocRef = doc(database, 'Listing', visit.listingId);
                             await updateDoc(listingDocRef, { visitRequests: updatedVisitRequests });
                             console.log("Visit deleted from visitRequests successfully");
                         } catch (error) {
@@ -89,7 +85,7 @@ export default function ScheduledVisits({ navigation }) {
                         const visitCollectionName = `User/${user.uid}/ScheduledVisits`;
                         deleteFromDB(visit.id, visitCollectionName)
                     },
-                    style: "destructive", // Optional: to visually indicate a destructive action
+                    style: "destructive",
                 },
             ]
         );
@@ -101,49 +97,20 @@ export default function ScheduledVisits({ navigation }) {
         let visitData = {}
         let listingData = {}
         try {
-            const userDocRef = doc(database, "User", user.uid);
-            const visitSubcollectionRef = collection(userDocRef, "ScheduledVisits");
-            const visitDocRef = doc(visitSubcollectionRef, visitToBeEditedID);
-            const docSnap = await getDoc(visitDocRef);
+            visitData = await getVisitDataById(visitToBeEditedID, user.uid);
+            console.log("inside if block with visitData: ", visitData)
+            visitData.id = visitToBeEditedID
+            console.log("visitData before navigating to ScheduleVisit page: ", visitData)
 
-            if (docSnap.exists()) {
-                visitData = docSnap.data();
-                console.log("inside if block with visitData: ", visitData)
-                visitData.id = visitToBeEditedID
-                console.log("visitData before navigating to ScheduleVisit page: ", visitData)
+            listingData = await getDataById(visitData.listingId, 'Listing')
+            console.log("listingData before navigating to ScheduleVisit page: ", listingData)
 
-                const listingDocRef = doc(database, 'Listing', visitData.listingId);
-                const listingDocSnap = await getDoc(listingDocRef);
-                console.log("response from getDoc for listingData: ", listingDocSnap)
-
-                if (listingDocSnap.exists()) {
-                    listingData = listingDocSnap.data();
-                    console.log("listingData from listingDocSnap: ", listingDocSnap)
-                }
-                console.log("listingData before navigating to ScheduleVisit page: ", listingData)
-
-                navigation.navigate('ScheduleVisit', { visitData, listingData });
-            }
+            navigation.navigate('ScheduleVisit', { visitData, listingData });
 
         } catch (error) {
             console.error('Error in navigating to editing visit page:', error);
         }
 
-    }
-
-
-    async function getDataById(id, collectionName) {
-        let data = {}
-        try {
-            const docRef = doc(database, collectionName, id);
-            const docSnap = await getDoc(docRef);
-            if (docSnap.exists()) {
-                data = docSnap.data()
-            }
-            return data
-        } catch (error) {
-            console.log("Error in getDataById with collectonName: ", collectionName)
-        }
     }
 
 
@@ -184,16 +151,10 @@ export default function ScheduledVisits({ navigation }) {
 
                             async function handleAcceptReschedule() {
                                 try {
-                                    const userDocRef = doc(database, "User", user.uid);
-                                    const visitSubcollectionRef = collection(userDocRef, "ScheduledVisits");
-                                    const visitDocRef = doc(visitSubcollectionRef, item.id);
-
-                                    const docSnap = await getDoc(visitDocRef);
-                                    if (docSnap.exists()) {
-                                        visitData = docSnap.data();
-                                    }
-
+                                    const visitData = await getVisitDataById(item.id, user.uid);
                                     console.log("visitData in handleAcceptReschedule: ", visitData)
+
+                                    const visitDocRef = getVisitDocRefById(item.id, user.uid)
                                     await updateDoc(visitDocRef, {
                                         date: visitData.rescheduleDate,
                                         time: visitData.rescheduleTime,

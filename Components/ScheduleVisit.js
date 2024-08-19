@@ -1,4 +1,4 @@
-import { Text, View, TouchableOpacity, TextInput, Switch, Image, ScrollView, FlatList } from 'react-native'
+import { Text, View, TouchableOpacity, TextInput, Switch, Image, ScrollView, FlatList, Alert } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { appStyles } from '../Config/Styles';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -10,6 +10,7 @@ import { Colors } from '../Config/Colors';
 import { scheduleNotification, requestNotificationPermissions } from '../Components/NotificationManager';
 import { getDownloadURL, ref } from 'firebase/storage';
 import { storage } from '../Firebase/firebaseSetup';
+import { getVisitDocRefById } from '../Firebase/firestoreHelper';
 
 export default function ScheduleVisit({ navigation }) {
 
@@ -41,7 +42,6 @@ export default function ScheduleVisit({ navigation }) {
     const [showTimePicker, setShowTimePicker] = useState(false);
 
     const [imageUrls, setImageUrls] = useState([]); // Storing fetched image URLs
-    const [listingDetails, setListingDetails] = useState({})
 
 
     useEffect(() => {
@@ -70,26 +70,6 @@ export default function ScheduleVisit({ navigation }) {
         populateData()
 
     }, [route]); // Adding route as a dependency
-
-
-    useEffect(() => {
-        const listingID = listingData?.id || listing.id
-        async function getListingDetails() {
-            try {
-                const listingDocRef = doc(database, 'Listing', listingID);
-                const listingDocSnap = await getDoc(listingDocRef);
-                if (!listingDocSnap.exists()) {
-                    throw new Error("Listing not found");
-                }
-                const listingData = listingDocSnap.data();
-                console.log('getListingData listingData: ', listingData)
-                setListingDetails(listingData)
-            } catch (error) {
-                console.log('error in getListingData in useEffect: ', error)
-            }
-        }
-        getListingDetails()
-    }, [route])
 
 
     async function fetchImageUrls() {
@@ -183,62 +163,113 @@ export default function ScheduleVisit({ navigation }) {
         reset()
     }
 
+    async function saveVisit() {
+        let visitID = ''
+        let updatedVisitRequests = []
+        if (visitData.id) {
+            const visitDocRef = getVisitDocRefById(visitData.id, user.uid)
+
+            const updatedVisit = {
+                ...visit, // Including all existing properties from the original 'visit'
+                rescheduleDate: visitData.rescheduleDate,
+                rescheduleTime: visitData.rescheduleTime,
+                status: visitData.status
+            };
+            console.log("visit value after editing: ", visit)
+
+            if (visitData.rescheduleDate !== '' && visitData.rescheduleTime !== '') {
+                const visitDataRescheduleDateString = visitData.rescheduleDate.toDate().toLocaleDateString('en-GB');
+                const visitDataRescheduleTimeString = visitData.rescheduleTime.toDate().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+                const visitDateString = visit.date.toLocaleDateString('en-GB');
+                const visitTimeString = visit.time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+                if (visitDateString !== visitDataRescheduleDateString || visitTimeString !== visitDataRescheduleTimeString) {
+                    console.log('setting updatedVisit rescheduleResponse to pending')
+                    updatedVisit.rescheduleResponse = 'pending';
+                } else {
+                    if (visitDateString === visitDataRescheduleDateString && visitTimeString === visitDataRescheduleTimeString) {
+                        console.log('setting updatedVisit rescheduleResponse to empty string')
+                        updatedVisit.rescheduleResponse = ''
+                    }
+                }
+
+            }
+
+            console.log("updating the visit with: ", updatedVisit)
+            await updateDoc(visitDocRef, updatedVisit);
+
+            updatedVisitRequests = listingData.visitRequests.map(request => {   // For updating the changes in visitRequests in 'Listing'
+                if (request.id === visitData.id) {
+                    return { ...request, ...updatedVisit }; // Merge updated data
+                } else {
+                    return request;
+                }
+            });
+
+        } else {
+            const scheduledVisitsCollectionRef = collection(database, 'User', user.uid, 'ScheduledVisits');
+            console.log("creating a visit with: ", visit)
+            const newVisitDocRef = await addDoc(scheduledVisitsCollectionRef, visit);   // creating a visit in 'ScheduledVisits'
+            visitID = newVisitDocRef.id
+            console.log('visitID from newVsitDocRef after adding visit in ScheduledVisits: ', visitID)
+            console.log("listing.visitRequests before updating with new visit: ", listing.visitRequests)
+
+            updatedVisitRequests = [                // For storing the visit in visitRequests in 'Listing'
+                ...(listing.visitRequests || []),
+                { ...visit, id: visitID },
+            ];
+        }
+
+        const listingDocRef = doc(database, 'Listing', visit.listingId);
+        const listingDocSnap = await getDoc(listingDocRef);
+        if (!listingDocSnap.exists()) {
+            throw new Error("Listing not found");
+        }
+        await updateDoc(listingDocRef, { visitRequests: updatedVisitRequests });    // storing or updating visitRequests in 'Listing'
+
+
+        // Schedule a notification if the reminder is set
+        if (visit.setReminder) {
+            const reminderDate = new Date(visit.date.getTime());
+            reminderDate.setDate(reminderDate.getDate() - 1); // Set reminder 1 day before the actual visit
+
+            await scheduleNotification(reminderDate, "Reminder", `Visit scheduled for ${visit.listingLocation} at ${visit.date.toLocaleDateString()}`);
+        }
+
+        console.log("scheduled a visit: ", visit);
+        if (visitData.id) {
+            navigation.goBack()
+        } else {
+            navigation.navigate('HomeMain');
+        }
+        reset();
+    }
+
 
     async function handleSubmit() {
-        console.log("scheduled a visit: ", visit);
         try {
             if (!user) {
                 throw new Error("User not authenticated");
             }
 
-            let visitID = ''
-            let updatedVisitRequests = []
-            if (visitData.id) {
-                const userDocRef = doc(database, "User", user.uid); // storing the changes in 'ScheduledVisits'
-                const visitSubcollectionRef = collection(userDocRef, "ScheduledVisits");
-                const visitDocRef = doc(visitSubcollectionRef, visitData.id);
-                console.log("updating the visit with: ", visit)
-                await updateDoc(visitDocRef, visit);
+            Alert.alert(
+                "Confirm",
+                "Are you sure you want to save the visit?",
+                [
+                    {
+                        text: "Cancel",
+                        style: "cancel",
+                    },
+                    {
+                        text: "Save",
+                        onPress: async () => {
+                            await saveVisit()
+                        },
+                    },
+                ]
+            );
 
-                updatedVisitRequests = listingData.visitRequests.map(request => {   // For updating the changes in visitRequests in 'Listing'
-                    if (request.id === visitData.id) {
-                        return { ...request, ...visit }; // Merge updated data
-                    } else {
-                        return request;
-                    }
-                });
-
-            } else {
-                const scheduledVisitsCollectionRef = collection(database, 'User', user.uid, 'ScheduledVisits');
-                console.log("creating a visit with: ", visit)
-                const newVisitDocRef = await addDoc(scheduledVisitsCollectionRef, visit);   // creating a visit in 'ScheduledVisits'
-                visitID = newVisitDocRef.id
-                console.log('visitID from newVsitDocRef after adding visit in ScheduledVisits: ', visitID)
-                
-                updatedVisitRequests = [                // For storing the visit in visitRequests in 'Listing'
-                    ...(listing.visitRequests || []),
-                    { ...visit, id: visitID },
-                ];
-            }
-
-            const listingDocRef = doc(database, 'Listing', visit.listingId);
-            const listingDocSnap = await getDoc(listingDocRef);
-            if (!listingDocSnap.exists()) {
-                throw new Error("Listing not found");
-            }
-            await updateDoc(listingDocRef, { visitRequests: updatedVisitRequests });    // storing or updating visitRequests in 'Listing'
-
-
-            // Schedule a notification if the reminder is set
-            if (visit.setReminder) {
-                const reminderDate = new Date(visit.date.getTime());
-                reminderDate.setDate(reminderDate.getDate() - 1); // Set reminder 1 day before the actual visit
-
-                await scheduleNotification(reminderDate, "Reminder", `Visit scheduled for ${visit.listingLocation} at ${visit.date.toLocaleDateString()}`);
-            }
-
-            navigation.goBack();
-            reset();
         } catch (error) {
             console.error("Error scheduling visit:", error);
         }
