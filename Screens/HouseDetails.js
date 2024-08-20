@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, ScrollView, Alert, Modal, Button } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image, ScrollView, Alert, Modal, Button } from 'react-native';
 import { writeToDB } from '../Firebase/firestoreHelper';
 import { scoreApiKey } from '@env';  
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -7,6 +7,7 @@ import { AuthContext } from '../Components/AuthContext';
 import { doc, getDoc } from 'firebase/firestore'; 
 import { storage, database } from '../Firebase/firebaseSetup'; 
 import { ref, getDownloadURL } from 'firebase/storage'; 
+import PressableItem from '../Components/PressableItem';
 
 const HouseDetails = ({ route, navigation }) => {
     const { house } = route.params;
@@ -112,12 +113,14 @@ const HouseDetails = ({ route, navigation }) => {
         try {
             if (user) {
                 const collectionPath = `User/${user.uid}/saved`;
-                await writeToDB(house, collectionPath);
+                const houseToSave = { id: house.id }; // Creating an object that just contains the house ID
+                await writeToDB(houseToSave, collectionPath); // Save only the house ID
+                Alert.alert('Success', 'House saved successfully');
             } else {
                 Alert.alert('Error', 'No user is signed in');
             }
         } catch (error) {
-            console.log('Error saving house:', error);
+            console.error('Error saving house:', error);
             Alert.alert('Error', 'Failed to save house. Please try again.');
         }
     };
@@ -171,15 +174,15 @@ const HouseDetails = ({ route, navigation }) => {
                     </View>
                 )}
             </View>
-            <TouchableOpacity style={styles.button} onPress={handleContact}>
+            <PressableItem style={styles.button} onPress={handleContact}>
                 <Text style={styles.buttonText}>Contact</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={confirmSave}>
+            </PressableItem>
+            <PressableItem style={styles.button} onPress={confirmSave}>
                 <Text style={styles.buttonText}>Save</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={handleScheduleViewing}>
+            </PressableItem>
+            <PressableItem style={styles.button} onPress={handleScheduleViewing}>
                 <Text style={styles.buttonText}>Schedule Viewing</Text>
-            </TouchableOpacity>
+            </PressableItem>
 
             {/* Modal for Contact Information */}
             <Modal

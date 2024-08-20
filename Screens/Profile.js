@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Modal, TextInput, Button, Alert } from 'react-native';
+import { StyleSheet, Text, View, Modal, TextInput, Button, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { auth, database } from '../Firebase/firebaseSetup'; 
 import { doc, getDoc } from 'firebase/firestore'; 
 import { editToDB } from '../Firebase/firestoreHelper'; 
 import { AuthContext } from '../Components/AuthContext';
+import PressableItem from '../Components/PressableItem';
 
 const Profile = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
@@ -59,10 +60,9 @@ const Profile = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Profile</Text>
-        <TouchableOpacity style={styles.editButton} onPress={() => setIsModalVisible(true)}>
+        <PressableItem style={styles.editButton} onPress={() => setIsModalVisible(true)}>
           <Icon name="edit" size={24} color="#fff" />
-        </TouchableOpacity>
+        </PressableItem>
       </View>
 
       {user ? (
@@ -81,15 +81,15 @@ const Profile = ({ navigation }) => {
         </>
       )}
 
-      <TouchableOpacity style={styles.button} onPress={() => handleNavigation('PostedListings')}>
+      <PressableItem style={styles.button} onPress={() => handleNavigation('PostedListings')}>
         <Text style={styles.buttonText}>My Posted Listings</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => handleNavigation('ScheduledVisits')}>
+      </PressableItem>
+      <PressableItem style={styles.button} onPress={() => handleNavigation('ScheduledVisits')}>
         <Text style={styles.buttonText}>My Scheduled Visits</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => handleNavigation('PostListing')}>
+      </PressableItem>
+      <PressableItem style={styles.button} onPress={() => handleNavigation('PostListing')}>
         <Text style={styles.buttonText}>Post a listing</Text>
-      </TouchableOpacity>
+      </PressableItem>
 
       <Modal
         animationType="slide"
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
   },
   title: {
