@@ -88,7 +88,7 @@ const VisitRequestItem = ({ visit, listing }) => {
         fetchRequesterData();
     }, [visit.requester]); // Running this effect whenever visit.requester changes
 
-
+    console.log("visit requester: ", requesterData)
     console.log("visit status: ", visitStatus)
 
 
@@ -304,7 +304,7 @@ const VisitRequestItem = ({ visit, listing }) => {
                 {isLoading ? (
                     <Text>Loading requester data...</Text>
                 ) : (
-                    requesterData && requesterData.name &&
+                    requesterData &&
                     <View>
                         <Text style={styles.info}>Name: {requesterData.name}</Text>
                         <Text style={styles.info}>Email: {requesterData.email}</Text>
