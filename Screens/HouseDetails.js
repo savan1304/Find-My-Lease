@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, ScrollView, Alert, Modal, Button } from 'react-native';
 import { writeToDB } from '../Firebase/firestoreHelper';
 import { scoreApiKey } from '@env';  
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { AuthContext } from '../Components/AuthContext';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { storage, database } from '../Firebase/firebaseSetup'; 
@@ -177,15 +177,15 @@ const HouseDetails = ({ route, navigation }) => {
                 {locationScores && (
                     <View style={styles.scoresContainer}>
                         <View style={styles.scoreDetail}>
-                            <MaterialCommunityIcons name="walk" size={24} color="black" />
+                            <Ionicons name="walk" size={24} color="black" />
                             <Text style={styles.detail}>Walking Score: {locationScores.walkscore} ({locationScores.description})</Text>
                         </View>
                         <View style={styles.scoreDetail}>
-                            <MaterialCommunityIcons name="bus" size={24} color="black" />
+                            <Ionicons name="bus" size={24} color="black" />
                             <Text style={styles.detail}>Transit Score: {locationScores.transit.score} ({locationScores.transit.description})</Text>
                         </View>
                         <View style={styles.scoreDetail}>
-                            <MaterialCommunityIcons name="bike" size={24} color="black" />
+                            <Ionicons name="bicycle" size={24} color="black" />
                             <Text style={styles.detail}>Biking Score: {locationScores.bike.score} ({locationScores.bike.description})</Text>
                         </View>
                     </View>
