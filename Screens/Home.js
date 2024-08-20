@@ -123,7 +123,7 @@ const Home = ({ navigation }) => {
                     behavior={Platform.OS === "ios" ? "padding" : "height"}
                 >
                     <View style={styles.modalView}>
-                        <ScrollView style={styles.scrollView} contentContainerStyle={styles.modalContent}>
+                        <ScrollView contentContainerStyle={{justifyContent: 'center' }} keyboardShouldPersistTaps='handled'>
                             <View style={styles.inputContainer}>
                                 <Text style={styles.label}>Bedrooms</Text>
                                 <TextInput

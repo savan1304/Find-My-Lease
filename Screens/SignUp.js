@@ -1,4 +1,4 @@
-import { Text, View, TextInput, Alert, SafeAreaView, StyleSheet } from 'react-native'
+import { Text, View, TextInput, Alert, SafeAreaView, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, database } from '../Firebase/firebaseSetup';
@@ -62,6 +62,8 @@ export default function SignUp({ navigation }) {
 
     return (
         <SafeAreaView style={appStyles.loginSignUpContainer}>
+            <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
+            <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
             <View style={styles.iconContainer}>
                 <MaterialIcons name="apartment" size={64} color="blue" />
             </View>
@@ -72,7 +74,7 @@ export default function SignUp({ navigation }) {
                     Sign up now to unlock the full functionality of FindMyLease!
                 </Text>
             </View>
-            <View>
+            <View style={styles.centeredView}>
                 <View style={appStyles.loginSignUpFieldContainer}>
                     <Text>Email</Text>
                     <View style={appStyles.loginSignUpInput}>
@@ -128,6 +130,8 @@ export default function SignUp({ navigation }) {
                     <Text style={appStyles.text}>Already Registered? Log in</Text>
                 </PressableItem>
             </View>
+            </ScrollView>
+            </KeyboardAvoidingView>
         </SafeAreaView>
     )
 }
@@ -149,5 +153,10 @@ const styles = StyleSheet.create({
     buttonContainer: {
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
     }
 });

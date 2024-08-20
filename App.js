@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { auth } from './Firebase/firebaseSetup';
 import Home from './Screens/Home';
@@ -21,6 +21,7 @@ import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { AuthProvider, AuthContext } from './Components/AuthContext';
 import VisitRequest from './Components/VisitRequest';
 
+
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const MainStack = createStackNavigator();
@@ -32,6 +33,19 @@ Notifications.setNotificationHandler({
     shouldSetBadge: true,
   }),
 });
+
+async function cancelAllNotifications() {
+  try {
+      const notificationIds = await Notifications.getAllScheduledNotificationsAsync();
+      console.log("current notifications: ",notificationIds); 
+      if (notificationIds.length > 0) {
+          await Notifications.cancelAllScheduledNotificationsAsync();
+      }
+  } catch (error) {
+      console.error("Failed to cancel all notifications", error);
+  }
+}
+
 
 const HomeStackScreen = () => (
   <MainStack.Navigator>
@@ -129,6 +143,20 @@ const AppContent = () => {
     }
   };
 
+  const handleCancelNotifications = async () => {
+    Alert.alert(
+      "Cancel All Notifications",
+      "Are you sure you want to cancel all scheduled notifications?",
+      [
+        { text: "No", style: "cancel" },
+        { text: "Yes", onPress: async () => {
+          await cancelAllNotifications();
+          alert('All notifications have been cancelled.');
+        }}
+      ]
+    );
+  };
+
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -137,8 +165,8 @@ const AppContent = () => {
         options={({ route, navigation }) => ({
           headerRight: () => (
             <View style={{ flexDirection: 'row', marginRight: 10 }}>
-              <TouchableOpacity onPress={() => alert('Notifications')}>
-                <Icon name="notifications-outline" size={25} style={{ marginRight: 20 }} />
+              <TouchableOpacity onPress={handleCancelNotifications}>
+                <Icon name="notifications-off-outline" size={25} style={{ marginRight: 20 }} />
               </TouchableOpacity>
               <TouchableOpacity onPress={() => alert('Settings')}>
                 <Icon name="settings-outline" size={25} style={{ marginRight: 20 }} />
