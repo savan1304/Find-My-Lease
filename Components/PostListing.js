@@ -247,7 +247,7 @@ export default function PostListing({ navigation }) {
 
     const renderImage = ({ item }) => (
         <Image source={{ uri: item.uri || item }}
-            style={{ width: 250, height: 150, margin: 5 }} />
+            style={{ width: 300, height: 250, margin: 5 }} />
     );
 
     function isListingDataLengthPositive() {
@@ -281,7 +281,7 @@ export default function PostListing({ navigation }) {
                     />
                     {/* Option to add more images */}
                     <View style={appStyles.imageOptionsContainer}>
-                        <PressableItem onPress={pickImage}>
+                        <PressableItem onPress={pickImage} style={{ margin: 25 }}>
                             <Text style={appStyles.text}>Upload Images</Text>
                         </PressableItem>
                         <ImageManager imageUriHandler={imageUriHandler} />
@@ -290,7 +290,7 @@ export default function PostListing({ navigation }) {
             ) : (
                 <View style={appStyles.postImageContainer} >
                     <View style={appStyles.imageOptionsContainer}>
-                        <PressableItem onPress={pickImage}>
+                        <PressableItem onPress={pickImage} style={{ margin: 25 }}>
                             <Text style={appStyles.text}>Upload Images</Text>
                         </PressableItem>
                         <ImageManager imageUriHandler={imageUriHandler} />
@@ -325,7 +325,7 @@ export default function PostListing({ navigation }) {
                         <Text style={appStyles.addTitles}>Area*</Text>
                         <View style={[
                             appStyles.addInput,
-                            isListingDataLengthPositive() && { alignItems: 'center' }
+                            isListingDataLengthPositive() && { alignItems: 'center', paddingLeft: 0 }
                         ]}>
                             <TextInput
                                 value={formData.area}
@@ -340,7 +340,7 @@ export default function PostListing({ navigation }) {
                     <Text style={appStyles.addTitles}>Location*</Text>
                     <View style={[
                         appStyles.addInput, { width: '75%' },
-                        isListingDataLengthPositive() && { alignItems: 'center' }
+                        isListingDataLengthPositive() && { alignItems: 'center', paddingLeft: 0 }
                     ]}>
                         <TextInput
                             value={formData.location}
@@ -356,7 +356,7 @@ export default function PostListing({ navigation }) {
                         <Text style={appStyles.addTitles}>Price*</Text>
                         <View style={[
                             appStyles.addInput,
-                            isListingDataLengthPositive() && { alignItems: 'center' }
+                            isListingDataLengthPositive() && { alignItems: 'center', paddingLeft: 0 }
                         ]}>
                             <TextInput
                                 value={formData.price}
@@ -371,7 +371,7 @@ export default function PostListing({ navigation }) {
                         <Text style={appStyles.addTitles}>Tenant Gender</Text>
                         <View style={[
                             appStyles.addInput,
-                            isListingDataLengthPositive() && { alignItems: 'center' }
+                            isListingDataLengthPositive() && { alignItems: 'center', paddingLeft: 0 }
                         ]}>
                             <TextInput
                                 value={formData.tenantGender}
@@ -387,7 +387,7 @@ export default function PostListing({ navigation }) {
                         <Text style={appStyles.addTitles}>Bed*</Text>
                         <View style={[
                             appStyles.addInput,
-                            isListingDataLengthPositive() && { alignItems: 'center' }
+                            isListingDataLengthPositive() && { alignItems: 'center', paddingLeft: 0 }
                         ]}>
                             <TextInput
                                 value={formData.bed}
@@ -401,7 +401,7 @@ export default function PostListing({ navigation }) {
                         <Text style={appStyles.addTitles}>Bath*</Text>
                         <View style={[
                             appStyles.addInput,
-                            isListingDataLengthPositive() && { alignItems: 'center' }
+                            isListingDataLengthPositive() && { alignItems: 'center', paddingLeft: 0 }
                         ]}>
                             <TextInput
                                 value={formData.bath}
@@ -417,7 +417,7 @@ export default function PostListing({ navigation }) {
                     <Text style={appStyles.addTitles}>Transit options</Text>
                     <View style={[
                         appStyles.addInput, { width: '65%' },
-                        isListingDataLengthPositive() && { alignItems: 'center' }
+                        isListingDataLengthPositive() && { alignItems: 'center', paddingLeft: 0 }
                     ]}>
                         <TextInput
                             value={formData.transit}
@@ -441,7 +441,7 @@ export default function PostListing({ navigation }) {
                         <Text style={appStyles.addTitles}>Year</Text>
                         <View style={[
                             appStyles.addInput,
-                            isListingDataLengthPositive() && { alignItems: 'center' }
+                            isListingDataLengthPositive() && { alignItems: 'center', paddingLeft: 0 }
                         ]}>
                             <TextInput
                                 value={formData.year}
@@ -458,11 +458,11 @@ export default function PostListing({ navigation }) {
             <View style={appStyles.buttonsView}>
                 <View style={appStyles.buttonContainer}>
                     <View style={appStyles.saveAndCancelButtonContainer}>
-                        <PressableItem onPress={() => handleCancel()} style={[appStyles.buttonStyle, appStyles.cancelButton]} >
+                        <PressableItem onPress={() => handleCancel()} style={[appStyles.buttonStyle, appStyles.cancelButton, { margin: 25, height: 40 }]} >
                             <Text style={appStyles.text}>Cancel</Text>
                         </PressableItem>
-                        <PressableItem onPress={() => handleSave()} style={[appStyles.buttonStyle, appStyles.saveButton]} >
-                            {listingData ? (
+                        <PressableItem onPress={() => handleSave()} style={[appStyles.buttonStyle, appStyles.saveButton, { margin: 25, height: 40 }]} >
+                            {isListingDataLengthPositive() ? (
                                 <Text style={appStyles.text}>Save</Text>
                             ) : (
                                 <Text style={appStyles.text}>Post</Text>
