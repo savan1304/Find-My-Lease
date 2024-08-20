@@ -45,6 +45,8 @@ const ProfileStackScreen = () => (
     <MainStack.Screen name="ProfileMain" component={Profile} options={{ headerShown: false }} />
     <MainStack.Screen name="HouseDetails" component={HouseDetails} options={{ title: 'House Details' }} />
     <MainStack.Screen name="ScheduledVisits" component={ScheduledVisits} options={{ title: 'Scheduled Visits' }} />
+    <MainStack.Screen name="PostedListings" component={PostedListings} options={{ title: 'Posted Listings' }} />
+    <MainStack.Screen name="PostListing" component={PostListing} options={{ title: 'Post a Listing' }} />
     <MainStack.Screen name="ScheduleVisit" component={ScheduleVisit} options={{ title: 'Schedule a Visit' }} />
     <MainStack.Screen name="VisitRequests" component={VisitRequest} options={{ title: 'Visit Requests' }} />
   </MainStack.Navigator>
@@ -96,22 +98,6 @@ const Tabs = () => (
       options={{
         headerShown: false,
         tabBarButton: () => null,
-      }}
-    />
-    <Tab.Screen
-      name="PostListing"
-      component={PostListing}
-      options={{
-        tabBarButton: () => null,
-        headerShown: false
-      }}
-    />
-    <Tab.Screen
-      name="PostedListings"
-      component={PostedListings}
-      options={{
-        tabBarButton: () => null,
-        headerShown: false
       }}
     />
     <Tab.Screen
