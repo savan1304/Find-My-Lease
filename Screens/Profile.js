@@ -117,8 +117,14 @@ const Profile = ({ navigation }) => {
               onChangeText={setPhoneNumber}
               keyboardType="phone-pad"
             />
-            <Button title="Save" onPress={handleSave} />
-            <Button title="Cancel" color="red" onPress={() => setIsModalVisible(false)} />
+            <View>
+          <PressableItem style={styles.saveButton} onPress={handleSave}>
+              <Text style={styles.buttonText}>Save</Text>
+          </PressableItem>
+          <PressableItem style={styles.cancelButton} onPress={() => setIsModalVisible(false)}>
+              <Text style={styles.buttonText}>Cancel</Text>
+          </PressableItem>
+          </View>
           </View>
         </View>
       </Modal>
@@ -152,16 +158,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginVertical: 8,
   },
-  button: {
-    backgroundColor: '#007BFF',
+  saveButton: {
+    backgroundColor: '#007BFF', 
     padding: 10,
-    marginVertical: 10,
     borderRadius: 5,
     alignItems: 'center',
+    marginBottom: 10 
+  },
+  cancelButton: {
+      backgroundColor: 'red', 
+      padding: 10,
+      borderRadius: 5,
+      alignItems: 'center'
   },
   buttonText: {
-    color: 'white',
-    fontSize: 16,
+      color: 'white', 
+      fontSize: 16
   },
   modalContainer: {
     flex: 1,
