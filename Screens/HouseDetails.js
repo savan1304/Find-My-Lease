@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, ScrollView, Alert, Modal, Button } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image, ScrollView, Alert, Modal, Button } from 'react-native';
 import { writeToDB } from '../Firebase/firestoreHelper';
 import { scoreApiKey } from '@env';  
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AuthContext } from '../Components/AuthContext';
-import { doc, getDoc } from 'firebase/firestore'; 
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { storage, database } from '../Firebase/firebaseSetup'; 
 import { ref, getDownloadURL } from 'firebase/storage'; 
+import PressableItem from '../Components/PressableItem';
 
 const HouseDetails = ({ route, navigation }) => {
     const { house } = route.params;
@@ -109,18 +110,37 @@ const HouseDetails = ({ route, navigation }) => {
     };
 
     const handleSave = async () => {
+        if (!user) {
+            Alert.alert('Error', 'No user is signed in');
+            return;
+        }
+        
+        const userRef = doc(database, `User/${user.uid}`);
         try {
-            if (user) {
-                const collectionPath = `User/${user.uid}/saved`;
-                await writeToDB(house, collectionPath);
+            const docSnap = await getDoc(userRef);
+            if (docSnap.exists()) {
+                let savedHouses = docSnap.data().savedHouses || [];
+                if (!savedHouses.includes(house.id)) {
+                    savedHouses.push(house.id);
+                    await updateDoc(userRef, {
+                        savedHouses: savedHouses
+                    });
+                    Alert.alert('Success', 'House saved successfully');
+                } else {
+                    Alert.alert('Info', 'House already saved');
+                }
             } else {
-                Alert.alert('Error', 'No user is signed in');
+                await setDoc(userRef, {
+                    savedHouses: [house.id]
+                });
+                Alert.alert('Success', 'House saved successfully');
             }
         } catch (error) {
-            console.log('Error saving house:', error);
+            console.error('Error saving house:', error);
             Alert.alert('Error', 'Failed to save house. Please try again.');
         }
     };
+    
 
     const handleScheduleViewing = () => {
         requireLogin(() => {
@@ -171,15 +191,15 @@ const HouseDetails = ({ route, navigation }) => {
                     </View>
                 )}
             </View>
-            <TouchableOpacity style={styles.button} onPress={handleContact}>
+            <PressableItem style={styles.button} onPress={handleContact}>
                 <Text style={styles.buttonText}>Contact</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={confirmSave}>
+            </PressableItem>
+            <PressableItem style={styles.button} onPress={confirmSave}>
                 <Text style={styles.buttonText}>Save</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={handleScheduleViewing}>
+            </PressableItem>
+            <PressableItem style={styles.button} onPress={handleScheduleViewing}>
                 <Text style={styles.buttonText}>Schedule Viewing</Text>
-            </TouchableOpacity>
+            </PressableItem>
 
             {/* Modal for Contact Information */}
             <Modal

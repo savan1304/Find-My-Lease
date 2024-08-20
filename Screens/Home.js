@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, TextInput, Button, Modal, TouchableOpacity, FlatList, Dimensions, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Button, Modal, FlatList, Dimensions, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { collection, query, onSnapshot } from 'firebase/firestore';
 import MapHolder from '../Components/MapHolder';
 import HouseListItem from '../Components/HouseListItem';
@@ -91,7 +91,6 @@ const Home = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>Home Screen</Text>
             <TextInput
                 style={styles.searchBar}
                 placeholder="Search..."
@@ -227,7 +226,7 @@ const Home = ({ navigation }) => {
                             </View>
                             <View style={styles.inputContainer}>
                                 <Text style={styles.label}>Pet Friendly</Text>
-                                <TouchableOpacity
+                                <PressableItem
                                     style={styles.checkbox}
                                     onPress={() => setFilters(prev => ({
                                         ...prev,
@@ -235,11 +234,11 @@ const Home = ({ navigation }) => {
                                     }))}
                                 >
                                     <Text style={styles.checkboxLabel}>{filters.petFriendly ? 'Yes' : 'No'}</Text>
-                                </TouchableOpacity>
+                                </PressableItem>
                             </View>
                             <View style={styles.inputContainer}>
                                 <Text style={styles.label}>Type</Text>
-                                <TouchableOpacity
+                                <PressableItem
                                     style={styles.checkbox}
                                     onPress={() => setFilters(prev => ({
                                         ...prev,
@@ -247,22 +246,22 @@ const Home = ({ navigation }) => {
                                     }))}
                                 >
                                     <Text style={styles.checkboxLabel}>{filters.type || 'Private'}</Text>
-                                </TouchableOpacity>
+                                </PressableItem>
                             </View>
                         </ScrollView>
                         <View style={styles.buttonContainer}>
-                            <TouchableOpacity
+                            <PressableItem
                                 style={[styles.button, styles.buttonClose]}
                                 onPress={() => setModalVisible(!isModalVisible)}
                             >
                                 <Text style={styles.textStyle}>Hide Filters</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
+                            </PressableItem>
+                            <PressableItem
                                 style={[styles.button, styles.buttonClear]}
                                 onPress={clearFilters}
                             >
                                 <Text style={styles.textStyle}>Clear Filters</Text>
-                            </TouchableOpacity>
+                            </PressableItem>
                         </View>
                     </View>
                 </KeyboardAvoidingView>

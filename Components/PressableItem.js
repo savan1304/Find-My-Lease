@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     defaultStyle: {
         backgroundColor: Colors.themeColor,
         padding: 10,
-        margin: 25,
+        marginVertical: 10,
         borderRadius: 5,
     }
 })
