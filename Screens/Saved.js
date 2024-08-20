@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image, Alert } from 'react-native';
 import { collection, query, onSnapshot, doc } from 'firebase/firestore';
 import { database, auth } from '../Firebase/firebaseSetup';
 import { deleteFromDB } from '../Firebase/firestoreHelper';
 import { AuthContext } from '../Components/AuthContext';
+import PressableItem from '../Components/PressableItem';
 
 const Saved = ({ navigation }) => {
   const { user, userData } = useContext(AuthContext);
@@ -66,23 +67,22 @@ const Saved = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-        <Text style={styles.header}>Saved Listings</Text>
         {savedHouses.length > 0 ? (
             <FlatList
                 data={savedHouses}
                 renderItem={({ item }) => (
                     <View style={styles.itemContainer}>
-                        <TouchableOpacity onPress={() => handleHousePress(item)} style={styles.item}>
+                        <PressableItem onPress={() => handleHousePress(item)} style={styles.item}>
                             <Image source={{ uri: item.imageUri || 'https://via.placeholder.com/150' }} style={styles.image} />
                             <View style={styles.info}>
                                 <Text style={styles.title}>{item.location}</Text>
                                 <Text>{item.price}</Text>
                                 <Text>{item.bed} Bed, {item.bath} Bath</Text>
                             </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => confirmDelete(item.id)} style={styles.deleteButton}>
+                        </PressableItem>
+                        <PressableItem onPress={() => confirmDelete(item.id)} style={styles.deleteButton}>
                             <Text style={styles.deleteButtonText}>Delete</Text>
-                        </TouchableOpacity>
+                        </PressableItem>
                     </View>
                 )}
                 keyExtractor={item => item.id}
