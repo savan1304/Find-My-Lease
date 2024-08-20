@@ -246,8 +246,8 @@ export default function ScheduleVisit({ navigation }) {
         reset();
     }
 
-
     async function handleSubmit() {
+        const action = !isVisitDataLengthPositive() ? 'schedule' : 'save';
         try {
             if (!user) {
                 throw new Error("User not authenticated");
@@ -255,7 +255,7 @@ export default function ScheduleVisit({ navigation }) {
 
             Alert.alert(
                 "Confirm",
-                "Are you sure you want to save the visit?",
+                `Are you sure you want to ${action} the visit?`,
                 [
                     {
                         text: "Cancel",
@@ -277,8 +277,16 @@ export default function ScheduleVisit({ navigation }) {
 
 
     const renderImage = ({ item }) => (
-        <Image source={{ uri: item }} style={{ width: 250, height: 150, margin: 5 }} />
+        <Image source={{ uri: item }} style={{ width: 300, height: 250, margin: 5 }} />
     );
+
+
+    function isVisitDataLengthPositive() {
+        if (visitData && Object.keys(visitData).length > 0) {
+            return true
+        }
+        return false
+    }
 
     console.log("inside ScheduleVisit with listing: ", listing)
 
@@ -383,11 +391,12 @@ export default function ScheduleVisit({ navigation }) {
             <View style={appStyles.buttonsView}>
                 <View style={appStyles.buttonContainer}>
                     <View style={appStyles.saveAndCancelButtonContainerForVisit}>
-                        <PressableItem onPress={handleCancel} style={[appStyles.buttonStyle, appStyles.cancelButton]} >
+                        <PressableItem onPress={handleCancel} style={[appStyles.buttonStyle, appStyles.cancelButton, { margin: 25, height: 40 }]} >
                             <Text style={appStyles.text}>Cancel</Text>
                         </PressableItem>
-                        <PressableItem onPress={handleSubmit} style={[appStyles.buttonStyle, appStyles.saveButton]} >
-                            {visitData ? (<Text style={appStyles.text}>Save</Text>
+                        <PressableItem onPress={handleSubmit} style={[appStyles.buttonStyle, appStyles.saveButton, { margin: 25, height: 40 }]} >
+                            {isVisitDataLengthPositive() ? (
+                                <Text style={appStyles.text}>Save</Text>
                             ) : (
                                 <Text style={appStyles.text}>Schedule</Text>
                             )}
