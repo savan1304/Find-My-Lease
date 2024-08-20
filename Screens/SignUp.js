@@ -124,10 +124,10 @@ export default function SignUp({ navigation }) {
             </View>
             <View style={styles.buttonContainer}>
                 <PressableItem onPress={signupHandler} style={[appStyles.buttonStyle, appStyles.cancelButton]} >
-                    <Text style={appStyles.text}>Register</Text>
+                    <Text style={appStyles.text}>Register </Text>
                 </PressableItem>
                 <PressableItem onPress={loginHandler} style={[appStyles.buttonStyle, appStyles.saveButton]} >
-                    <Text style={appStyles.text}>Already Registered? Log in</Text>
+                    <Text style={appStyles.text}>Already Registered? Log in </Text>
                 </PressableItem>
             </View>
             </ScrollView>

@@ -99,7 +99,7 @@ const Home = ({ navigation }) => {
                 onChangeText={setSearchText}
             />
             <PressableItem onPress={() => setModalVisible(true)} style={{ margin: 0 }}>
-                <Text style={appStyles.text}>Open Filters</Text>
+                <Text style={appStyles.text}>Open Filters </Text>
             </PressableItem>
             <MapHolder navigation={navigation} houses={houses} />
             <FlatList
@@ -124,9 +124,10 @@ const Home = ({ navigation }) => {
                     behavior={Platform.OS === "ios" ? "padding" : "height"}
                 >
                     <View style={styles.modalView}>
-                        <ScrollView contentContainerStyle={{justifyContent: 'center' }} keyboardShouldPersistTaps='handled'>
+                        <ScrollView contentContainerStyle={{justifyContent: 'center', alignItems: 'center' }} keyboardShouldPersistTaps='handled' horizontal={true}>
+                        <ScrollView contentContainerStyle={{justifyContent: 'center' }}>
                             <View style={styles.inputContainer}>
-                                <Text style={styles.label}>Bedrooms</Text>
+                                <Text style={styles.label}>Bedrooms </Text>
                                 <TextInput
                                     style={styles.input}
                                     onChangeText={(value) => setFilters(prev => ({
@@ -151,7 +152,7 @@ const Home = ({ navigation }) => {
                                 />
                             </View>
                             <View style={styles.inputContainer}>
-                                <Text style={styles.label}>Area(m²)</Text>
+                                <Text style={styles.label}>Area(m²) </Text>
                                 <TextInput
                                     style={styles.input}
                                     onChangeText={(value) => setFilters(prev => ({
@@ -176,7 +177,7 @@ const Home = ({ navigation }) => {
                                 />
                             </View>
                             <View style={styles.inputContainer}>
-                                <Text style={styles.label}>Bathrooms</Text>
+                                <Text style={styles.label}>Bathrooms </Text>
                                 <TextInput
                                     style={styles.input}
                                     onChangeText={(value) => setFilters(prev => ({
@@ -201,7 +202,7 @@ const Home = ({ navigation }) => {
                                 />
                             </View>
                             <View style={styles.inputContainer}>
-                                <Text style={styles.label}>Price</Text>
+                                <Text style={styles.label}>Price </Text>
                                 <TextInput
                                     style={styles.input}
                                     onChangeText={(value) => setFilters(prev => ({
@@ -226,7 +227,7 @@ const Home = ({ navigation }) => {
                                 />
                             </View>
                             <View style={styles.inputContainer}>
-                                <Text style={styles.label}>Pet Friendly</Text>
+                                <Text style={styles.label}>Pet Friendly </Text>
                                 <PressableItem
                                     style={styles.checkbox}
                                     onPress={() => setFilters(prev => ({
@@ -234,11 +235,11 @@ const Home = ({ navigation }) => {
                                         petFriendly: !filters.petFriendly
                                     }))}
                                 >
-                                    <Text style={styles.checkboxLabel}>{filters.petFriendly ? 'Yes' : 'No'}</Text>
+                                    <Text style={styles.checkboxLabel}>{filters.petFriendly ? 'Yes' : 'No'} </Text>
                                 </PressableItem>
                             </View>
                             <View style={styles.inputContainer}>
-                                <Text style={styles.label}>Type</Text>
+                                <Text style={styles.label}>Type </Text>
                                 <PressableItem
                                     style={styles.checkbox}
                                     onPress={() => setFilters(prev => ({
@@ -246,22 +247,23 @@ const Home = ({ navigation }) => {
                                         type: filters.type === 'Private' ? 'Shared' : 'Private'
                                     }))}
                                 >
-                                    <Text style={styles.checkboxLabel}>{filters.type || 'Private'}</Text>
+                                    <Text style={styles.checkboxLabel}>{filters.type || 'Private'} </Text>
                                 </PressableItem>
                             </View>
+                            </ScrollView>
                         </ScrollView>
                         <View style={styles.buttonContainer}>
                             <PressableItem
                                 style={[styles.button, styles.buttonClose]}
                                 onPress={() => setModalVisible(!isModalVisible)}
                             >
-                                <Text style={styles.textStyle}>Hide Filters</Text>
+                                <Text style={styles.textStyle}>Hide Filters </Text>
                             </PressableItem>
                             <PressableItem
                                 style={[styles.button, styles.buttonClear]}
                                 onPress={clearFilters}
                             >
-                                <Text style={styles.textStyle}>Clear Filters</Text>
+                                <Text style={styles.textStyle}>Clear Filters </Text>
                             </PressableItem>
                         </View>
                     </View>
@@ -303,11 +305,11 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     modalView: {
-        margin: 20,
+        margin: 10,
         width: screenWidth * 0.8,
         backgroundColor: 'white',
         borderRadius: 20,
-        padding: 35,
+        padding: 25,
         alignItems: 'center',
         shadowColor: '#000',
         shadowOffset: {
@@ -325,16 +327,16 @@ const styles = StyleSheet.create({
     },
     label: {
         fontSize: 16,
-        marginRight: 10,
+        marginHorizontal: 10,
     },
     input: {
-        width: '40%',
+        width: '20%',
         height: 40,
         borderWidth: 1,
         padding: 10,
         borderColor: '#ddd',
         borderRadius: 10,
-        marginRight: 10,
+        marginRight: 25,
     },
     button: {
         borderRadius: 20,
@@ -360,7 +362,7 @@ const styles = StyleSheet.create({
     },
     checkbox: {
         width: '40%',
-        height: 40,
+        height: 50,
         borderWidth: 1,
         borderColor: '#ddd',
         borderRadius: 10,
