@@ -1,4 +1,4 @@
-import { View, Text, TextInput, SafeAreaView, ScrollView, Image, FlatList } from 'react-native'
+import { View, Text, TextInput, ScrollView, Image, FlatList } from 'react-native'
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import ImageManager from './ImageManager';
 import { appStyles } from '../Config/Styles';
@@ -7,7 +7,7 @@ import { Colors } from '../Config/Colors';
 import Checkbox from 'expo-checkbox';
 import * as ImagePicker from "expo-image-picker"
 import PressableItem from './PressableItem';
-import { writeToDB } from '../Firebase/firestoreHelper';	
+import { writeToDB } from '../Firebase/firestoreHelper';
 import { storage, database, auth } from '../Firebase/firebaseSetup';
 import { ref, uploadBytesResumable } from 'firebase/storage';
 import { doc, updateDoc } from 'firebase/firestore';
@@ -250,34 +250,35 @@ export default function PostListing({ navigation }) {
             style={{ width: 250, height: 150, margin: 5 }} />
     );
 
+    function isListingDataLengthPositive() {
+        if (listingData && Object.keys(listingData).length > 0) {
+            return true
+        }
+        return false
+    }
+
 
     return (
-        <SafeAreaView style={appStyles.postListingContainer}>
-
-
-
+        <ScrollView keyboardShouldPersistTaps='handled' style={appStyles.postListingContainer} contentContainerStyle={{
+            justifyContent: 'center',
+            alignItems: 'center',
+        }}>
             {(images.length > 0 || formData.imageUris.length > 0) ? (
                 <View style={appStyles.postImageContainerAfterImageClicked}>
-                    <ScrollView
-                        style={[appStyles.scrollViewContainer, { height: 250 }]}
-                        contentContainerStyle={appStyles.contentContainer}
-                    >
-                        <FlatList
-                            data={images.length > 0 ? images : formData.imageUris}
-                            renderItem={renderImage}
-                            keyExtractor={(item, index) => index.toString()}
-                            horizontal
-                            ref={flatListRef}
-                            onContentSizeChange={(width, height) => {
-                                flatListRef.current?.setNativeProps({
-                                    style: { height },
-                                });
-                            }}
-                            style={appStyles.imageList}
-                            showsHorizontalScrollIndicator={true}
-                        />
-                    </ScrollView>
-
+                    <FlatList
+                        data={images.length > 0 ? images : formData.imageUris}
+                        renderItem={renderImage}
+                        keyExtractor={(item, index) => index.toString()}
+                        horizontal
+                        ref={flatListRef}
+                        onContentSizeChange={(width, height) => {
+                            flatListRef.current?.setNativeProps({
+                                style: { height },
+                            });
+                        }}
+                        style={appStyles.imageList}
+                        showsHorizontalScrollIndicator={true}
+                    />
                     {/* Option to add more images */}
                     <View style={appStyles.imageOptionsContainer}>
                         <PressableItem onPress={pickImage}>
@@ -312,16 +313,20 @@ export default function PostListing({ navigation }) {
                                 setOpen={setOpen}
                                 setValue={setType}
                                 onChangeValue={(value) => handleDataChange('type', value)}
-                                style={{ borderColor: Colors.blue, borderWidth: 2, marginHorizontal: 2 }}
+                                style={{ borderColor: Colors.blue, borderWidth: 1.5, marginHorizontal: 2 }}
                                 textStyle={appStyles.addTitles}
                                 containerStyle={{ width: 150 }}
-                                dropDownContainerStyle={{ borderColor: Colors.blue }}
+                                dropDownContainerStyle={{ borderColor: Colors.blue, backgroundColor: Colors.background, borderWidth: 1.5 }}
+                                listMode="SCROLLVIEW"
                             />
                         </View>
                     </View>
                     <View style={appStyles.addItemContainer}>
                         <Text style={appStyles.addTitles}>Area*</Text>
-                        <View style={appStyles.addInput}>
+                        <View style={[
+                            appStyles.addInput,
+                            isListingDataLengthPositive() && { alignItems: 'center' }
+                        ]}>
                             <TextInput
                                 value={formData.area}
                                 onChangeText={(text) => handleDataChange('area', text)}
@@ -333,7 +338,10 @@ export default function PostListing({ navigation }) {
 
                 <View style={appStyles.addItemContainer}>
                     <Text style={appStyles.addTitles}>Location*</Text>
-                    <View style={[appStyles.addInput, { width: '75%' }]}>
+                    <View style={[
+                        appStyles.addInput, { width: '75%' },
+                        isListingDataLengthPositive() && { alignItems: 'center' }
+                    ]}>
                         <TextInput
                             value={formData.location}
                             onChangeText={(text) => handleDataChange('location', text)}
@@ -346,7 +354,10 @@ export default function PostListing({ navigation }) {
                 <View style={appStyles.twoListingInputContainer}>
                     <View style={appStyles.addItemContainer}>
                         <Text style={appStyles.addTitles}>Price*</Text>
-                        <View style={appStyles.addInput}>
+                        <View style={[
+                            appStyles.addInput,
+                            isListingDataLengthPositive() && { alignItems: 'center' }
+                        ]}>
                             <TextInput
                                 value={formData.price}
                                 onChangeText={(text) => handleDataChange('price', text)}
@@ -358,7 +369,10 @@ export default function PostListing({ navigation }) {
                     </View>
                     <View style={appStyles.addItemContainer}>
                         <Text style={appStyles.addTitles}>Tenant Gender</Text>
-                        <View style={appStyles.addInput}>
+                        <View style={[
+                            appStyles.addInput,
+                            isListingDataLengthPositive() && { alignItems: 'center' }
+                        ]}>
                             <TextInput
                                 value={formData.tenantGender}
                                 onChangeText={(text) => handleDataChange('tenantGender', text)}
@@ -371,7 +385,10 @@ export default function PostListing({ navigation }) {
                 <View style={appStyles.twoListingInputContainer}>
                     <View style={appStyles.addItemContainer}>
                         <Text style={appStyles.addTitles}>Bed*</Text>
-                        <View style={appStyles.addInput}>
+                        <View style={[
+                            appStyles.addInput,
+                            isListingDataLengthPositive() && { alignItems: 'center' }
+                        ]}>
                             <TextInput
                                 value={formData.bed}
                                 onChangeText={(text) => handleDataChange('bed', text)}
@@ -382,7 +399,10 @@ export default function PostListing({ navigation }) {
                     </View>
                     <View style={appStyles.addItemContainer}>
                         <Text style={appStyles.addTitles}>Bath*</Text>
-                        <View style={appStyles.addInput}>
+                        <View style={[
+                            appStyles.addInput,
+                            isListingDataLengthPositive() && { alignItems: 'center' }
+                        ]}>
                             <TextInput
                                 value={formData.bath}
                                 onChangeText={(text) => handleDataChange('bath', text)}
@@ -395,7 +415,10 @@ export default function PostListing({ navigation }) {
 
                 <View style={appStyles.addItemContainer}>
                     <Text style={appStyles.addTitles}>Transit options</Text>
-                    <View style={[appStyles.addInput, { width: '65%' }]}>
+                    <View style={[
+                        appStyles.addInput, { width: '65%' },
+                        isListingDataLengthPositive() && { alignItems: 'center' }
+                    ]}>
                         <TextInput
                             value={formData.transit}
                             onChangeText={(text) => handleDataChange('transit', text)}
@@ -416,7 +439,10 @@ export default function PostListing({ navigation }) {
                     </View>
                     <View style={appStyles.addItemContainer}>
                         <Text style={appStyles.addTitles}>Year</Text>
-                        <View style={appStyles.addInput}>
+                        <View style={[
+                            appStyles.addInput,
+                            isListingDataLengthPositive() && { alignItems: 'center' }
+                        ]}>
                             <TextInput
                                 value={formData.year}
                                 onChangeText={(text) => handleDataChange('year', text)}
@@ -447,7 +473,6 @@ export default function PostListing({ navigation }) {
             </View>
 
 
-
-        </SafeAreaView >
+        </ScrollView>
     );
 }
