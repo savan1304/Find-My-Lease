@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { Text, View, TextInput, Alert, Modal, StyleSheet, Button, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { Text, View, TextInput, Alert, Modal, StyleSheet, Button, KeyboardAvoidingView, Platform, ScrollView, Dimensions } from 'react-native';
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '../Firebase/firebaseSetup';
 import PressableItem from '../Components/PressableItem';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { appStyles } from '../Config/Styles';
 import { MaterialIcons } from '@expo/vector-icons'; 
+
+const screenWidth = Dimensions.get('window').width;
+const screenHeight = Dimensions.get('window').height;
 
 export default function Login({ navigation }) {
     const [email, setEmail] = useState('');
@@ -124,13 +127,13 @@ export default function Login({ navigation }) {
                     </Modal>
                     <View style={styles.buttonContainer}>
                         <PressableItem onPress={loginHandler} style={[appStyles.buttonStyle, appStyles.cancelButton]}>
-                            <Text style={appStyles.text}>Log in</Text>
+                            <Text style={appStyles.text}>Log in </Text>
                         </PressableItem>
                         <PressableItem onPress={signupHandler} style={[appStyles.buttonStyle, appStyles.saveButton]}>
-                            <Text style={appStyles.text}>Sign Up</Text>
+                            <Text style={appStyles.text}>Sign Up </Text>
                         </PressableItem>
                         <PressableItem onPress={() => setModalVisible(true)} style={[appStyles.buttonStyle, appStyles.saveButton]}>
-                            <Text style={appStyles.text}>Forgot Password?</Text>
+                            <Text style={appStyles.text}>Forgot Password? </Text>
                         </PressableItem>
                     </View>
                 </View>
@@ -177,7 +180,7 @@ const styles = StyleSheet.create({
     modalText: {
         marginBottom: 15,
         textAlign: "center",
-        width: 250, 
+        width: screenWidth*0.6, 
     },
     buttonContainer: {
         justifyContent: 'center',

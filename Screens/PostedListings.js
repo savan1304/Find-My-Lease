@@ -117,7 +117,7 @@ export default function PostedListings({ navigation }) {
                       </PressableItem>
                     ) : (
                       <PressableItem onPress={() => { handleZeroVisitRequestCounterPress() }} style={[styles.editDeleteButtonStyle, { backgroundColor: Colors.shadowColor, marginHorizontal: 0, marginVertical: 5, width: '64%' }]} >
-                        <Text style={{ color: Colors.background }}>Viewing Requests: 0</Text>
+                        <Text style={{ color: Colors.background }}>Viewing Requests: 0 </Text>
                       </PressableItem>
 
                     )}

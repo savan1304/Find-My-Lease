@@ -282,7 +282,7 @@ export default function PostListing({ navigation }) {
                     {/* Option to add more images */}
                     <View style={appStyles.imageOptionsContainer}>
                         <PressableItem onPress={pickImage} style={{ margin: 25 }}>
-                            <Text style={appStyles.text}>Upload Images</Text>
+                            <Text style={appStyles.text}>Upload Images </Text>
                         </PressableItem>
                         <ImageManager imageUriHandler={imageUriHandler} />
                     </View>
@@ -291,7 +291,7 @@ export default function PostListing({ navigation }) {
                 <View style={appStyles.postImageContainer} >
                     <View style={appStyles.imageOptionsContainer}>
                         <PressableItem onPress={pickImage} style={{ margin: 25 }}>
-                            <Text style={appStyles.text}>Upload Images</Text>
+                            <Text style={appStyles.text}>Upload Images </Text>
                         </PressableItem>
                         <ImageManager imageUriHandler={imageUriHandler} />
                     </View>
@@ -368,7 +368,7 @@ export default function PostListing({ navigation }) {
                         </View>
                     </View>
                     <View style={appStyles.addItemContainer}>
-                        <Text style={appStyles.addTitles}>Tenant Gender</Text>
+                        <Text style={appStyles.addTitles}>Tenant Gender </Text>
                         <View style={[
                             appStyles.addInput,
                             isListingDataLengthPositive() && { alignItems: 'center', paddingLeft: 0 }
@@ -414,7 +414,7 @@ export default function PostListing({ navigation }) {
                 </View>
 
                 <View style={appStyles.addItemContainer}>
-                    <Text style={appStyles.addTitles}>Transit options</Text>
+                    <Text style={appStyles.addTitles}>Transit options </Text>
                     <View style={[
                         appStyles.addInput, { width: '65%' },
                         isListingDataLengthPositive() && { alignItems: 'center', paddingLeft: 0 }
@@ -438,7 +438,7 @@ export default function PostListing({ navigation }) {
                         />
                     </View>
                     <View style={appStyles.addItemContainer}>
-                        <Text style={appStyles.addTitles}>Year</Text>
+                        <Text style={appStyles.addTitles}>Year </Text>
                         <View style={[
                             appStyles.addInput,
                             isListingDataLengthPositive() && { alignItems: 'center', paddingLeft: 0 }
@@ -459,13 +459,13 @@ export default function PostListing({ navigation }) {
                 <View style={appStyles.buttonContainer}>
                     <View style={appStyles.saveAndCancelButtonContainer}>
                         <PressableItem onPress={() => handleCancel()} style={[appStyles.buttonStyle, appStyles.cancelButton, { margin: 25, height: 40 }]} >
-                            <Text style={appStyles.text}>Cancel</Text>
+                            <Text style={appStyles.text}>Cancel </Text>
                         </PressableItem>
                         <PressableItem onPress={() => handleSave()} style={[appStyles.buttonStyle, appStyles.saveButton, { margin: 25, height: 40 }]} >
                             {isListingDataLengthPositive() ? (
-                                <Text style={appStyles.text}>Save</Text>
+                                <Text style={appStyles.text}>Save </Text>
                             ) : (
-                                <Text style={appStyles.text}>Post</Text>
+                                <Text style={appStyles.text}>Post </Text>
                             )}
                         </PressableItem>
                     </View>
