@@ -10,7 +10,7 @@ import { appStyles } from '../Config/Styles';
 import { AuthContext } from '../Components/AuthContext';
 
 const screenWidth = Dimensions.get('window').width;
-
+const screenHeight = Dimensions.get('window').height;
 const Home = ({ navigation }) => {
     const { user } = useContext(AuthContext);
     const [searchText, setSearchText] = useState('');
@@ -283,7 +283,8 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     searchBar: {
-        height: 40,
+        width: screenWidth * 0.8,
+        height: screenHeight * 0.05,
         borderColor: '#333',
         borderWidth: 1,
         borderRadius: 10,
