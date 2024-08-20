@@ -54,7 +54,7 @@ export default function SignUp({ navigation }) {
             });
 
             console.log("User created and data saved to Firestore!");
-            navigation.navigate('HomeMain');
+            navigation.navigate('My Home');
         } catch (err) {
             console.log("SIGN UP ", err);
         }

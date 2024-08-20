@@ -35,15 +35,21 @@ Notifications.setNotificationHandler({
 
 const HomeStackScreen = () => (
   <MainStack.Navigator>
-    <MainStack.Screen name="HomeMain" component={Home} options={{ headerShown: false }} />
+    <MainStack.Screen name="My Home" component={Home} options={{ headerShown: false }} />
+    <MainStack.Screen name="HouseDetails" component={HouseDetails} options={{ title: 'House Details' }} />
+  </MainStack.Navigator>
+);
+
+const SavedStackScreen = () => (
+  <MainStack.Navigator>
+    <MainStack.Screen name="My Save" component={Saved} options={{ headerShown: false }} />
     <MainStack.Screen name="HouseDetails" component={HouseDetails} options={{ title: 'House Details' }} />
   </MainStack.Navigator>
 );
 
 const ProfileStackScreen = () => (
   <MainStack.Navigator>
-    <MainStack.Screen name="ProfileMain" component={Profile} options={{ headerShown: false }} />
-    <MainStack.Screen name="HouseDetails" component={HouseDetails} options={{ title: 'House Details' }} />
+    <MainStack.Screen name="My Profile" component={Profile} options={{ headerShown: false }} />
     <MainStack.Screen name="ScheduledVisits" component={ScheduledVisits} options={{ title: 'Scheduled Visits' }} />
     <MainStack.Screen name="PostedListings" component={PostedListings} options={{ title: 'Posted Listings' }} />
     <MainStack.Screen name="PostListing" component={PostListing} options={{ title: 'Post a Listing' }} />
@@ -66,7 +72,7 @@ const Tabs = () => (
     />
     <Tab.Screen
       name="Saved"
-      component={Saved}
+      component={SavedStackScreen}
       options={{
         tabBarIcon: ({ color, size }) => (
           <Icon name="heart-outline" color={color} size={size} />
