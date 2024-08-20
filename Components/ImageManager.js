@@ -42,7 +42,7 @@ export default function ImageManager({ imageUriHandler }) {
     return (
         <View>
             <PressableItem onPress={takeImageHandler} style={{ margin: 25 }}>
-                <Text style={appStyles.text}>Take a photo</Text>
+                <Text style={appStyles.text}>Take a photo </Text>
             </PressableItem>
             {imageUris.map((uri, index) => (
                 <Image
