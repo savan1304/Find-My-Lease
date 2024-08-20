@@ -1,22 +1,35 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, ScrollView, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, ScrollView, Alert, Modal, Button } from 'react-native';
 import { writeToDB } from '../Firebase/firestoreHelper';
 import { scoreApiKey } from '@env';  
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AuthContext } from '../Components/AuthContext';
+import { doc, getDoc } from 'firebase/firestore'; 
+import { storage, database } from '../Firebase/firebaseSetup'; 
 import { ref, getDownloadURL } from 'firebase/storage'; 
-import { storage } from '../Firebase/firebaseSetup'; 
 
 const HouseDetails = ({ route, navigation }) => {
     const { house } = route.params;
     const { user } = useContext(AuthContext);  // Use AuthContext for user state
     const [locationScores, setLocationScores] = useState(null);
     const [imageUrls, setImageUrls] = useState([]);
+    const [ownerContact, setOwnerContact] = useState(null);
+    const [modalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
         fetchLocationScores();
-        fetchImageUrls();
+        if (house.imageUris && house.imageUris.length > 0) {
+            fetchImageUrls();
+        }
     }, []);
+
+    useEffect(() => {
+        if (house.createdBy) { 
+            fetchOwnerContact();
+        } else {
+            console.log('No owner information available for this house.');
+        }
+    }, [house]);
 
     const fetchLocationScores = async () => {
         const url = `https://api.walkscore.com/score?format=json&address=${encodeURIComponent(house.location)}&lat=${house.latitude}&lon=${house.longitude}&transit=1&bike=1&wsapikey=${scoreApiKey}`;
@@ -47,6 +60,21 @@ const HouseDetails = ({ route, navigation }) => {
         }
     };
 
+    const fetchOwnerContact = async () => {
+        try {
+            const userDocRef = doc(database, 'User', house.createdBy);
+            const userDoc = await getDoc(userDocRef);
+
+            if (userDoc.exists()) {
+                setOwnerContact(userDoc.data());
+            } else {
+                console.log('No such user document!');
+            }
+        } catch (error) {
+            console.error('Error fetching owner contact:', error);
+        }
+    };
+
     const requireLogin = (action) => {
         if (user) {
             action();
@@ -59,7 +87,11 @@ const HouseDetails = ({ route, navigation }) => {
     };
 
     const handleContact = () => {
-        console.log('Contact tapped');
+        if (ownerContact) {
+            setModalVisible(true);
+        } else {
+            Alert.alert('Error', 'No contact information available for this owner.');
+        }
     };
 
     const confirmSave = () => {
@@ -99,16 +131,18 @@ const HouseDetails = ({ route, navigation }) => {
 
     return (
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-            <FlatList
-                data={imageUrls} 
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                renderItem={({ item }) => (
-                    <Image source={{ uri: item }} style={styles.image} />
-                )}
-                keyExtractor={(_, index) => index.toString()}
-                style={styles.imageList}
-            />
+            {imageUrls.length > 0 && (
+                <FlatList
+                    data={imageUrls} 
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    renderItem={({ item }) => (
+                        <Image source={{ uri: item }} style={styles.image} />
+                    )}
+                    keyExtractor={(_, index) => index.toString()}
+                    style={styles.imageList}
+                />
+            )}
             <View style={styles.detailsContainer}>
                 <Text style={styles.detail}>Area: {house.area}</Text>
                 <Text style={styles.detail}>Bathrooms: {house.bath}</Text>
@@ -137,7 +171,7 @@ const HouseDetails = ({ route, navigation }) => {
                     </View>
                 )}
             </View>
-            <TouchableOpacity style={styles.button} onPress={() => requireLogin(handleContact)}>
+            <TouchableOpacity style={styles.button} onPress={handleContact}>
                 <Text style={styles.buttonText}>Contact</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={confirmSave}>
@@ -146,6 +180,23 @@ const HouseDetails = ({ route, navigation }) => {
             <TouchableOpacity style={styles.button} onPress={handleScheduleViewing}>
                 <Text style={styles.buttonText}>Schedule Viewing</Text>
             </TouchableOpacity>
+
+            {/* Modal for Contact Information */}
+            <Modal
+                visible={modalVisible}
+                animationType="slide"
+                transparent={true}
+                onRequestClose={() => setModalVisible(false)}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalTitle}>Contact Information</Text>
+                        <Text style={styles.modalText}>Email: {ownerContact?.email || 'N/A'}</Text>
+                        <Text style={styles.modalText}>Phone: {ownerContact?.phoneNumber || 'N/A'}</Text>
+                        <Button title="Close" onPress={() => setModalVisible(false)} />
+                    </View>
+                </View>
+            </Modal>
         </ScrollView>
     );
 };
@@ -205,6 +256,27 @@ const styles = StyleSheet.create({
     detail: {
         fontSize: 18,
         marginLeft: 5,  
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        width: '80%',
+        backgroundColor: 'white',
+        borderRadius: 10,
+        padding: 20,
+        alignItems: 'center',
+    },
+    modalTitle: {
+        fontSize: 20,
+        marginBottom: 15,
+    },
+    modalText: {
+        fontSize: 16,
+        marginBottom: 10,
     },
 });
 
