@@ -36,13 +36,13 @@ Notifications.setNotificationHandler({
 
 async function cancelAllNotifications() {
   try {
-      const notificationIds = await Notifications.getAllScheduledNotificationsAsync();
-      console.log("current notifications: ",notificationIds); 
-      if (notificationIds.length > 0) {
-          await Notifications.cancelAllScheduledNotificationsAsync();
-      }
+    const notificationIds = await Notifications.getAllScheduledNotificationsAsync();
+    console.log("current notifications: ", notificationIds);
+    if (notificationIds.length > 0) {
+      await Notifications.cancelAllScheduledNotificationsAsync();
+    }
   } catch (error) {
-      console.error("Failed to cancel all notifications", error);
+    console.error("Failed to cancel all notifications", error);
   }
 }
 
@@ -51,6 +51,7 @@ const HomeStackScreen = () => (
   <MainStack.Navigator>
     <MainStack.Screen name="My Home" component={Home} options={{ headerShown: false }} />
     <MainStack.Screen name="HouseDetails" component={HouseDetails} options={{ title: 'House Details' }} />
+    <MainStack.Screen name="ScheduleVisit" component={ScheduleVisit} options={{ title: 'Schedule a Visit' }} />
   </MainStack.Navigator>
 );
 
@@ -67,7 +68,6 @@ const ProfileStackScreen = () => (
     <MainStack.Screen name="ScheduledVisits" component={ScheduledVisits} options={{ title: 'Scheduled Visits' }} />
     <MainStack.Screen name="PostedListings" component={PostedListings} options={{ title: 'Posted Listings' }} />
     <MainStack.Screen name="PostListing" component={PostListing} options={{ title: 'Post a Listing' }} />
-    <MainStack.Screen name="ScheduleVisit" component={ScheduleVisit} options={{ title: 'Schedule a Visit' }} />
     <MainStack.Screen name="VisitRequests" component={VisitRequest} options={{ title: 'Visit Requests' }} />
   </MainStack.Navigator>
 );
@@ -120,14 +120,6 @@ const Tabs = () => (
         tabBarButton: () => null,
       }}
     />
-    <Tab.Screen
-      name="ScheduleVisit"
-      component={ScheduleVisit}
-      options={{
-        tabBarButton: () => null,
-        headerShown: false
-      }}
-    />
   </Tab.Navigator>
 );
 
@@ -149,10 +141,12 @@ const AppContent = () => {
       "Are you sure you want to cancel all scheduled notifications?",
       [
         { text: "No", style: "cancel" },
-        { text: "Yes", onPress: async () => {
-          await cancelAllNotifications();
-          alert('All notifications have been cancelled.');
-        }}
+        {
+          text: "Yes", onPress: async () => {
+            await cancelAllNotifications();
+            alert('All notifications have been cancelled.');
+          }
+        }
       ]
     );
   };
