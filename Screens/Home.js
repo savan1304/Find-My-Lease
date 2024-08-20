@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, TextInput, Button, Modal, TouchableOpacity, FlatList, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Button, Modal, TouchableOpacity, FlatList, Dimensions, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { collection, query, onSnapshot } from 'firebase/firestore';
 import MapHolder from '../Components/MapHolder';
 import HouseListItem from '../Components/HouseListItem';
@@ -119,132 +119,137 @@ const Home = ({ navigation }) => {
                 visible={isModalVisible}
                 onRequestClose={() => setModalVisible(!isModalVisible)}
             >
-                <View style={styles.centeredView}>
+                <KeyboardAvoidingView
+                    style={styles.centeredView}
+                    behavior={Platform.OS === "ios" ? "padding" : "height"}
+                >
                     <View style={styles.modalView}>
-                        <View style={styles.inputContainer}>
-                            <Text style={styles.label}>Bedrooms</Text>
-                            <TextInput
-                                style={styles.input}
-                                onChangeText={(value) => setFilters(prev => ({
-                                    ...prev,
-                                    bedrooms: { ...prev.bedrooms, min: value ? parseInt(value) : null }
-                                }))}
-                                value={filters.bedrooms.min ? filters.bedrooms.min.toString() : ''}
-                                keyboardType="number-pad"
-                                placeholder="Min"
-                                placeholderTextColor={helper.color.placeholderTextColor}
-                            />
-                            <TextInput
-                                style={styles.input}
-                                onChangeText={(value) => setFilters(prev => ({
-                                    ...prev,
-                                    bedrooms: { ...prev.bedrooms, max: value ? parseInt(value) : null }
-                                }))}
-                                value={filters.bedrooms.max ? filters.bedrooms.max.toString() : ''}
-                                keyboardType="number-pad"
-                                placeholder="Max"
-                                placeholderTextColor={helper.color.placeholderTextColor}
-                            />
-                        </View>
-                        <View style={styles.inputContainer}>
-                            <Text style={styles.label}>Area(m²)</Text>
-                            <TextInput
-                                style={styles.input}
-                                onChangeText={(value) => setFilters(prev => ({
-                                    ...prev,
-                                    area: { ...prev.area, min: value ? parseInt(value) : null }
-                                }))}
-                                value={filters.area.min ? filters.area.min.toString() : ''}
-                                keyboardType="number-pad"
-                                placeholder="Min"
-                                placeholderTextColor={helper.color.placeholderTextColor}
-                            />
-                            <TextInput
-                                style={styles.input}
-                                onChangeText={(value) => setFilters(prev => ({
-                                    ...prev,
-                                    area: { ...prev.area, max: value ? parseInt(value) : null }
-                                }))}
-                                value={filters.area.max ? filters.area.max.toString() : ''}
-                                keyboardType="number-pad"
-                                placeholder="Max"
-                                placeholderTextColor={helper.color.placeholderTextColor}
-                            />
-                        </View>
-                        <View style={styles.inputContainer}>
-                            <Text style={styles.label}>Bathrooms</Text>
-                            <TextInput
-                                style={styles.input}
-                                onChangeText={(value) => setFilters(prev => ({
-                                    ...prev,
-                                    bath: { ...prev.bath, min: value ? parseInt(value) : null }
-                                }))}
-                                value={filters.bath.min ? filters.bath.min.toString() : ''}
-                                keyboardType="number-pad"
-                                placeholder="Min"
-                                placeholderTextColor={helper.color.placeholderTextColor}
-                            />
-                            <TextInput
-                                style={styles.input}
-                                onChangeText={(value) => setFilters(prev => ({
-                                    ...prev,
-                                    bath: { ...prev.bath, max: value ? parseInt(value) : null }
-                                }))}
-                                value={filters.bath.max ? filters.bath.max.toString() : ''}
-                                keyboardType="number-pad"
-                                placeholder="Max"
-                                placeholderTextColor={helper.color.placeholderTextColor}
-                            />
-                        </View>
-                        <View style={styles.inputContainer}>
-                            <Text style={styles.label}>Price</Text>
-                            <TextInput
-                                style={styles.input}
-                                onChangeText={(value) => setFilters(prev => ({
-                                    ...prev,
-                                    price: { ...prev.price, min: value ? parseInt(value) : null }
-                                }))}
-                                value={filters.price.min ? filters.price.min.toString() : ''}
-                                keyboardType="number-pad"
-                                placeholder="Min"
-                                placeholderTextColor={helper.color.placeholderTextColor}
-                            />
-                            <TextInput
-                                style={styles.input}
-                                onChangeText={(value) => setFilters(prev => ({
-                                    ...prev,
-                                    price: { ...prev.price, max: value ? parseInt(value) : null }
-                                }))}
-                                value={filters.price.max ? filters.price.max.toString() : ''}
-                                keyboardType="number-pad"
-                                placeholder="Max"
-                                placeholderTextColor={helper.color.placeholderTextColor}
-                            />
-                        </View>
-                        <View style={styles.inputContainer}>
-                            <Text style={styles.label}>Pet Friendly</Text>
-                            <TouchableOpacity
-                                style={styles.checkbox}
-                                onPress={() => setFilters(prev => ({
-                                    ...prev,
-                                    petFriendly: !filters.petFriendly
-                                }))}
-                            >
-                                <Text style={styles.checkboxLabel}>{filters.petFriendly ? 'Yes' : 'No'}</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.inputContainer}>
-                            <Text style={styles.label}>Type</Text>
-                            <TouchableOpacity
-                                style={styles.checkbox}
-                                onPress={() => setFilters(prev => ({
-                                    ...prev,
-                                    type: filters.type === 'Private' ? 'Shared' : 'Private'
-                                }))}
-                            >
-                                <Text style={styles.checkboxLabel}>{filters.type || 'Private'}</Text>
-                            </TouchableOpacity>
-                        </View>
+                        <ScrollView style={styles.scrollView} contentContainerStyle={styles.modalContent}>
+                            <View style={styles.inputContainer}>
+                                <Text style={styles.label}>Bedrooms</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    onChangeText={(value) => setFilters(prev => ({
+                                        ...prev,
+                                        bedrooms: { ...prev.bedrooms, min: value ? parseInt(value) : null }
+                                    }))}
+                                    value={filters.bedrooms.min ? filters.bedrooms.min.toString() : ''}
+                                    keyboardType="number-pad"
+                                    placeholder="Min"
+                                    placeholderTextColor={helper.color.placeholderTextColor}
+                                />
+                                <TextInput
+                                    style={styles.input}
+                                    onChangeText={(value) => setFilters(prev => ({
+                                        ...prev,
+                                        bedrooms: { ...prev.bedrooms, max: value ? parseInt(value) : null }
+                                    }))}
+                                    value={filters.bedrooms.max ? filters.bedrooms.max.toString() : ''}
+                                    keyboardType="number-pad"
+                                    placeholder="Max"
+                                    placeholderTextColor={helper.color.placeholderTextColor}
+                                />
+                            </View>
+                            <View style={styles.inputContainer}>
+                                <Text style={styles.label}>Area(m²)</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    onChangeText={(value) => setFilters(prev => ({
+                                        ...prev,
+                                        area: { ...prev.area, min: value ? parseInt(value) : null }
+                                    }))}
+                                    value={filters.area.min ? filters.area.min.toString() : ''}
+                                    keyboardType="number-pad"
+                                    placeholder="Min"
+                                    placeholderTextColor={helper.color.placeholderTextColor}
+                                />
+                                <TextInput
+                                    style={styles.input}
+                                    onChangeText={(value) => setFilters(prev => ({
+                                        ...prev,
+                                        area: { ...prev.area, max: value ? parseInt(value) : null }
+                                    }))}
+                                    value={filters.area.max ? filters.area.max.toString() : ''}
+                                    keyboardType="number-pad"
+                                    placeholder="Max"
+                                    placeholderTextColor={helper.color.placeholderTextColor}
+                                />
+                            </View>
+                            <View style={styles.inputContainer}>
+                                <Text style={styles.label}>Bathrooms</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    onChangeText={(value) => setFilters(prev => ({
+                                        ...prev,
+                                        bath: { ...prev.bath, min: value ? parseInt(value) : null }
+                                    }))}
+                                    value={filters.bath.min ? filters.bath.min.toString() : ''}
+                                    keyboardType="number-pad"
+                                    placeholder="Min"
+                                    placeholderTextColor={helper.color.placeholderTextColor}
+                                />
+                                <TextInput
+                                    style={styles.input}
+                                    onChangeText={(value) => setFilters(prev => ({
+                                        ...prev,
+                                        bath: { ...prev.bath, max: value ? parseInt(value) : null }
+                                    }))}
+                                    value={filters.bath.max ? filters.bath.max.toString() : ''}
+                                    keyboardType="number-pad"
+                                    placeholder="Max"
+                                    placeholderTextColor={helper.color.placeholderTextColor}
+                                />
+                            </View>
+                            <View style={styles.inputContainer}>
+                                <Text style={styles.label}>Price</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    onChangeText={(value) => setFilters(prev => ({
+                                        ...prev,
+                                        price: { ...prev.price, min: value ? parseInt(value) : null }
+                                    }))}
+                                    value={filters.price.min ? filters.price.min.toString() : ''}
+                                    keyboardType="number-pad"
+                                    placeholder="Min"
+                                    placeholderTextColor={helper.color.placeholderTextColor}
+                                />
+                                <TextInput
+                                    style={styles.input}
+                                    onChangeText={(value) => setFilters(prev => ({
+                                        ...prev,
+                                        price: { ...prev.price, max: value ? parseInt(value) : null }
+                                    }))}
+                                    value={filters.price.max ? filters.price.max.toString() : ''}
+                                    keyboardType="number-pad"
+                                    placeholder="Max"
+                                    placeholderTextColor={helper.color.placeholderTextColor}
+                                />
+                            </View>
+                            <View style={styles.inputContainer}>
+                                <Text style={styles.label}>Pet Friendly</Text>
+                                <TouchableOpacity
+                                    style={styles.checkbox}
+                                    onPress={() => setFilters(prev => ({
+                                        ...prev,
+                                        petFriendly: !filters.petFriendly
+                                    }))}
+                                >
+                                    <Text style={styles.checkboxLabel}>{filters.petFriendly ? 'Yes' : 'No'}</Text>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={styles.inputContainer}>
+                                <Text style={styles.label}>Type</Text>
+                                <TouchableOpacity
+                                    style={styles.checkbox}
+                                    onPress={() => setFilters(prev => ({
+                                        ...prev,
+                                        type: filters.type === 'Private' ? 'Shared' : 'Private'
+                                    }))}
+                                >
+                                    <Text style={styles.checkboxLabel}>{filters.type || 'Private'}</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </ScrollView>
                         <View style={styles.buttonContainer}>
                             <TouchableOpacity
                                 style={[styles.button, styles.buttonClose]}
@@ -260,7 +265,7 @@ const Home = ({ navigation }) => {
                             </TouchableOpacity>
                         </View>
                     </View>
-                </View>
+                </KeyboardAvoidingView>
             </Modal>
         </View>
     );
