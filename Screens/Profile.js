@@ -1,11 +1,14 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { StyleSheet, Text, View, Modal, TextInput, Button, Alert, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, Modal, TextInput, Button, Alert, ScrollView, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { auth, database } from '../Firebase/firebaseSetup'; 
 import { doc, getDoc } from 'firebase/firestore'; 
 import { editToDB } from '../Firebase/firestoreHelper'; 
 import { AuthContext } from '../Components/AuthContext';
 import PressableItem from '../Components/PressableItem';
+
+const screenWidth = Dimensions.get('window').width;
+const screenHeight = Dimensions.get('window').height;
 
 const Profile = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
@@ -184,7 +187,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalView: {
-    width: 300,
+    width: screenWidth*.7,
     backgroundColor: 'white',
     borderRadius: 20,
     padding: 20,

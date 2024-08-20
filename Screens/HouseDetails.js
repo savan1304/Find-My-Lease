@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, ScrollView, Alert, Modal, Button } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image, ScrollView, Alert, Modal, TouchableOpacity, Button, Dimensions } from 'react-native';
 import { writeToDB } from '../Firebase/firestoreHelper';
 import { scoreApiKey } from '@env';  
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -8,6 +8,10 @@ import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { storage, database } from '../Firebase/firebaseSetup'; 
 import { ref, getDownloadURL } from 'firebase/storage'; 
 import PressableItem from '../Components/PressableItem';
+import * as Clipboard from 'expo-clipboard';
+
+const screenWidth = Dimensions.get('window').width;
+const screenHeight = Dimensions.get('window').height;
 
 const HouseDetails = ({ route, navigation }) => {
     const { house } = route.params;
@@ -16,7 +20,13 @@ const HouseDetails = ({ route, navigation }) => {
     const [imageUrls, setImageUrls] = useState([]);
     const [ownerContact, setOwnerContact] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
-
+    const copyToClipboard = async (text) => {
+        await Clipboard.setStringAsync(text);
+        const copiedText = await Clipboard.getStringAsync(); 
+        Alert.alert('Copied', `Copied to clipboard: ${copiedText}`);
+    };
+    
+    
     useEffect(() => {
         fetchLocationScores();
         if (house.imageUris && house.imageUris.length > 0) {
@@ -210,10 +220,15 @@ const HouseDetails = ({ route, navigation }) => {
             >
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
-                        <Text style={styles.modalTitle}>Contact Information</Text>
+                    <Text style={styles.modalTitle}>Contact Information</Text>
+                    <Text style={styles.modalTitle}>(Hold to Copy)</Text>
+                    <TouchableOpacity onPress={() => copyToClipboard(ownerContact?.email || 'N/A')}>
                         <Text style={styles.modalText}>Email: {ownerContact?.email || 'N/A'}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => copyToClipboard(ownerContact?.phoneNumber || 'N/A')}>
                         <Text style={styles.modalText}>Phone: {ownerContact?.phoneNumber || 'N/A'}</Text>
-                        <Button title="Close" onPress={() => setModalVisible(false)} />
+                    </TouchableOpacity>
+                    <Button title="Close" onPress={() => setModalVisible(false)} />
                     </View>
                 </View>
             </Modal>
@@ -284,7 +299,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     modalContent: {
-        width: '80%',
+        width: screenWidth*0.75,
         backgroundColor: 'white',
         borderRadius: 10,
         padding: 20,

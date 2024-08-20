@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, FlatList, Button, Alert } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Button, Alert, Dimensions } from 'react-native';
 import { collection, query, onSnapshot, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { database } from '../Firebase/firebaseSetup';
 import { AuthContext } from '../Components/AuthContext';
 import HouseListItem from '../Components/HouseListItem';
 import PressableItem from '../Components/PressableItem';
+
+const screenWidth = Dimensions.get('window').width;
+const screenHeight = Dimensions.get('window').height;
 
 const Saved = ({ navigation }) => {
   const { user } = useContext(AuthContext);

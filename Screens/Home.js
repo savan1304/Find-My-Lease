@@ -11,6 +11,7 @@ import { AuthContext } from '../Components/AuthContext';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
+
 const Home = ({ navigation }) => {
     const { user } = useContext(AuthContext);
     const [searchText, setSearchText] = useState('');
