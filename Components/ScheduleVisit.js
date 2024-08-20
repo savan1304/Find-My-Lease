@@ -241,7 +241,7 @@ export default function ScheduleVisit({ navigation }) {
         if (visitData.id) {
             navigation.goBack()
         } else {
-            navigation.navigate('HomeMain');
+            navigation.navigate('My Home');
         }
         reset();
     }

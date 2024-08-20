@@ -4,7 +4,7 @@ import { writeToDB } from '../Firebase/firestoreHelper';
 import { scoreApiKey } from '@env';  
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AuthContext } from '../Components/AuthContext';
-import { doc, getDoc } from 'firebase/firestore'; 
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { storage, database } from '../Firebase/firebaseSetup'; 
 import { ref, getDownloadURL } from 'firebase/storage'; 
 import PressableItem from '../Components/PressableItem';
@@ -110,20 +110,37 @@ const HouseDetails = ({ route, navigation }) => {
     };
 
     const handleSave = async () => {
+        if (!user) {
+            Alert.alert('Error', 'No user is signed in');
+            return;
+        }
+        
+        const userRef = doc(database, `User/${user.uid}`);
         try {
-            if (user) {
-                const collectionPath = `User/${user.uid}/saved`;
-                const houseToSave = { id: house.id }; // Creating an object that just contains the house ID
-                await writeToDB(houseToSave, collectionPath); // Save only the house ID
-                Alert.alert('Success', 'House saved successfully');
+            const docSnap = await getDoc(userRef);
+            if (docSnap.exists()) {
+                let savedHouses = docSnap.data().savedHouses || [];
+                if (!savedHouses.includes(house.id)) {
+                    savedHouses.push(house.id);
+                    await updateDoc(userRef, {
+                        savedHouses: savedHouses
+                    });
+                    Alert.alert('Success', 'House saved successfully');
+                } else {
+                    Alert.alert('Info', 'House already saved');
+                }
             } else {
-                Alert.alert('Error', 'No user is signed in');
+                await setDoc(userRef, {
+                    savedHouses: [house.id]
+                });
+                Alert.alert('Success', 'House saved successfully');
             }
         } catch (error) {
             console.error('Error saving house:', error);
             Alert.alert('Error', 'Failed to save house. Please try again.');
         }
     };
+    
 
     const handleScheduleViewing = () => {
         requireLogin(() => {
