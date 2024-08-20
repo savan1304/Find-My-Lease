@@ -284,7 +284,11 @@ export default function ScheduleVisit({ navigation }) {
 
 
     return (
-        <View style={appStyles.container}>
+        <ScrollView keyboardShouldPersistTaps='handled'
+            style={appStyles.container}
+            contentContainerStyle={{ justifyContent: 'center' }}
+        >
+
 
             <View style={appStyles.visitLocationAndPriceContainer}>
                 <View style={appStyles.locationOrPriceContainer1}>
@@ -296,16 +300,14 @@ export default function ScheduleVisit({ navigation }) {
             </View>
 
             {imageUrls.length > 0 ? (
-                <ScrollView style={appStyles.scrollViewContainer} contentContainerStyle={appStyles.contentContainer}>
-                    <FlatList
-                        data={imageUrls}
-                        renderItem={renderImage}
-                        keyExtractor={(item, index) => index.toString()}
-                        horizontal
-                        style={appStyles.imageList}
-                        showsHorizontalScrollIndicator={true}
-                    />
-                </ScrollView>
+                <FlatList
+                    data={imageUrls}
+                    renderItem={renderImage}
+                    keyExtractor={(item, index) => index.toString()}
+                    horizontal
+                    style={appStyles.imageList}
+                    showsHorizontalScrollIndicator={true}
+                />
             ) : (
                 <>
                 </>
@@ -347,9 +349,9 @@ export default function ScheduleVisit({ navigation }) {
                 />
             )}
 
-            <View style={appStyles.addItemContainer}>
+            <View style={[appStyles.addItemContainer, { alignItems: 'flex-start' }]}>
                 <Text style={appStyles.addTitles}>Questions</Text>
-                <View style={[appStyles.addInput, { height: 100, width: '70%' }]}
+                <View style={[appStyles.addInput, { height: 100, width: '70%', alignItems: 'flex-start' }]}
                 >
                     <TextInput
                         style={appStyles.addTitles}
@@ -393,7 +395,7 @@ export default function ScheduleVisit({ navigation }) {
                     </View>
                 </View>
             </View>
+        </ScrollView>
 
-        </View>
     )
 }
