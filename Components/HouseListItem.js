@@ -33,9 +33,9 @@ const HouseListItem = ({ house, onPress, style }) => {
                 )}
             </View>
             <View style={styles.right}>
-                <Text style={styles.info}>Location: {house.location}</Text>
-                <Text style={styles.info}>Price: ${house.price}/Month</Text>
-                <Text style={styles.info}>Type: {house.type}</Text>
+                <Text style={styles.info}>Location: {house.location} </Text>
+                <Text style={styles.info}>Price: ${house.price}/Month </Text>
+                <Text style={styles.info}>Type: {house.type} </Text>
             </View>
         </TouchableOpacity>
     );

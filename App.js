@@ -75,7 +75,7 @@ const ProfileStackScreen = () => (
 const Tabs = () => (
   <Tab.Navigator initialRouteName="Home">
     <Tab.Screen
-      name="Home"
+      name="Home "
       component={HomeStackScreen}
       options={{
         tabBarIcon: ({ color, size }) => (
@@ -85,7 +85,7 @@ const Tabs = () => (
       }}
     />
     <Tab.Screen
-      name="Saved"
+      name="Saved "
       component={SavedStackScreen}
       options={{
         tabBarIcon: ({ color, size }) => (
@@ -95,7 +95,7 @@ const Tabs = () => (
       }}
     />
     <Tab.Screen
-      name="Profile"
+      name="Profile "
       component={ProfileStackScreen}
       options={{
         tabBarIcon: ({ color, size }) => (
