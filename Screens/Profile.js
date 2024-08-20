@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { StyleSheet, Text, View, Modal, TextInput, Button, Alert } from 'react-native';
+import { StyleSheet, Text, View, Modal, TextInput, Button, Alert, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { auth, database } from '../Firebase/firebaseSetup'; 
 import { doc, getDoc } from 'firebase/firestore'; 
@@ -99,8 +99,10 @@ const Profile = ({ navigation }) => {
           setIsModalVisible(false);
         }}
       >
+        
         <View style={styles.modalContainer}>
-          <View style={styles.modalView}>
+        <ScrollView contentContainerStyle={{flex:1, justifyContent: 'center', alignItems: 'center' }} keyboardShouldPersistTaps='handled'>
+          <View style={styles.modalView}>  
             <Text style={styles.modalTitle}>Edit Profile</Text>
             <TextInput
               style={styles.input}
@@ -117,7 +119,7 @@ const Profile = ({ navigation }) => {
               onChangeText={setPhoneNumber}
               keyboardType="phone-pad"
             />
-            <View>
+
           <PressableItem style={styles.saveButton} onPress={handleSave}>
               <Text style={styles.buttonText}>Save</Text>
           </PressableItem>
@@ -125,7 +127,7 @@ const Profile = ({ navigation }) => {
               <Text style={styles.buttonText}>Cancel</Text>
           </PressableItem>
           </View>
-          </View>
+          </ScrollView>
         </View>
       </Modal>
     </View>
