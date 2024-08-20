@@ -19,11 +19,15 @@ export const appStyles = StyleSheet.create({
     marginHorizontal: 15,
     padding: 1,
     justifyContent: "space-evenly",
+    marginVertical: 20,
+    height: 65,
   },
   saveAndCancelButtonContainerForVisit: {
     flexDirection: 'row',
     marginHorizontal: 15,
     justifyContent: "space-evenly",
+    marginVertical: 10,
+    height: 95,
   },
   text: {
     color: Colors.background
@@ -37,7 +41,7 @@ export const appStyles = StyleSheet.create({
     alignItems: 'center',
   },
   saveButton: {
-    backgroundColor: Colors.themeColor
+    backgroundColor: Colors.themeColor,
   },
   cancelButton: {
     backgroundColor: Colors.red,
@@ -80,6 +84,7 @@ export const appStyles = StyleSheet.create({
   listingDetailsContainer: {
     flex: 4,
     width: '95%',
+    marginBottom: 0,
   },
   twoListingInputContainer: {
     flexDirection: 'row',
@@ -87,7 +92,7 @@ export const appStyles = StyleSheet.create({
   },
   addInput: {
     borderRadius: 5,
-    borderWidth: 1.5,
+    borderWidth: 2,
     borderColor: Colors.themeColor,
     color: Colors.themeColor,
     marginHorizontal: 5,
@@ -97,8 +102,8 @@ export const appStyles = StyleSheet.create({
   addItemContainer: {
     marginHorizontal: 15,
     flexDirection: 'row',
-    marginVertical: 12,
-    alignItems: 'center'
+    marginVertical: 15,
+    alignItems: 'center',
   },
   checkboxContainer: {
     flexDirection: 'row',
@@ -156,15 +161,10 @@ export const appStyles = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
   },
-  visitLocationAndPriceContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-  },
   locationOrPriceContainer2: {
     flex: 1,
     alignItems: 'flex-end'
   },
-
   locationOrPriceContainer1: {
     flex: 1,
     alighItems: 'flex-end',
@@ -172,5 +172,24 @@ export const appStyles = StyleSheet.create({
   imageList: {
     flexGrow: 0,
   },
+  visitContainer: {
+    flex: 10,
+    padding: 20,
+  },
+  visitLocationAndPriceContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  imagesForVisitContainer: {
+    flex: 3
+  },
+  visitDetailsContainer: {
+    flex: 3,
+  },
+  buttonsViewForVisit: {
+    flex: 2,
+    alignItems: 'center',
+  }
 })
 
