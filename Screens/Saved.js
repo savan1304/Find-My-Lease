@@ -4,43 +4,52 @@ import { collection, query, onSnapshot, doc, getDoc, updateDoc } from 'firebase/
 import { database } from '../Firebase/firebaseSetup';
 import { AuthContext } from '../Components/AuthContext';
 import HouseListItem from '../Components/HouseListItem';
+import PressableItem from '../Components/PressableItem';
 
 const Saved = ({ navigation }) => {
   const { user } = useContext(AuthContext);
   const [houses, setHouses] = useState([]);
   const [savedIds, setSavedIds] = useState([]);
 
-  useEffect(() => {
-    const fetchHouses = () => {
-      const q = query(collection(database, 'Listing'));
-      return onSnapshot(q, (querySnapshot) => {
-        let houseData = [];
-        querySnapshot.forEach(doc => {
-          houseData.push({ ...doc.data(), id: doc.id });
-        });
-        setHouses(houseData);
-        console.log("Fetched houses:", houseData);
+  const fetchHouses = () => {
+    const q = query(collection(database, 'Listing'));
+    return onSnapshot(q, (querySnapshot) => {
+      let houseData = [];
+      querySnapshot.forEach(doc => {
+        houseData.push({ ...doc.data(), id: doc.id });
       });
-    };
+      setHouses(houseData);
+      console.log("Fetched houses:", houseData);
+    });
+  };
 
-    const fetchSavedIds = async () => {
-      if (user) {
-        const userRef = doc(database, `User/${user.uid}`);
-        const docSnap = await getDoc(userRef);
+  const fetchSavedIds = () => {
+    if (user) {
+      const userRef = doc(database, `User/${user.uid}`);
+      return onSnapshot(userRef, (docSnap) => {
         if (docSnap.exists() && docSnap.data().savedHouses) {
           setSavedIds(docSnap.data().savedHouses);
-          console.log("Fetched saved IDs:", docSnap.data().savedHouses);
+          console.log("Fetched and updated saved IDs:", docSnap.data().savedHouses);
         } else {
           setSavedIds([]);
         }
+      });
+    }
+    return undefined; 
+  };
+  
+  useEffect(() => {
+    const housesUnsub = fetchHouses();
+    const savedIdsUnsub = fetchSavedIds(); 
+  
+    return () => {
+      housesUnsub();
+      if (savedIdsUnsub) {
+        savedIdsUnsub(); 
       }
     };
-
-    const housesUnsub = fetchHouses();
-    fetchSavedIds(); 
-
-    return () => housesUnsub();
   }, [user]);
+  
 
   const filteredHouses = houses.filter(house => savedIds.includes(house.id));
 
@@ -80,11 +89,9 @@ const Saved = ({ navigation }) => {
                 house={item}
                 onPress={() => handleHousePress(item)}
               />
-              <Button
-                title="Remove"
-                color="red"
-                onPress={() => confirmRemove(item.id)}
-              />
+              <PressableItem onPress={() => confirmRemove(item.id)} style={styles.removeButton}>
+                  <Text style={styles.buttonText}>Remove</Text>
+              </PressableItem>
             </View>
           )}
           keyExtractor={item => item.id}
@@ -110,7 +117,17 @@ const styles = StyleSheet.create({
     padding: 10,
     borderWidth: 1, 
     borderColor: '#ccc', 
-  }
+  },
+  removeButton: {
+    backgroundColor: 'red',
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    textAlign: 'center'
+  },
 });
 
 export default Saved;
