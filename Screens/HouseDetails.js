@@ -1,24 +1,21 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, ScrollView, Alert } from 'react-native';
 import { writeToDB } from '../Firebase/firestoreHelper';
-import { scoreApiKey } from '@env';  // Ensure your API key is stored securely
+import { scoreApiKey } from '@env';  
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AuthContext } from '../Components/AuthContext';
+import { ref, getDownloadURL } from 'firebase/storage'; 
+import { storage } from '../Firebase/firebaseSetup'; 
 
 const HouseDetails = ({ route, navigation }) => {
     const { house } = route.params;
     const { user } = useContext(AuthContext);  // Use AuthContext for user state
     const [locationScores, setLocationScores] = useState(null);
-
-    const sampleImages = [
-        'https://via.placeholder.com/200x200.png?text=House+1',
-        'https://via.placeholder.com/200x200.png?text=House+2',
-        'https://via.placeholder.com/200x200.png?text=House+3',
-        'https://via.placeholder.com/200x200.png?text=House+4'
-    ];
+    const [imageUrls, setImageUrls] = useState([]);
 
     useEffect(() => {
         fetchLocationScores();
+        fetchImageUrls();
     }, []);
 
     const fetchLocationScores = async () => {
@@ -33,6 +30,20 @@ const HouseDetails = ({ route, navigation }) => {
             }
         } catch (error) {
             console.error('Error fetching scores:', error);
+        }
+    };
+
+    const fetchImageUrls = async () => {
+        try {
+            const urls = await Promise.all(
+                house.imageUris.map(async (imagePath) => {
+                    const imageRef = ref(storage, imagePath);
+                    return await getDownloadURL(imageRef);
+                })
+            );
+            setImageUrls(urls);
+        } catch (error) {
+            console.error('Error fetching image URLs:', error);
         }
     };
 
@@ -89,7 +100,7 @@ const HouseDetails = ({ route, navigation }) => {
     return (
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
             <FlatList
-                data={sampleImages}
+                data={imageUrls} 
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 renderItem={({ item }) => (
