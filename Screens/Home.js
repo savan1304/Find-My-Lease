@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, TextInput, Button, Modal, TouchableOpacity, FlatList, Dimensions } from 'react-native';
 import { collection, query, onSnapshot } from 'firebase/firestore';
 import MapHolder from '../Components/MapHolder';
@@ -7,10 +7,12 @@ import helper from '../Config/Helper';
 import { database } from '../Firebase/firebaseSetup';
 import PressableItem from '../Components/PressableItem';
 import { appStyles } from '../Config/Styles';
+import { AuthContext } from '../Components/AuthContext';
 
 const screenWidth = Dimensions.get('window').width;
 
 const Home = ({ navigation }) => {
+    const { user } = useContext(AuthContext);
     const [searchText, setSearchText] = useState('');
     const [filters, setFilters] = useState({
         bedrooms: { min: null, max: null },
@@ -29,15 +31,19 @@ const Home = ({ navigation }) => {
             let newArray = [];
             if (!querySnapshot.empty) {
                 querySnapshot.forEach((docSnapShot) => {
-                    console.log(docSnapShot.id);
-                    newArray.push({ ...docSnapShot.data(), id: docSnapShot.id });
+                    const houseData = docSnapShot.data();
+                    // Filter out houses created by the current user so user cannot see their own listing 
+                    if (!user || houseData.createdBy !== user.uid) {
+                        newArray.push({ ...houseData, id: docSnapShot.id });
+                    }
                 });
             }
             setHouses(newArray);
         }, (e) => { console.log(e) });
 
-        return () => unsubscribe(); // Detaching the listener
-    }, []);
+        return () => unsubscribe(); 
+    }, [user]);
+
 
     const filteredHouses = houses.filter(house => {
         const bedroomsWithinRange = (
