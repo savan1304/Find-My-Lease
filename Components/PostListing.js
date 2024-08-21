@@ -181,10 +181,10 @@ export default function PostListing({ navigation }) {
 
 
     function handleCancel() {
-        if (listingData) {
+        if (isListingDataLengthPositive()) {
             navigation.navigate('PostedListings')
         } else {
-            navigation.navigate('Profile');
+            navigation.goBack();
         }
         reset()
     }
