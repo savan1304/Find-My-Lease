@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, FlatList, Alert } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import PressableItem from '../Components/PressableItem';
 import Visit from '../Components/Visit';
 import { collection, onSnapshot, query } from 'firebase/firestore';
@@ -9,11 +9,13 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { auth, database } from '../Firebase/firebaseSetup';
 import { doc, updateDoc } from 'firebase/firestore';
 import call from 'react-native-phone-call'
+import { AuthContext } from '../Components/AuthContext';
 
 
 export default function ScheduledVisits({ navigation }) {
     const [visits, setVisits] = useState([])
     const user = auth.currentUser;
+    const { language } = useContext(AuthContext);
 
 
     useEffect(() => {
@@ -56,31 +58,24 @@ export default function ScheduledVisits({ navigation }) {
 
 
     async function handleDeleteVisit(visit) {
-        console.log("Inside handleDeleteVisit with visit: ", visit)
-
         Alert.alert(
-            "Confirm Delete",
-            "Are you sure you want to delete this visit?",
+            language === 'zh' ? "确认删除" : "Confirm Delete",
+            language === 'zh' ? "您确定要删除此访问吗？" : "Are you sure you want to delete this visit?",
             [
                 {
-                    text: "Cancel",
+                    text: language === 'zh' ? "取消" : "Cancel",
                     style: "cancel",
                 },
                 {
-                    text: "Delete",
+                    text: language === 'zh' ? "删除" : "Delete",
                     onPress: async () => {
-                        try {
-                            const listingData = await getDataById(visit.listingId, 'Listing')
-                            const updatedVisitRequests = listingData.visitRequests.filter(
-                                request => request.id !== visit.id
-                            );
+                        const listingData = await getDataById(visit.listingId, 'Listing')
+                        const updatedVisitRequests = listingData.visitRequests.filter(
+                            request => request.id !== visit.id
+                        );
 
-                            const listingDocRef = doc(database, 'Listing', visit.listingId);
-                            await updateDoc(listingDocRef, { visitRequests: updatedVisitRequests });
-                            console.log("Visit deleted from visitRequests successfully");
-                        } catch (error) {
-                            console.log("Error deleting visit from visitRequests: ", error)
-                        }
+                        const listingDocRef = doc(database, 'Listing', visit.listingId);
+                        await updateDoc(listingDocRef, { visitRequests: updatedVisitRequests });
 
                         const visitCollectionName = `User/${user.uid}/ScheduledVisits`;
                         deleteFromDB(visit.id, visitCollectionName)
@@ -118,7 +113,7 @@ export default function ScheduledVisits({ navigation }) {
         <View>
 
             {visits.length === 0 ? (
-                <Text style={styles.text}>You have no upcoming scheduled visits</Text>
+                <Text style={styles.text}>{language === 'zh' ? '您没有即将到来的预定访问' : 'You have no upcoming scheduled visits'} </Text>
             ) :
                 (
                     <FlatList data={visits}
@@ -187,18 +182,18 @@ export default function ScheduledVisits({ navigation }) {
                                         <Visit visit={item} />
                                         {item.status === 'rescheduled' && renderRescheduleOptions() && (
                                             <View>
-                                                <Text style={[styles.info, { color: Colors.blue, fontWeight: '500' }]}>Requested Date: {item.rescheduleDate}</Text>
-                                                <Text style={[styles.info, { color: Colors.blue, fontWeight: '500' }]}>Requested Time: {item.rescheduleTime}</Text>
+                                                <Text style={[styles.info, { color: Colors.blue, fontWeight: '500' }]}>{language === 'zh' ? `申请的日期: ${item.rescheduleDate}` : `Requested Date: ${item.rescheduleDate}`} </Text>
+                                                <Text style={[styles.info, { color: Colors.blue, fontWeight: '500' }]}>{language === 'zh' ? `申请的时间: ${item.rescheduleTime}` : `Requested Time: ${item.rescheduleTime}`} </Text>
                                             </View>
 
                                         )}
                                         <View style={styles.rescheduleRequestActionsContainer}>
                                             <PressableItem onPress={() => { handleContactLandlord() }} style={[styles.rescheduleRequestActionsStyle, { width: '55%' }]} >
-                                                <Text style={{ color: Colors.background }}>Contact Landlord</Text>
+                                            <Text style={{ color: Colors.background }}>{language === 'zh' ? '联系房东' : 'Contact Landlord'} </Text>
                                             </PressableItem>
                                             {item.status === 'rescheduled' && renderRescheduleOptions() && (
                                                 <PressableItem onPress={() => { handleAcceptReschedule() }} style={[styles.rescheduleRequestActionsStyle, { width: '40%' }]} >
-                                                    <Text style={{ color: Colors.background }}>Accept</Text>
+                                                    <Text style={{ color: Colors.background }}>{language === 'zh' ? '接受' : 'Accept'} </Text>
                                                 </PressableItem>
                                             )}
                                         </View>
