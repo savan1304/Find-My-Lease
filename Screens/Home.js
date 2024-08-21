@@ -13,7 +13,7 @@ const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 const Home = ({ navigation }) => {
-    const { user } = useContext(AuthContext);
+    const { user, language } = useContext(AuthContext);
     const [searchText, setSearchText] = useState('');
     const [filters, setFilters] = useState({
         bedrooms: { min: null, max: null },
@@ -94,12 +94,12 @@ const Home = ({ navigation }) => {
         <View style={styles.container}>
             <TextInput
                 style={styles.searchBar}
-                placeholder="Search..."
+                placeholder={language === 'zh' ? "搜索..." : "Search..."}
                 value={searchText}
                 onChangeText={setSearchText}
             />
             <PressableItem onPress={() => setModalVisible(true)} style={{ margin: 0 }}>
-                <Text style={appStyles.text}>Open Filters </Text>
+                <Text style={appStyles.text}>{language === 'zh' ? "打开筛选器" : "Open Filters"}</Text>
             </PressableItem>
             <MapHolder navigation={navigation} houses={houses} />
             <FlatList
@@ -127,7 +127,7 @@ const Home = ({ navigation }) => {
                         <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center' }} keyboardShouldPersistTaps='handled' horizontal={true}>
                             <ScrollView contentContainerStyle={{ justifyContent: 'center' }}>
                                 <View style={styles.inputContainer}>
-                                    <Text style={styles.label}>Bedrooms </Text>
+                                    <Text style={styles.label}>{language === 'zh' ? "卧室" : "Bedrooms"}</Text>
                                     <TextInput
                                         style={styles.input}
                                         onChangeText={(value) => setFilters(prev => ({
@@ -136,7 +136,7 @@ const Home = ({ navigation }) => {
                                         }))}
                                         value={filters.bedrooms.min ? filters.bedrooms.min.toString() : ''}
                                         keyboardType="number-pad"
-                                        placeholder="Min"
+                                        placeholder={language === 'zh' ? "最小" : "Min"}
                                         placeholderTextColor={helper.color.placeholderTextColor}
                                     />
                                     <TextInput
@@ -147,12 +147,12 @@ const Home = ({ navigation }) => {
                                         }))}
                                         value={filters.bedrooms.max ? filters.bedrooms.max.toString() : ''}
                                         keyboardType="number-pad"
-                                        placeholder="Max"
+                                        placeholder={language === 'zh' ? "最大" : "Max"}
                                         placeholderTextColor={helper.color.placeholderTextColor}
                                     />
                                 </View>
                                 <View style={styles.inputContainer}>
-                                    <Text style={styles.label}>Area(m²) </Text>
+                                    <Text style={styles.label}>{language === 'zh' ? "面积(平方米)" : "Area (m²)"}</Text>
                                     <TextInput
                                         style={styles.input}
                                         onChangeText={(value) => setFilters(prev => ({
@@ -161,7 +161,7 @@ const Home = ({ navigation }) => {
                                         }))}
                                         value={filters.area.min ? filters.area.min.toString() : ''}
                                         keyboardType="number-pad"
-                                        placeholder="Min"
+                                        placeholder={language === 'zh' ? "最小" : "Min"}
                                         placeholderTextColor={helper.color.placeholderTextColor}
                                     />
                                     <TextInput
@@ -172,12 +172,12 @@ const Home = ({ navigation }) => {
                                         }))}
                                         value={filters.area.max ? filters.area.max.toString() : ''}
                                         keyboardType="number-pad"
-                                        placeholder="Max"
+                                        placeholder={language === 'zh' ? "最大" : "Max"}
                                         placeholderTextColor={helper.color.placeholderTextColor}
                                     />
                                 </View>
                                 <View style={styles.inputContainer}>
-                                    <Text style={styles.label}>Bathrooms </Text>
+                                    <Text style={styles.label}>{language === 'zh' ? "浴室" : "Bathrooms"}</Text>
                                     <TextInput
                                         style={styles.input}
                                         onChangeText={(value) => setFilters(prev => ({
@@ -186,7 +186,7 @@ const Home = ({ navigation }) => {
                                         }))}
                                         value={filters.bath.min ? filters.bath.min.toString() : ''}
                                         keyboardType="number-pad"
-                                        placeholder="Min"
+                                        placeholder={language === 'zh' ? "最小" : "Min"}
                                         placeholderTextColor={helper.color.placeholderTextColor}
                                     />
                                     <TextInput
@@ -197,12 +197,12 @@ const Home = ({ navigation }) => {
                                         }))}
                                         value={filters.bath.max ? filters.bath.max.toString() : ''}
                                         keyboardType="number-pad"
-                                        placeholder="Max"
+                                        placeholder={language === 'zh' ? "最大" : "Max"}
                                         placeholderTextColor={helper.color.placeholderTextColor}
                                     />
                                 </View>
                                 <View style={styles.inputContainer}>
-                                    <Text style={styles.label}>Price </Text>
+                                    <Text style={styles.label}>{language === 'zh' ? "价格" : "Price"}</Text>
                                     <TextInput
                                         style={styles.input}
                                         onChangeText={(value) => setFilters(prev => ({
@@ -211,7 +211,7 @@ const Home = ({ navigation }) => {
                                         }))}
                                         value={filters.price.min ? filters.price.min.toString() : ''}
                                         keyboardType="number-pad"
-                                        placeholder="Min"
+                                        placeholder={language === 'zh' ? "最小" : "Min"}
                                         placeholderTextColor={helper.color.placeholderTextColor}
                                     />
                                     <TextInput
@@ -222,32 +222,32 @@ const Home = ({ navigation }) => {
                                         }))}
                                         value={filters.price.max ? filters.price.max.toString() : ''}
                                         keyboardType="number-pad"
-                                        placeholder="Max"
+                                        placeholder={language === 'zh' ? "最大" : "Max"}
                                         placeholderTextColor={helper.color.placeholderTextColor}
                                     />
                                 </View>
                                 <View style={styles.inputContainer}>
-                                    <Text style={styles.label}>Pet Friendly </Text>
+                                    <Text style={styles.label}>{language === 'zh' ? "允许宠物" : "Pet Friendly"}</Text>
                                     <PressableItem
-                                        style={[styles.checkbox, { width: 55 }]}
+                                        style={styles.checkbox}
                                         onPress={() => setFilters(prev => ({
                                             ...prev,
                                             petFriendly: !filters.petFriendly
                                         }))}
                                     >
-                                        <Text style={styles.checkboxLabel}>{filters.petFriendly ? 'Yes' : 'No'} </Text>
+                                        <Text style={styles.checkboxLabel}>{filters.petFriendly ? (language === 'zh' ? '是' : 'Yes') : (language === 'zh' ? '否' : 'No')}</Text>
                                     </PressableItem>
                                 </View>
                                 <View style={styles.inputContainer}>
-                                    <Text style={styles.label}>Type </Text>
+                                    <Text style={styles.label}>{language === 'zh' ? "类型" : "Type"}</Text>
                                     <PressableItem
-                                        style={[styles.checkbox, { width: 85 }]}
+                                        style={styles.checkbox}
                                         onPress={() => setFilters(prev => ({
                                             ...prev,
                                             type: filters.type === 'Private' ? 'Shared' : 'Private'
                                         }))}
                                     >
-                                        <Text style={styles.checkboxLabel}>{filters.type || 'Private'} </Text>
+                                        <Text style={styles.checkboxLabel}>{filters.type || (language === 'zh' ? '私人' : 'Private')}</Text>
                                     </PressableItem>
                                 </View>
                             </ScrollView>
@@ -257,13 +257,13 @@ const Home = ({ navigation }) => {
                                 style={[styles.button, styles.buttonClose]}
                                 onPress={() => setModalVisible(!isModalVisible)}
                             >
-                                <Text style={styles.textStyle}>Hide Filters </Text>
+                                <Text style={styles.textStyle}>{language === 'zh' ? "隐藏筛选器" : "Hide Filters"}</Text>
                             </PressableItem>
                             <PressableItem
                                 style={[styles.button, styles.buttonClear]}
                                 onPress={clearFilters}
                             >
-                                <Text style={styles.textStyle}>Clear Filters </Text>
+                                <Text style={styles.textStyle}>{language === 'zh' ? "清除筛选器" : "Clear Filters"}</Text>
                             </PressableItem>
                         </View>
                     </View>

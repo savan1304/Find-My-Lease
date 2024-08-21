@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { ref, getDownloadURL } from 'firebase/storage';
 import { storage } from '../Firebase/firebaseSetup';
+import { AuthContext } from '../Components/AuthContext';
 
 const HouseListItem = ({ house, onPress, style }) => {
     const [imageUrl, setImageUrl] = useState(null);
+    const { language } = useContext(AuthContext);
 
     useEffect(() => {
         const fetchImageUrl = async () => {
@@ -33,9 +35,9 @@ const HouseListItem = ({ house, onPress, style }) => {
                 )}
             </View>
             <View style={styles.right}>
-                <Text style={styles.info}>Location: {house.location} </Text>
-                <Text style={styles.info}>Price: ${house.price}/Month </Text>
-                <Text style={styles.info}>Type: {house.type} </Text>
+                <Text style={styles.info}>{language === 'zh' ? "位置: " : "Location: "}{house.location} </Text>
+                <Text style={styles.info}>{language === 'zh' ? "价格: " : "Price: "}${house.price}/{language === 'zh' ? "月 " : "Month "}</Text>
+                <Text style={styles.info}>{language === 'zh' ? "类型: " : "Type: "}{house.type} </Text>
             </View>
         </TouchableOpacity>
     );

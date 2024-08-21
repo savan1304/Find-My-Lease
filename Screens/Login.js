@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Text, View, TextInput, Alert, Modal, StyleSheet, Button, KeyboardAvoidingView, Platform, ScrollView, Dimensions } from 'react-native';
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '../Firebase/firebaseSetup';
 import PressableItem from '../Components/PressableItem';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { appStyles } from '../Config/Styles';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons'; 
+import { AuthContext } from '../Components/AuthContext';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -16,15 +17,16 @@ export default function Login({ navigation }) {
     const [isLoading, setIsLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [resetEmail, setResetEmail] = useState('');
+    const { language } = useContext(AuthContext);
 
     const loginHandler = async () => {
         console.log("Attempting to login");
         if (!email) {
-            Alert.alert('Validation Error', 'Email should not be empty');
+            Alert.alert(language === 'zh' ? '验证错误' : 'Validation Error', language === 'zh' ? '电子邮箱不能为空' : 'Email should not be empty');
             return;
         }
         if (!password) {
-            Alert.alert('Validation Error', 'Password should not be empty');
+            Alert.alert(language === 'zh' ? '验证错误' : 'Validation Error', language === 'zh' ? '密码不能为空' : 'Password should not be empty');
             return;
         }
         setIsLoading(true);
@@ -35,7 +37,7 @@ export default function Login({ navigation }) {
             navigation.navigate('My Home');
         } catch (err) {
             setIsLoading(false);
-            Alert.alert('Login Error', err.message);
+            Alert.alert(language === 'zh' ? '登录错误' : 'Login Error', err.message);
         }
     };
 
@@ -46,106 +48,104 @@ export default function Login({ navigation }) {
 
     const handleForgotPassword = () => {
         if (!resetEmail) {
-            Alert.alert("Input required", "Please enter your email address to reset your password.");
+            Alert.alert(language === 'zh' ? '需要输入' : "Input required", language === 'zh' ? "请输入您的电子邮箱以重置密码。" : "Please enter your email address to reset your password.");
             return;
         }
         sendPasswordResetEmail(auth, resetEmail)
             .then(() => {
-                Alert.alert("Check your email", "A link to reset your password has been sent to your email.");
-                setModalVisible(false);
-                setResetEmail('');
+                Alert.alert(language === 'zh' ? '检查您的电子邮件' : "Check your email", language === 'zh' ? "重置密码的链接已发送到您的电子邮件。" : "A link to reset your password has been sent to your email.");
+                setModalVisible(false); 
+                setResetEmail(''); 
             })
             .catch((error) => {
-                Alert.alert("Error", error.message);
+                Alert.alert(language === 'zh' ? '错误' : "Error", error.message);
             });
     };
 
     return (
         <SafeAreaView style={appStyles.loginSignUpContainer}>
             <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
-                <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
-                    <View style={styles.iconContainer}>
-                        <MaterialIcons name="apartment" size={64} color="blue" />
-                    </View>
-                    <View style={styles.introContainer}>
-                        <Text style={styles.introText}>
-                            Welcome back to FindMyLease! Continue your journey to find the perfect place to rent or manage your property rentals with ease. Log in now to access your account and all the features of FindMyLease!
-                        </Text>
-                    </View>
-                    <View style={styles.centeredView}>
-                        <View style={appStyles.loginSignUpFieldContainer}>
-                            <Text style={styles.addTitles}>Email</Text>
-                            <View style={appStyles.loginSignUpInput}>
-                                <TextInput
-                                    placeholder="Email"
-                                    value={email}
-                                    autoCorrect={false}
-                                    autoCapitalize="none"
-                                    onChangeText={setEmail}
-                                />
-                            </View>
+            <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
+                <View style={styles.iconContainer}>
+                    <MaterialIcons name="apartment" size={64} color="blue" />
+                </View>
+                <View style={styles.introContainer}>
+                    <Text style={styles.introText}>
+                        {language === 'zh' ? '欢迎回到FindMyLease！继续您的租房之旅，或管理您的房产出租。立即登录，访问您的账户和FindMyLease的所有功能！' : 
+                        'Welcome back to FindMyLease! Continue your journey to find the perfect place to rent or manage your property rentals with ease. Log in now to access your account and all the features of FindMyLease!'}
+                    </Text>
+                </View>
+                <View style={styles.centeredView}>
+                    <View style={appStyles.loginSignUpFieldContainer}>
+                        <Text>{language === 'zh' ? '电子邮箱' : 'Email'}</Text>
+                        <View style={appStyles.loginSignUpInput}>
+                            <TextInput
+                                placeholder={language === 'zh' ? '电子邮箱' : "Email"}
+                                value={email}
+                                autoCorrect={false}
+                                autoCapitalize="none"
+                                onChangeText={setEmail}
+                            />
                         </View>
+                    </View>
 
-                        <View style={appStyles.loginSignUpFieldContainer}>
-                            <Text style={styles.addTitles}>Password</Text>
-                            <View style={appStyles.loginSignUpInput}>
-                                <TextInput
-                                    placeholder="Password"
-                                    value={password}
-                                    autoCorrect={false}
-                                    autoCapitalize="none"
-                                    secureTextEntry={true}
-                                    onChangeText={setPassword}
-                                />
-                            </View>
-                        </View>
-
-                        <Modal
-                            animationType="slide"
-                            transparent={true}
-                            visible={modalVisible}
-                            onRequestClose={() => {
-                                Alert.alert("Modal has been closed.");
-                                setModalVisible(!modalVisible);
-                            }}
-                        >
-                            <View style={styles.modalContainer}>
-                                <View style={styles.modalView}>
-                                    <TextInput
-                                        style={styles.modalText}
-                                        onChangeText={setResetEmail}
-                                        value={resetEmail}
-                                        placeholderTextColor="gray"
-                                        placeholder="Enter your email for password reset"
-                                        keyboardType="email-address"
-                                        autoFocus={true}
-                                    />
-                                    <PressableItem onPress={handleForgotPassword} >
-                                        <Text style={appStyles.text}>Send Reset Email </Text>
-                                    </PressableItem>
-                                    <PressableItem onPress={() => setModalVisible(!modalVisible)} style={{ backgroundColor: 'rgb(255, 59, 48)', width: 95, alignItems: 'center' }}>
-                                        <Text style={appStyles.text}>Cancel </Text>
-                                    </PressableItem >
-                                </View>
-                            </View>
-                        </Modal>
-                        <View style={styles.buttonContainer}>
-                            <PressableItem onPress={loginHandler} style={[appStyles.buttonStyle, appStyles.cancelButton, { width: 135 }]}>
-                                <Text style={appStyles.text}>Log in </Text>
-                            </PressableItem>
-                            <PressableItem onPress={signupHandler} style={[appStyles.buttonStyle, appStyles.saveButton, { width: 135 }]}>
-                                <Text style={appStyles.text}>Sign Up </Text>
-                            </PressableItem>
-                            <PressableItem onPress={() => setModalVisible(true)} style={[appStyles.buttonStyle, appStyles.saveButton]}>
-                                <Text style={appStyles.text}>Forgot Password? </Text>
-                            </PressableItem>
+                    <View style={appStyles.loginSignUpFieldContainer}>
+                        <Text>{language === 'zh' ? '密码' : 'Password'}</Text>
+                        <View style={appStyles.loginSignUpInput}>
+                            <TextInput
+                                placeholder={language === 'zh' ? '密码' : "Password"}
+                                value={password}
+                                autoCorrect={false}
+                                autoCapitalize="none"
+                                secureTextEntry={true}
+                                onChangeText={setPassword}
+                            />
                         </View>
                     </View>
+
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={modalVisible}
+                        onRequestClose={() => {
+                            Alert.alert("Modal has been closed.");
+                            setModalVisible(!modalVisible);
+                        }}
+                    >
+                        <View style={styles.centeredView}>
+                            <View style={styles.modalView}>
+                                <TextInput
+                                    style={styles.modalText}
+                                    onChangeText={setResetEmail}
+                                    value={resetEmail}
+                                    placeholderTextColor="gray"
+                                    placeholder={language === 'zh' ? '输入您的电子邮件以重置密码' : "Enter your email for password reset"}
+                                    keyboardType="email-address"
+                                    autoFocus={true}
+                                />
+                                <Button title={language === 'zh' ? '发送重置邮件' : "Send Reset Email"} onPress={handleForgotPassword} />
+                                <Button title={language === 'zh' ? '取消' : "Cancel"} color="red" onPress={() => setModalVisible(!modalVisible)} />
+                            </View>
+                        </View>
+                    </Modal>
+                    <View style={styles.buttonContainer}>
+                        <PressableItem onPress={loginHandler} style={[appStyles.buttonStyle, appStyles.cancelButton]}>
+                            <Text style={appStyles.text}>{language === 'zh' ? '登录' : "Log in"} </Text>
+                        </PressableItem>
+                        <PressableItem onPress={signupHandler} style={[appStyles.buttonStyle, appStyles.saveButton]}>
+                            <Text style={appStyles.text}>{language === 'zh' ? '注册' : "Sign Up"} </Text>
+                        </PressableItem>
+                        <PressableItem onPress={() => setModalVisible(true)} style={[appStyles.buttonStyle, appStyles.saveButton]}>
+                            <Text style={appStyles.text}>{language === 'zh' ? '忘记密码？' : "Forgot Password?"} </Text>
+                        </PressableItem>
+                    </View>
+                </View>
                 </ScrollView>
             </KeyboardAvoidingView>
         </SafeAreaView>
     );
 }
+
 
 const styles = StyleSheet.create({
     iconContainer: {

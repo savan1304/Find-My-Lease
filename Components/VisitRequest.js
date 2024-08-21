@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, FlatList, Alert } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { useRoute } from '@react-navigation/native'
 import { doc, updateDoc } from 'firebase/firestore'
 import { database } from '../Firebase/firebaseSetup'
@@ -7,10 +7,10 @@ import PressableItem from './PressableItem'
 import { Colors } from '../Config/Colors'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { getDataById, getVisitDataById, getVisitDocRefById } from '../Firebase/firestoreHelper'
-
+import { AuthContext } from '../Components/AuthContext';
 
 const VisitRequestItem = ({ visit, listing }) => {
-
+    const { language } = useContext(AuthContext);
     console.log("inside VisitRequestItem with visit: ", visit)
     console.log("inside VisitRequestItem with listing: ", listing)
 
@@ -114,15 +114,15 @@ const VisitRequestItem = ({ visit, listing }) => {
             if (updatedVisit.rescheduleResponse && updatedVisit.rescheduleResponse !== '' && updatedVisit.rescheduleResponse !== 'accepted') {
                 // Reschedule request exists but not accepted
                 Alert.alert(
-                    "Confirm Approval",
-                    "The requester has not accepted the reschedule request yet. Do you want to approve the visit with the current displayed date and time?",
+                    language === 'zh' ? "确认批准" : "Confirm Approval",
+                    language === 'zh' ? "请求者尚未接受重新调度请求。您想要批准当前显示的日期和时间吗？" : "The requester has not accepted the reschedule request yet. Do you want to approve the visit with the current displayed date and time?",
                     [
                         {
-                            text: "Cancel",
+                            text: language === 'zh' ? "取消" : "Cancel",
                             style: "cancel",
                         },
                         {
-                            text: "Approve",
+                            text: language === 'zh' ? "批准" : "Approve",
                             onPress: async () => {
                                 await approveVisitInScheduledVisitsAndVisitRequests(visitId)
                                 getUpdatedVisitData();
@@ -133,15 +133,15 @@ const VisitRequestItem = ({ visit, listing }) => {
             } else {
                 // No reschedule request or it's accepted
                 Alert.alert(
-                    "Confirm Approval",
-                    "Are you sure you want to approve this visit?",
+                    language === 'zh' ? "确认批准" : "Confirm Approval",
+                    language === 'zh' ? "您确定要批准此次访问吗？" : "Are you sure you want to approve this visit?",
                     [
                         {
-                            text: "Cancel",
+                            text: language === 'zh' ? "取消" : "Cancel",
                             style: "cancel",
                         },
                         {
-                            text: "Approve",
+                            text: language === 'zh' ? "批准" : "Approve",
                             onPress: async () => {
                                 await approveVisitInScheduledVisitsAndVisitRequests(visitId)
                                 getUpdatedVisitData();
@@ -190,8 +190,8 @@ const VisitRequestItem = ({ visit, listing }) => {
         try {
             if (currentVisitDateString === newVisitDateString && currentVisitTimeString === newVisitTimeString) {
                 Alert.alert(
-                    "No change in date or time",
-                    "The selected date and time for reschedule is same as current. Please choose a different date or time.",
+                    language === 'zh' ? "日期和时间未更改" : "No change in date or time",
+                    language === 'zh' ? "所选的重新安排日期和时间与当前相同。请选择不同的日期或时间。" : "The selected date and time for reschedule is the same as current. Please choose a different date or time.",
                     [
                         {
                             text: "Ok",
@@ -289,40 +289,40 @@ const VisitRequestItem = ({ visit, listing }) => {
 
                 {Object.keys(updatedVisit).length !== 0 ? (
                     <>
-                        <Text style={styles.info}>Date: {updatedVisitDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</Text>
-                        <Text style={styles.info}>Time: {updatedVisitTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</Text>
+                        <Text style={styles.info}>{language === 'zh' ? '日期：' : 'Date: '}{updatedVisitDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</Text>
+                        <Text style={styles.info}>{language === 'zh' ? '时间：' : 'Time: '}{updatedVisitTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</Text>
                     </>
                 ) : (
                     <>
-                        <Text style={styles.info}>Date: {visitDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</Text>
-                        <Text style={styles.info}>Time: {visitTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</Text>
+                        <Text style={styles.info}>{language === 'zh' ? '日期：' : 'Date: '}{visitDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</Text>
+                        <Text style={styles.info}>{language === 'zh' ? '时间：' : 'Time: '}{visitTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</Text>
                     </>
                 )}
 
-                <Text style={styles.info}>Questions: {visit.questions}</Text>
+                <Text style={styles.info}>{language === 'zh' ? '疑问：' : 'Questions: '}{visit.questions}</Text>
 
                 {isLoading ? (
-                    <Text>Loading requester data...</Text>
+                    <Text>{language === 'zh' ? '加载请求者数据中...' : 'Loading requester data...'}</Text>
                 ) : (
                     requesterData &&
                     <View>
-                        <Text style={styles.info}>Name: {requesterData.name}</Text>
-                        <Text style={styles.info}>Email: {requesterData.email}</Text>
-                        <Text style={styles.info}>Phone: {requesterData.phoneNumber}</Text>
+                        <Text style={styles.info}>{language === 'zh' ? '姓名：' : 'Name: '}{requesterData.name}</Text>
+                        <Text style={styles.info}>{language === 'zh' ? '电子邮件：' : 'Email: '}{requesterData.email}</Text>
+                        <Text style={styles.info}>{language === 'zh' ? '电话：' : 'Phone: '}{requesterData.phoneNumber}</Text>
                     </View>
                 )}
 
                 {checkRescheduleDateTimeDisplay() && (
                     <View style={{ width: 312 }}>
                         <Text style={styles.info}>
-                            Rescheduled to: {new Date(updatedVisit.rescheduleDate.seconds * 1000).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })} at {new Date(updatedVisit.rescheduleTime.seconds * 1000).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
+                        {language === 'zh' ? '重新安排：' : 'Rescheduled to: '}{new Date(updatedVisit.rescheduleDate.seconds * 1000).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}{language === 'zh' ? ' 于 ' : ' at '}{new Date(updatedVisit.rescheduleTime.seconds * 1000).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
                         </Text>
                     </View>
                 )}
 
                 {(checkRescheduleResponseDisplay() || updatedVisit.rescheduleResponse === 'accepted' || updatedVisit.rescheduleResponse === 'pending') && (
                     <Text style={styles.info}>
-                        Reschedule response: {updatedVisit.rescheduleResponse.charAt(0).toUpperCase() + updatedVisit.rescheduleResponse.slice(1)}
+                        {language === 'zh' ? '重新安排回应：' : 'Reschedule response: '}{updatedVisit.rescheduleResponse.charAt(0).toUpperCase() + updatedVisit.rescheduleResponse.slice(1)}
                     </Text>
                 )}
 
@@ -333,16 +333,16 @@ const VisitRequestItem = ({ visit, listing }) => {
 
                 {visitStatus === 'approved' ? (
                     <PressableItem onPress={() => { console.log("pressed on already approved request") }} style={[styles.approveButtonStyle, { backgroundColor: Colors.shadowColor, width: '75%' }]} >
-                        <Text style={{ color: Colors.background }}>Approved</Text>
+                        <Text style={{ color: Colors.background }}>{language === 'zh' ? '批准 ' : 'Approve '}</Text>
                     </PressableItem>) : (
                     <PressableItem onPress={() => { handleApprove(visit.id) }} style={styles.approveButtonStyle} >
-                        <Text style={{ color: Colors.background }}>Approve</Text>
+                        <Text style={{ color: Colors.background }}>{language === 'zh' ? '批准 ' : 'Approve '}</Text>
                     </PressableItem>
                 )
                 }
 
                 <PressableItem onPress={() => { handleReschedule() }} style={[styles.approveButtonStyle, { backgroundColor: Colors.yellow, width: '85%' }]} >
-                    <Text style={{ color: Colors.background }}>Reschedule</Text>
+                    <Text style={{ color: Colors.background }}>{language === 'zh' ? '重新安排' : 'Reschedule'}</Text>
                 </PressableItem>
 
             </View>
