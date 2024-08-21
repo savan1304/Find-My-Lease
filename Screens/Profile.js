@@ -87,7 +87,7 @@ const Profile = ({ navigation }) => {
 
       <View style={styles.profileOptionsContainer}>
         <PressableItem style={styles.button} onPress={() => handleNavigation('PostListing')}>
-          <Text style={styles.buttonText}>Post a listing</Text>
+          <Text style={styles.buttonText}>Post a Listing</Text>
         </PressableItem>
         <PressableItem style={styles.button} onPress={() => handleNavigation('PostedListings')}>
           <Text style={styles.buttonText}>My Posted Listings</Text>
@@ -185,13 +185,15 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
-    marginBottom: 10
+    marginBottom: 10,
+    width: '35%'
   },
   cancelButton: {
-    backgroundColor: 'red',
+    backgroundColor: 'rgb(255, 59, 48)',
     padding: 10,
     borderRadius: 5,
-    alignItems: 'center'
+    alignItems: 'center',
+    width: '35%'
   },
   buttonText: {
     color: 'white',

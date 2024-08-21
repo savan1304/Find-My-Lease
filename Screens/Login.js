@@ -5,7 +5,7 @@ import { auth } from '../Firebase/firebaseSetup';
 import PressableItem from '../Components/PressableItem';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { appStyles } from '../Config/Styles';
-import { MaterialIcons } from '@expo/vector-icons'; 
+import { MaterialIcons } from '@expo/vector-icons';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -52,8 +52,8 @@ export default function Login({ navigation }) {
         sendPasswordResetEmail(auth, resetEmail)
             .then(() => {
                 Alert.alert("Check your email", "A link to reset your password has been sent to your email.");
-                setModalVisible(false); 
-                setResetEmail(''); 
+                setModalVisible(false);
+                setResetEmail('');
             })
             .catch((error) => {
                 Alert.alert("Error", error.message);
@@ -63,80 +63,84 @@ export default function Login({ navigation }) {
     return (
         <SafeAreaView style={appStyles.loginSignUpContainer}>
             <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
-            <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
-                <View style={styles.iconContainer}>
-                    <MaterialIcons name="apartment" size={64} color="blue" />
-                </View>
-                <View style={styles.introContainer}>
-                    <Text style={styles.introText}>
-                        Welcome back to FindMyLease! Continue your journey to find the perfect place to rent or manage your property rentals with ease. Log in now to access your account and all the features of FindMyLease!
-                    </Text>
-                </View>
-                <View style={styles.centeredView}>
-                    <View style={appStyles.loginSignUpFieldContainer}>
-                        <Text>Email</Text>
-                        <View style={appStyles.loginSignUpInput}>
-                            <TextInput
-                                placeholder="Email"
-                                value={email}
-                                autoCorrect={false}
-                                autoCapitalize="none"
-                                onChangeText={setEmail}
-                            />
-                        </View>
+                <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
+                    <View style={styles.iconContainer}>
+                        <MaterialIcons name="apartment" size={64} color="blue" />
                     </View>
-
-                    <View style={appStyles.loginSignUpFieldContainer}>
-                        <Text>Password</Text>
-                        <View style={appStyles.loginSignUpInput}>
-                            <TextInput
-                                placeholder="Password"
-                                value={password}
-                                autoCorrect={false}
-                                autoCapitalize="none"
-                                secureTextEntry={true}
-                                onChangeText={setPassword}
-                            />
-                        </View>
+                    <View style={styles.introContainer}>
+                        <Text style={styles.introText}>
+                            Welcome back to FindMyLease! Continue your journey to find the perfect place to rent or manage your property rentals with ease. Log in now to access your account and all the features of FindMyLease!
+                        </Text>
                     </View>
-
-                    <Modal
-                        animationType="slide"
-                        transparent={true}
-                        visible={modalVisible}
-                        onRequestClose={() => {
-                            Alert.alert("Modal has been closed.");
-                            setModalVisible(!modalVisible);
-                        }}
-                    >
-                        <View style={styles.centeredView}>
-                            <View style={styles.modalView}>
+                    <View style={styles.centeredView}>
+                        <View style={appStyles.loginSignUpFieldContainer}>
+                            <Text style={styles.addTitles}>Email</Text>
+                            <View style={appStyles.loginSignUpInput}>
                                 <TextInput
-                                    style={styles.modalText}
-                                    onChangeText={setResetEmail}
-                                    value={resetEmail}
-                                    placeholderTextColor="gray"
-                                    placeholder="Enter your email for password reset"
-                                    keyboardType="email-address"
-                                    autoFocus={true}
+                                    placeholder="Email"
+                                    value={email}
+                                    autoCorrect={false}
+                                    autoCapitalize="none"
+                                    onChangeText={setEmail}
                                 />
-                                <Button title="Send Reset Email" onPress={handleForgotPassword} />
-                                <Button title="Cancel" color="red" onPress={() => setModalVisible(!modalVisible)} />
                             </View>
                         </View>
-                    </Modal>
-                    <View style={styles.buttonContainer}>
-                        <PressableItem onPress={loginHandler} style={[appStyles.buttonStyle, appStyles.cancelButton]}>
-                            <Text style={appStyles.text}>Log in </Text>
-                        </PressableItem>
-                        <PressableItem onPress={signupHandler} style={[appStyles.buttonStyle, appStyles.saveButton]}>
-                            <Text style={appStyles.text}>Sign Up </Text>
-                        </PressableItem>
-                        <PressableItem onPress={() => setModalVisible(true)} style={[appStyles.buttonStyle, appStyles.saveButton]}>
-                            <Text style={appStyles.text}>Forgot Password? </Text>
-                        </PressableItem>
+
+                        <View style={appStyles.loginSignUpFieldContainer}>
+                            <Text style={styles.addTitles}>Password</Text>
+                            <View style={appStyles.loginSignUpInput}>
+                                <TextInput
+                                    placeholder="Password"
+                                    value={password}
+                                    autoCorrect={false}
+                                    autoCapitalize="none"
+                                    secureTextEntry={true}
+                                    onChangeText={setPassword}
+                                />
+                            </View>
+                        </View>
+
+                        <Modal
+                            animationType="slide"
+                            transparent={true}
+                            visible={modalVisible}
+                            onRequestClose={() => {
+                                Alert.alert("Modal has been closed.");
+                                setModalVisible(!modalVisible);
+                            }}
+                        >
+                            <View style={styles.centeredView}>
+                                <View style={styles.modalView}>
+                                    <TextInput
+                                        style={styles.modalText}
+                                        onChangeText={setResetEmail}
+                                        value={resetEmail}
+                                        placeholderTextColor="gray"
+                                        placeholder="Enter your email for password reset"
+                                        keyboardType="email-address"
+                                        autoFocus={true}
+                                    />
+                                    <PressableItem onPress={handleForgotPassword} >
+                                        <Text style={appStyles.text}>Send Reset Email </Text>
+                                    </PressableItem>
+                                    <PressableItem onPress={() => setModalVisible(!modalVisible)} style={{ backgroundColor: 'rgb(255, 59, 48)' }}>
+                                        <Text style={appStyles.text}>Cancel </Text>
+                                    </PressableItem >
+                                </View>
+                            </View>
+                        </Modal>
+                        <View style={styles.buttonContainer}>
+                            <PressableItem onPress={loginHandler} style={[appStyles.buttonStyle, appStyles.cancelButton, { width: 135 }]}>
+                                <Text style={appStyles.text}>Log in </Text>
+                            </PressableItem>
+                            <PressableItem onPress={signupHandler} style={[appStyles.buttonStyle, appStyles.saveButton, { width: 135 }]}>
+                                <Text style={appStyles.text}>Sign Up </Text>
+                            </PressableItem>
+                            <PressableItem onPress={() => setModalVisible(true)} style={[appStyles.buttonStyle, appStyles.saveButton]}>
+                                <Text style={appStyles.text}>Forgot Password? </Text>
+                            </PressableItem>
+                        </View>
                     </View>
-                </View>
                 </ScrollView>
             </KeyboardAvoidingView>
         </SafeAreaView>
@@ -180,10 +184,13 @@ const styles = StyleSheet.create({
     modalText: {
         marginBottom: 15,
         textAlign: "center",
-        width: screenWidth*0.6, 
+        width: screenWidth * 0.6,
     },
     buttonContainer: {
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    addTitles: {
+        fontWeight: 'bold'
     }
 });
