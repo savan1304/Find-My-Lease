@@ -95,7 +95,7 @@ const Home = ({ navigation }) => {
         <View style={styles.container}>
             <TextInput
                 style={styles.searchBar}
-                placeholder={language === 'zh' ? "搜索位置..." : "Search Location..."}
+                placeholder={language === 'zh' ? "搜索..." : "Search..."}
                 value={searchText}
                 onChangeText={setSearchText}
             />
