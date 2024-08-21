@@ -15,7 +15,7 @@ const Profile = ({ navigation }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [name, setName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const { user } = useContext(AuthContext);
+  const { user, language  } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -53,9 +53,9 @@ const Profile = ({ navigation }) => {
     if (user) {
       navigation.navigate(screen);
     } else {
-      Alert.alert('Login Required', 'You need to be logged in to perform this action.', [
-          { text: 'Cancel', style: 'cancel' },
-          { text: 'Login', onPress: () => navigation.navigate('Login') }
+      Alert.alert(language === 'zh' ? '需要登录' : 'Login Required', language === 'zh' ? '您需要登录才能执行此操作。' : 'You need to be logged in to perform this action.', [
+          { text: language === 'zh' ? '取消' : 'Cancel', style: 'cancel' },
+          { text: language === 'zh' ? '登录' : 'Login', onPress: () => navigation.navigate('Login') }
       ]);
     }
   };
@@ -70,28 +70,28 @@ const Profile = ({ navigation }) => {
 
       {user ? (
         <>
-          <Text style={styles.info}>UID: {user.uid}</Text>
-          <Text style={styles.info}>Name: {userData?.name || 'N/A'}</Text>
-          <Text style={styles.info}>Contact Info: {user.email}</Text>
-          <Text style={styles.info}>Phone Number: {userData?.phoneNumber || 'N/A'}</Text>
-        </>
+        <Text style={styles.info}>{language === 'zh' ? '用户ID: ' : 'UID: '}{user.uid} </Text>
+        <Text style={styles.info}>{language === 'zh' ? '姓名: ' : 'Name: '}{userData?.name || 'N/A'} </Text>
+        <Text style={styles.info}>{language === 'zh' ? '联系方式: ' : 'Contact Info: '}{user.email} </Text>
+        <Text style={styles.info}>{language === 'zh' ? '电话号码: ' : 'Phone Number: '}{userData?.phoneNumber || 'N/A'} </Text>
+      </>
       ) : (
         <>
-          <Text style={styles.info}>UID: Temp UID</Text>
-          <Text style={styles.info}>Name: Temp User</Text>
-          <Text style={styles.info}>Contact Info: N/A</Text>
-          <Text style={styles.info}>Phone Number: N/A</Text>
+          <Text style={styles.info}>{language === 'zh' ? '用户ID: ' : 'UID: '}Temp UID </Text>
+          <Text style={styles.info}>{language === 'zh' ? '姓名: ' : 'Name: '}Temp User </Text>
+          <Text style={styles.info}>{language === 'zh' ? '联系方式: ' : 'Contact Info: '}N/A </Text>
+          <Text style={styles.info}>{language === 'zh' ? '电话号码: ' : 'Phone Number: '}N/A </Text>
         </>
       )}
 
       <PressableItem style={styles.button} onPress={() => handleNavigation('PostedListings')}>
-        <Text style={styles.buttonText}>My Posted Listings</Text>
+        <Text style={styles.buttonText}>{language === 'zh' ? '我的已发布列表' : 'My Posted Listings'} </Text>
       </PressableItem>
       <PressableItem style={styles.button} onPress={() => handleNavigation('ScheduledVisits')}>
-        <Text style={styles.buttonText}>My Scheduled Visits</Text>
+        <Text style={styles.buttonText}>{language === 'zh' ? '我的预定访问' : 'My Scheduled Visits'} </Text>
       </PressableItem>
       <PressableItem style={styles.button} onPress={() => handleNavigation('PostListing')}>
-        <Text style={styles.buttonText}>Post a listing</Text>
+        <Text style={styles.buttonText}>{language === 'zh' ? '发布列表' : 'Post a listing'} </Text>
       </PressableItem>
 
       <Modal
@@ -106,17 +106,17 @@ const Profile = ({ navigation }) => {
         <View style={styles.modalContainer}>
         <ScrollView contentContainerStyle={{flex:1, justifyContent: 'center', alignItems: 'center' }} keyboardShouldPersistTaps='handled'>
           <View style={styles.modalView}>  
-            <Text style={styles.modalTitle}>Edit Profile</Text>
+            <Text style={styles.modalTitle}>{language === 'zh' ? '编辑个人资料' : 'Edit Profile'} </Text>
             <TextInput
               style={styles.input}
-              placeholder="Name"
+              placeholder={language === 'zh' ? '姓名' : 'Name'}
               placeholderTextColor="gray"
               value={name}
               onChangeText={setName}
             />
             <TextInput
               style={styles.input}
-              placeholder="Phone Number"
+              placeholder={language === 'zh' ? '电话号码' : 'Phone Number'}
               placeholderTextColor="gray"
               value={phoneNumber}
               onChangeText={setPhoneNumber}
@@ -124,10 +124,10 @@ const Profile = ({ navigation }) => {
             />
 
           <PressableItem style={styles.saveButton} onPress={handleSave}>
-              <Text style={styles.buttonText}>Save</Text>
+              <Text style={styles.buttonText}>{language === 'zh' ? '保存' : 'Save'} </Text>
           </PressableItem>
           <PressableItem style={styles.cancelButton} onPress={() => setIsModalVisible(false)}>
-              <Text style={styles.buttonText}>Cancel</Text>
+              <Text style={styles.buttonText}>{language === 'zh' ? '取消' : 'Cancel'} </Text>
           </PressableItem>
           </View>
           </ScrollView>
