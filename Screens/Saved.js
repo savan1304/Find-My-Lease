@@ -38,21 +38,21 @@ const Saved = ({ navigation }) => {
         }
       });
     }
-    return undefined; 
+    return undefined;
   };
-  
+
   useEffect(() => {
     const housesUnsub = fetchHouses();
-    const savedIdsUnsub = fetchSavedIds(); 
-  
+    const savedIdsUnsub = fetchSavedIds();
+
     return () => {
       housesUnsub();
       if (savedIdsUnsub) {
-        savedIdsUnsub(); 
+        savedIdsUnsub();
       }
     };
   }, [user]);
-  
+
 
   const filteredHouses = houses.filter(house => savedIds.includes(house.id));
 
@@ -79,7 +79,7 @@ const Saved = ({ navigation }) => {
         { text: language === 'zh' ? '移除' : "Remove", onPress: () => handleRemoveSaved(houseId), style: "destructive" }
       ]
     );
-};
+  };
 
   return (
     <View style={styles.container}>
@@ -93,14 +93,22 @@ const Saved = ({ navigation }) => {
                 onPress={() => handleHousePress(item)}
               />
               <PressableItem onPress={() => confirmRemove(item.id)} style={styles.removeButton}>
-                  <Text style={styles.buttonText}>{language === 'zh' ? '移除' : 'Remove'} </Text>
+                <Text style={styles.buttonText}>{language === 'zh' ? '移除' : 'Remove'} </Text>
               </PressableItem>
             </View>
           )}
           keyExtractor={item => item.id}
         />
       ) : (
-        <Text>{language === 'zh' ? '没有保存的房源' : 'No saved listings found.'} </Text>
+        <View style={styles.noItemsContainer}>
+          <View style={styles.noItemsTextContainer}>
+            {/* need translation below */}
+            <Text style={styles.noItemsText}>{language === 'zh' ? '没有保存的房源' : 'No saved listings found! \nExplore the available listings to save them.'}</Text>
+          </View>
+          <PressableItem onPress={() => { navigation.navigate('My Home') }} style={{ width: '35%', alignItems: 'center' }}>
+            <Text style={styles.buttonText}>Explore</Text>
+          </PressableItem>
+        </View>
       )}
     </View>
   );
@@ -110,27 +118,40 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
   },
   listItemContainer: {
-    flexDirection: 'column', 
+    flexDirection: 'column',
     justifyContent: 'space-between',
-    alignItems: 'stretch', 
+    alignItems: 'center',
     marginBottom: 10,
     padding: 10,
-    borderWidth: 1, 
-    borderColor: '#ccc', 
+    borderWidth: 1,
+    borderColor: '#ccc',
   },
   removeButton: {
-    backgroundColor: 'red',
-    padding: 10,
+    backgroundColor: 'rgb(255, 59, 48)',
     borderRadius: 5,
+    width: '35%',
+    alignItems: 'center',
   },
   buttonText: {
     color: 'white',
     fontSize: 16,
     textAlign: 'center'
   },
+  noItemsContainer: {
+    flex: 1,
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  noItemsTextContainer: {
+    marginBottom: 25
+  },
+  noItemsText: {
+    fontWeight: '600',
+    fontSize: 16,
+    textAlign: 'center',
+  }
 });
 
 export default Saved;
