@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, FlatList, Alert } from 'react-native'
+import { StyleSheet, Text, View, FlatList, Alert, Linking } from 'react-native'
 import React, { useState, useEffect, useContext } from 'react'
 import PressableItem from '../Components/PressableItem';
 import Visit from '../Components/Visit';
@@ -107,7 +107,7 @@ export default function ScheduledVisits({ navigation }) {
         }
 
     }
-
+    
 
     return (
         <View style={styles.outerContainer}>
@@ -134,11 +134,33 @@ export default function ScheduledVisits({ navigation }) {
                                 const landlordId = listingData.createdBy
                                 const landLordData = await getDataById(landlordId, 'User')
                                 const landlordNumber = landLordData.phoneNumber
-                                const args = {
-                                    number: landlordNumber,
-                                    prompt: true
-                                }
-                                call(args).catch(console.error)
+                                const landlordEmail = landLordData.email;
+                                Alert.alert(
+                                    language === 'zh' ? "联系房东" : "Contact Landlord",
+                                    language === 'zh' ? "您想如何联系房东？" : "How would you like to contact the landlord?",
+                                    [
+                                        {
+                                            text: language === 'zh' ? "取消" : "Cancel",
+                                            style: "cancel",
+                                        },
+                                        {
+                                            text: language === 'zh' ? "打电话" : "Call",
+                                            onPress: () => {
+                                                const args = {
+                                                    number: landlordNumber,
+                                                    prompt: true
+                                                }
+                                                call(args).catch(console.error)
+                                            },
+                                        },
+                                        {
+                                            text: language === 'zh' ? "发邮件" : "Email",
+                                            onPress: () => {
+                                                Linking.openURL(`mailto:${landlordEmail}`);
+                                            },
+                                        },
+                                    ]
+                                );
                             }
 
                             function renderRescheduleOptions() {

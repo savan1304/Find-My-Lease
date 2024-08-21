@@ -13,6 +13,7 @@ export default function PostedListings({ navigation }) {
   const { language } = useContext(AuthContext);
   const user = auth.currentUser;
 
+
   useEffect(() => {
     const unsubscribe = onSnapshot(query(
       collection(database, 'Listing'),
@@ -32,6 +33,7 @@ export default function PostedListings({ navigation }) {
 
     return () => unsubscribe();
   }, []);
+
 
   function handleDeleteListing(listingToBeDeletedID) {
     console.log("Inside handleDeleteListing");
@@ -55,6 +57,7 @@ export default function PostedListings({ navigation }) {
     );
   }
 
+
   async function handleEditListing(listingToBeEditedID) {
     console.log("Inside handleEditListing");
 
@@ -67,6 +70,7 @@ export default function PostedListings({ navigation }) {
       console.error('Error in navigating to editing listing page:', error);
     }
   }
+
 
   async function handlePostiveVisitRequestCounterPress(visitRequest, listingId) {
     console.log("visit request counter pressed with visitRequest: ", visitRequest)
@@ -82,6 +86,7 @@ export default function PostedListings({ navigation }) {
     }
   }
 
+
   function handleZeroVisitRequestCounterPress() {
     Alert.alert(language === 'zh' ? '无请求' : 'No requests', language === 'zh' ? '此列表尚无观看请求。' : 'There are no viewing requests for this listing yet.', [
       { text: 'Ok', style: 'default' },
@@ -90,6 +95,8 @@ export default function PostedListings({ navigation }) {
 
 
   console.log('listingss value in PostedListing: ', listings);
+
+
   return (
     <>
       {listings.length === 0 ? (
@@ -199,5 +206,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
   }
-
 })
