@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { ScrollView, View, StyleSheet, Text } from 'react-native';
 import { AuthContext } from '../Components/AuthContext';
 import PressableItem from '../Components/PressableItem';
 
@@ -12,23 +12,37 @@ export default function SettingsScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <PressableItem onPress={toggleLanguage}>
-        <Text style={styles.buttonText}>{`Switch to ${language === 'en' ? 'Chinese' : 'English'}`}</Text>
-      </PressableItem>
-    </View>
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.settingItem}>
+        <Text style={styles.settingText}>{language === 'en' ? 'Language:English' : '语言:中文'} </Text>
+        <PressableItem onPress={toggleLanguage}>
+          <Text style={styles.buttonText}>{language === 'en' ? '切换至中文' : 'Switch to English'}</Text>
+        </PressableItem>
+      </View>
+      {/* Future settings can be added here in additional <View> components */}
+    </ScrollView>
   );
 };
 
-
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
+    flexGrow: 1,
+  },
+  settingItem: {
+    flexDirection:"row",
     alignItems: 'center',
+    justifyContent:'space-between',
+    backgroundColor: '#f0f0f0', 
+    borderRadius: 10, 
+    borderBottomWidth: 1, 
+    borderBottomColor: '#d1d1d1',
+    paddingHorizontal:10,
   },
   buttonText: {
     color: '#f5f5f7',
     fontSize: 16,
   },
+  settingText:{
+    fontSize: 16,
+  }
 })
