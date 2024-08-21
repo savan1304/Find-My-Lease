@@ -20,7 +20,7 @@ import * as Notifications from 'expo-notifications';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { AuthProvider, AuthContext } from './Components/AuthContext';
 import VisitRequest from './Components/VisitRequest';
-
+import SettingsScreen from './Screens/SettingsScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -46,85 +46,110 @@ async function cancelAllNotifications() {
   }
 }
 
+const HomeStackScreen = () => {
+  const { language } = useContext(AuthContext);
+  return (
+    <MainStack.Navigator>
+      <MainStack.Screen name="My Home" component={Home} options={{ headerShown: false }} />
+      <MainStack.Screen name="HouseDetails" component={HouseDetails} options={{ title: language === 'zh' ? '房屋详情' : 'House Details' }} />
+      <MainStack.Screen name="ScheduleVisit" component={ScheduleVisit} options={{ title: language === 'zh' ? '安排访问' : 'Schedule a Visit' }} />
+    </MainStack.Navigator>
+  );
+};
 
-const HomeStackScreen = () => (
-  <MainStack.Navigator>
-    <MainStack.Screen name="My Home" component={Home} options={{ headerShown: false }} />
-    <MainStack.Screen name="HouseDetails" component={HouseDetails} options={{ title: 'House Details' }} />
-    <MainStack.Screen name="ScheduleVisit" component={ScheduleVisit} options={{ title: 'Schedule a Visit' }} />
-  </MainStack.Navigator>
-);
+const SavedStackScreen = () => {
+  const { language } = useContext(AuthContext);
+  return (
+    <MainStack.Navigator>
+      <MainStack.Screen name="My Save" component={Saved} options={{ headerShown: false }} />
+      <MainStack.Screen name="HouseDetails" component={HouseDetails} options={{ title: language === 'zh' ? '房屋详情' : 'House Details' }} />
+    </MainStack.Navigator>
+  );
+};
 
-const SavedStackScreen = () => (
-  <MainStack.Navigator>
-    <MainStack.Screen name="My Save" component={Saved} options={{ headerShown: false }} />
-    <MainStack.Screen name="HouseDetails" component={HouseDetails} options={{ title: 'House Details' }} />
-  </MainStack.Navigator>
-);
+const ProfileStackScreen = () => {
+  const { language } = useContext(AuthContext);
+  return (
+    <MainStack.Navigator>
+      <MainStack.Screen name="My Profile" component={Profile} options={{ headerShown: false }} />
+      <MainStack.Screen name="ScheduledVisits" component={ScheduledVisits} options={{ title: language === 'zh' ? '预定的访问' : 'Scheduled Visits' }} />
+      <MainStack.Screen name="PostedListings" component={PostedListings} options={{ title: language === 'zh' ? '发布的列表' : 'Posted Listings' }} />
+      <MainStack.Screen name="PostListing" component={PostListing} options={{ title: language === 'zh' ? '发布列表' : 'Post a Listing' }} />
+      <MainStack.Screen name="VisitRequests" component={VisitRequest} options={{ title: language === 'zh' ? '访问请求' : 'Visit Requests' }} />
+    </MainStack.Navigator>
+  );
+};
 
-const ProfileStackScreen = () => (
-  <MainStack.Navigator>
-    <MainStack.Screen name="My Profile" component={Profile} options={{ headerShown: false }} />
-    <MainStack.Screen name="ScheduledVisits" component={ScheduledVisits} options={{ title: 'Scheduled Visits' }} />
-    <MainStack.Screen name="PostedListings" component={PostedListings} options={{ title: 'Posted Listings' }} />
-    <MainStack.Screen name="PostListing" component={PostListing} options={{ title: 'Post a Listing' }} />
-    <MainStack.Screen name="VisitRequests" component={VisitRequest} options={{ title: 'Visit Requests' }} />
-  </MainStack.Navigator>
-);
-
-const Tabs = () => (
-  <Tab.Navigator initialRouteName="Home">
+const Tabs = () => {
+  const { language } = useContext(AuthContext);
+  return(
+    <Tab.Navigator initialRouteName="Home">
     <Tab.Screen
-      name="Home "
+      name= "Home"
       component={HomeStackScreen}
       options={{
         tabBarIcon: ({ color, size }) => (
           <Icon name="home-outline" color={color} size={size} />
         ),
-        headerShown: false
-      }}
-    />
-    <Tab.Screen
-      name="Saved "
-      component={SavedStackScreen}
-      options={{
-        tabBarIcon: ({ color, size }) => (
-          <Icon name="heart-outline" color={color} size={size} />
-        ),
-        headerShown: false
-      }}
-    />
-    <Tab.Screen
-      name="Profile "
-      component={ProfileStackScreen}
-      options={{
-        tabBarIcon: ({ color, size }) => (
-          <Icon name="person-outline" color={color} size={size} />
-        ),
-        headerShown: false
-      }}
-    />
-    <Tab.Screen
-      name="Login"
-      component={Login}
-      options={{
         headerShown: false,
-        tabBarButton: () => null,
+        tabBarLabel: language === 'zh' ? "首页" : "Home"
       }}
     />
     <Tab.Screen
-      name="Signup"
-      component={SignUp}
-      options={{
-        headerShown: false,
-        tabBarButton: () => null,
-      }}
-    />
+        name="Saved"
+        component={SavedStackScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="heart-outline" color={color} size={size} />
+          ),
+          headerShown: false,
+          tabBarLabel: language === 'zh' ? "已保存" : "Saved"
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileStackScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="person-outline" color={color} size={size} />
+          ),
+          headerShown: false,
+          tabBarLabel: language === 'zh' ? "个人中心" : "Profile"
+        }}
+      />
+    <Tab.Screen
+        name="Login"
+        component={Login}
+        options={{
+          headerShown: false,
+          tabBarButton: () => null,
+          tabBarLabel: language === 'zh' ? "登录" : "Login"
+        }}
+      />
+      <Tab.Screen
+        name="Signup"
+        component={SignUp}
+        options={{
+          headerShown: false,
+          tabBarButton: () => null,
+          tabBarLabel: language === 'zh' ? "注册" : "Signup"
+        }}
+      />
+    <Tab.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{
+          headerShown: false,
+          tabBarButton: () => null,
+          tabBarLabel: language === 'zh' ? "设置" : "Settings"
+        }}
+      />
   </Tab.Navigator>
-);
+ );
+};
 
 const AppContent = () => {
-  const { user } = useContext(AuthContext);
+  const { user, language } = useContext(AuthContext);
 
   const handleLogout = async (navigation) => {
     try {
@@ -137,14 +162,14 @@ const AppContent = () => {
 
   const handleCancelNotifications = async () => {
     Alert.alert(
-      "Cancel All Notifications",
-      "Are you sure you want to cancel all scheduled notifications?",
+      language === 'zh' ? "取消所有通知" : "Cancel All Notifications",
+      language === 'zh' ? "您确定要取消所有预定的通知吗？" : "Are you sure you want to cancel all scheduled notifications?",
       [
-        { text: "No", style: "cancel" },
+        { text: language === 'zh' ? "否" : "No", style: "cancel" },
         {
-          text: "Yes", onPress: async () => {
+          text: language === 'zh' ? "是" : "Yes", onPress: async () => {
             await cancelAllNotifications();
-            alert('All notifications have been cancelled.');
+            alert(language === 'zh' ? '所有通知已取消。' : 'All notifications have been cancelled.');
           }
         }
       ]
@@ -162,7 +187,7 @@ const AppContent = () => {
               <TouchableOpacity onPress={handleCancelNotifications}>
                 <Icon name="notifications-off-outline" size={25} style={{ marginRight: 20 }} />
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => alert('Settings')}>
+              <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
                 <Icon name="settings-outline" size={25} style={{ marginRight: 20 }} />
               </TouchableOpacity>
               {user ? (
@@ -176,11 +201,12 @@ const AppContent = () => {
               )}
             </View>
           ),
-          title: getFocusedRouteNameFromRoute(route) ?? "Home"
+          title: getFocusedRouteNameFromRoute(route) ?? ("Home")
         })}
       />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Signup" component={SignUp} />
+      <Stack.Screen name="Settings" component={SettingsScreen} />
     </Stack.Navigator>
   );
 };

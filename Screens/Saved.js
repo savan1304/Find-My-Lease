@@ -10,7 +10,7 @@ const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 const Saved = ({ navigation }) => {
-  const { user } = useContext(AuthContext);
+  const { user, language } = useContext(AuthContext);
   const [houses, setHouses] = useState([]);
   const [savedIds, setSavedIds] = useState([]);
 
@@ -72,14 +72,14 @@ const Saved = ({ navigation }) => {
 
   const confirmRemove = (houseId) => {
     Alert.alert(
-      "Remove Listing",
-      "Are you sure you want to remove this listing from your saved?",
+      language === 'zh' ? '移除列表' : "Remove Listing",
+      language === 'zh' ? '您确定要从已保存的列表中移除此列表吗？' : "Are you sure you want to remove this listing from your saved?",
       [
-        { text: "Cancel", style: "cancel" },
-        { text: "Remove", onPress: () => handleRemoveSaved(houseId), style: "destructive" }
+        { text: language === 'zh' ? '取消' : "Cancel", style: "cancel" },
+        { text: language === 'zh' ? '移除' : "Remove", onPress: () => handleRemoveSaved(houseId), style: "destructive" }
       ]
     );
-  };
+};
 
   return (
     <View style={styles.container}>
@@ -93,21 +93,14 @@ const Saved = ({ navigation }) => {
                 onPress={() => handleHousePress(item)}
               />
               <PressableItem onPress={() => confirmRemove(item.id)} style={styles.removeButton}>
-                <Text style={styles.buttonText}>Remove</Text>
+                  <Text style={styles.buttonText}>{language === 'zh' ? '移除' : 'Remove'} </Text>
               </PressableItem>
             </View>
           )}
           keyExtractor={item => item.id}
         />
       ) : (
-        <View style={styles.noItemsContainer}>
-          <View style={styles.noItemsTextContainer}>
-            <Text style={styles.noItemsText}>No saved listings found! {'\n'}Explore the available listings to save them.</Text>
-          </View>
-          <PressableItem onPress={() => { navigation.navigate('My Home') }} style={{ width: '30%' }}>
-            <Text style={styles.buttonText}>Explore</Text>
-          </PressableItem>
-        </View>
+        <Text>{language === 'zh' ? '没有保存的房源' : 'No saved listings found.'} </Text>
       )}
     </View>
   );
