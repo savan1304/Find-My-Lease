@@ -326,7 +326,7 @@ export default function PostListing({ navigation }) {
                                 style={{ borderColor: Colors.blue, borderWidth: 1.5, marginHorizontal: 2 }}
                                 textStyle={appStyles.addTitles}
                                 containerStyle={{ width: 150 }}
-                                dropDownContainerStyle={{ borderColor: Colors.blue, backgroundColor: Colors.background, borderWidth: 1.5 }}
+                                dropDownContainerStyle={{ borderColor: Colors.blue, backgroundColor: "white", borderWidth: 1.5 }}
                                 listMode="SCROLLVIEW"
                             />
                         </View>

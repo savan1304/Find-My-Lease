@@ -116,7 +116,11 @@ export default function ScheduledVisits({ navigation }) {
                 // needs translation below
                 <View style={styles.noItemsContainer}>
                     <View style={styles.noItemsTextContainer}>
-                        <Text style={styles.noItemsText}>{language === 'zh' ? '您没有即将到来的预定访问' : 'You have no upcoming scheduled visits! \nExplore the available listings now to schedule a visit.'}  {'\n'}</Text>
+                    <Text style={styles.noItemsText}>
+                        {language === 'zh' ? '您没有即将到来的预定访问！\n现在就探索可用房源并安排访问。' : 'You have no upcoming scheduled visits! \nExplore the available listings now to schedule a visit.'}
+                        {'\n'}
+                        </Text>
+
                     </View>
                     <PressableItem onPress={() => { navigation.navigate('My Home') }} style={{ width: '35%' }}>
                         <Text style={styles.buttonText}>Explore</Text>

@@ -72,26 +72,26 @@ const Profile = ({ navigation }) => {
   const handleDelete = async () => {
     if (password === '') {
       Alert.alert(
-        "Missing Information",
-        "Please type your password to confirm deleting your account, or \nPress Cancel if you have changed your mind!",
-        [
-          {
-            text: "Ok",
-            style: "Ok",
-          },
-        ]
-      );
-    } else {
-      Alert.alert(
-        "Final Confirmation",
-        "Are you sure you want to delete your account? This action cannot be undone.",
-        [
-          {
-            text: "Cancel",
-            style: "cancel",
-          },
-          {
-            text: "Delete",
+        language === 'zh' ? "缺少信息" : "Missing Information",
+            language === 'zh' ? "请输入您的密码以确认删除您的账户，或者如果您改变主意了，请按取消！" : "Please type your password to confirm deleting your account, or \nPress Cancel if you have changed your mind!",
+            [
+              {
+                text: language === 'zh' ? "确定" : "Ok",
+                style: "Ok",
+              },
+            ]
+          );
+        } else {
+          Alert.alert(
+            language === 'zh' ? "最后确认" : "Final Confirmation",
+            language === 'zh' ? "您确定要删除您的账户吗？此操作无法撤销。" : "Are you sure you want to delete your account? This action cannot be undone.",
+            [
+              {
+                text: language === 'zh' ? "取消" : "Cancel",
+                style: "cancel",
+              },
+              {
+                text: language === 'zh' ? "删除" : "Delete",
             onPress: async () => {
               try {
                 const credential = EmailAuthProvider.credential(user.email, password);
@@ -146,8 +146,8 @@ const Profile = ({ navigation }) => {
             </>
           ) : (
             <>
-              <Text style={styles.info}>{language === 'zh' ? '用户ID: ' : 'UID: '}Temp UID</Text>
-              <Text style={styles.info}>{language === 'zh' ? '姓名: ' : 'Name: '}Temp User</Text>
+              <Text style={styles.info}>{language === 'zh' ? '用户ID: 临时用户' : 'UID: Temp UID'} </Text>
+              <Text style={styles.info}>{language === 'zh' ? '姓名: 临时用户' : 'Name: Temp User '} </Text>
               <Text style={styles.info}>{language === 'zh' ? '联系方式: ' : 'Email: '}N/A</Text>
               <Text style={styles.info}>{language === 'zh' ? '电话号码: ' : 'Phone Number: '}N/A</Text>
             </>
@@ -174,7 +174,7 @@ const Profile = ({ navigation }) => {
       {user && user.uid && (
         <View style={styles.deleteAccountContainer}>
           <PressableItem style={[styles.button, { backgroundColor: 'rgb(255, 59, 48)' }]} onPress={() => setIsDeleteModalVisible(true)}>
-            <Text style={styles.buttonText}>Delete My Account</Text>
+            <Text style={styles.buttonText}>{language === 'zh' ? '删除我的账户' : 'Delete My Account'} </Text>
           </PressableItem>
         </View>
       )}
@@ -234,17 +234,18 @@ const Profile = ({ navigation }) => {
         <View style={styles.modalContainer}>
           <ScrollView contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} keyboardShouldPersistTaps='handled'>
             <View style={styles.modalView}>
-              <Text style={styles.modalTitle}>Delete Account</Text>
-              <Text style={[styles.info, { color: 'rgb(255, 59, 48)', fontWeight: '600' }]}>You will lose all of your visits and saved or posted listings! {"\n"}Are you sure you want to proceed?</Text>
-
+              <Text style={styles.modalTitle}>{language === 'zh' ? '删除账户' : 'Delete Account'} </Text>
+              <Text style={[styles.info, { color: 'rgb(255, 59, 48)', fontWeight: '600' }]}>
+                {language === 'zh' ? '您将失去所有的访问记录以及已保存或发布的房源列表！\n您确定要继续吗？' : 'You will lose all of your visits and saved or posted listings! \nAre you sure you want to proceed?'}
+              </Text>
 
               {!showPasswordInput && (
                 <View style={styles.accountActionsContainer}>
                   <PressableItem style={styles.cancelButton} onPress={() => { setIsDeleteModalVisible(false); setShowPasswordInput(false) }}>
-                    <Text style={styles.buttonText}>Cancel</Text>
+                    <Text style={styles.buttonText}>{language === 'zh' ? '取消' : 'Cancel'} </Text>
                   </PressableItem>
                   <PressableItem style={styles.saveButton} onPress={handleProceed}>
-                    <Text style={styles.buttonText}>Proceed</Text>
+                    <Text style={styles.buttonText}>{language === 'zh' ? '继续' : 'Proceed'} </Text>
                   </PressableItem>
                 </View>
               )}
@@ -253,7 +254,7 @@ const Profile = ({ navigation }) => {
                 <>
                   <TextInput
                     style={styles.input}
-                    placeholder="Enter your password to confirm"
+                    placeholder={language === 'zh' ? '输入密码以确认' : 'Enter your password to confirm'}
                     placeholderTextColor="gray"
                     secureTextEntry
                     value={password}
@@ -261,10 +262,10 @@ const Profile = ({ navigation }) => {
                   />
                   <View style={styles.accountActionsContainer}>
                     <PressableItem style={styles.cancelButton} onPress={() => { setIsDeleteModalVisible(false); setShowPasswordInput(false) }}>
-                      <Text style={styles.buttonText}>Cancel</Text>
+                      <Text style={styles.buttonText}>{language === 'zh' ? '取消' : 'Cancel'} </Text>
                     </PressableItem>
                     <PressableItem style={styles.saveButton} onPress={handleDelete}>
-                      <Text style={styles.buttonText}>Delete</Text>
+                      <Text style={styles.buttonText}>{language === 'zh' ? '删除' : 'Delete'} </Text>
                     </PressableItem>
                   </View>
                 </>
