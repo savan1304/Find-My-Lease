@@ -47,6 +47,7 @@ const Home = ({ navigation }) => {
 
 
     const filteredHouses = houses.filter(house => {
+        const searchMatch = searchText === '' || house.location.toLowerCase().includes(searchText.toLowerCase());
         const bedroomsWithinRange = (
             (filters.bedrooms.min === null || house.bed >= filters.bedrooms.min) &&
             (filters.bedrooms.max === null || house.bed <= filters.bedrooms.max)
@@ -71,7 +72,7 @@ const Home = ({ navigation }) => {
             filters.type === null || house.type === filters.type
         );
 
-        return bedroomsWithinRange && areaWithinRange && bathWithinRange && priceWithinRange && petFriendlyMatch && typeMatch;
+        return bedroomsWithinRange && areaWithinRange && bathWithinRange && priceWithinRange && petFriendlyMatch && typeMatch&&searchMatch;
     });
 
     const clearFilters = () => {
