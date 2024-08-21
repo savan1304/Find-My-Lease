@@ -1,140 +1,130 @@
-import { Text, View, TextInput, Alert, SafeAreaView, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react';
+import { Text, View, TextInput, Alert, SafeAreaView, KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from 'react-native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, database } from '../Firebase/firebaseSetup';
 import { appStyles } from '../Config/Styles';
 import PressableItem from '../Components/PressableItem';
 import { collection, doc, setDoc } from 'firebase/firestore';
 import { MaterialIcons } from '@expo/vector-icons'; 
+import { AuthContext } from '../Components/AuthContext';
 
 export default function SignUp({ navigation }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const { language } = useContext(AuthContext);
 
     function isPasswordValid(password) {
-        const hasNumber = /\d/; // Regular expression to check if the password contains a number
-        const hasLetter = /[a-zA-Z]/; // Regular expression to check if the password contains a letter
+        const hasNumber = /\d/;
+        const hasLetter = /[a-zA-Z]/;
 
         return hasNumber.test(password) && hasLetter.test(password);
     }
 
     async function loginHandler() {
-        navigation.replace("Login")
+        navigation.replace("Login");
     }
 
     async function signupHandler() {
-        console.log("register button pressed")
-
         let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
 
         if (email.length === 0 || password.length === 0) {
-            Alert.alert("Email or password cannot be empty");
+            Alert.alert(language === 'zh' ? '电子邮件或密码不能为空' : "Email or password cannot be empty");
             return;
         } else if (reg.test(email) === false) {
-            Alert.alert("Please enter a valid email address");
+            Alert.alert(language === 'zh' ? '请输入有效的电子邮件地址' : "Please enter a valid email address");
             return;
         } else if (!isPasswordValid(password)) {
-            Alert.alert("Password must contain both numbers and letters");
+            Alert.alert(language === 'zh' ? '密码必须包含数字和字母' : "Password must contain both numbers and letters");
             return;
         } else if (password !== confirmPassword) {
-            Alert.alert("Passwords do not match");
+            Alert.alert(language === 'zh' ? '密码不匹配' : "Passwords do not match");
             return;
         }
 
         try {
-            console.log("Auth in signup page before calling firebase fn:", auth)
             const userCred = await createUserWithEmailAndPassword(auth, email, password);
-            console.log(userCred);
             const user = userCred.user;
-
             const usersCollectionRef = collection(database, 'User');
             await setDoc(doc(usersCollectionRef, user.uid), {
                 email: user.email,
             });
-
-            console.log("User created and data saved to Firestore!");
             navigation.navigate('My Home');
         } catch (err) {
-            console.log("SIGN UP ", err);
+            Alert.alert(language === 'zh' ? '注册错误' : "SIGN UP Error", err.message);
         }
     }
 
     return (
         <SafeAreaView style={appStyles.loginSignUpContainer}>
             <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
-            <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
-            <View style={styles.iconContainer}>
-                <MaterialIcons name="apartment" size={64} color="blue" />
-            </View>
-            <View style={styles.introContainer}>
-                <Text style={styles.introText}>
-                    Welcome to FindMyLease! This platform is designed to help you find the perfect place to rent as a renter or post your property for others to rent. Whether you're searching for a new home or looking to rent out your property, our app makes the process easy and efficient. 
-                    {"\n\n"}
-                    Sign up now to unlock the full functionality of FindMyLease!
-                </Text>
-            </View>
-            <View style={styles.centeredView}>
-                <View style={appStyles.loginSignUpFieldContainer}>
-                    <Text>Email</Text>
-                    <View style={appStyles.loginSignUpInput}>
-                        <TextInput
-                            placeholder="Email"
-                            value={email}
-                            autoCorrect={false}
-                            autoCapitalize="none"
-                            onChangeText={(email) => {
-                                setEmail(email);
-                            }}
-                        />
+                <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
+                    <View style={{ alignItems: 'center', marginBottom: 10 }}>
+                        <MaterialIcons name="apartment" size={64} color="blue" />
                     </View>
-                </View>
+                    <View style={{ marginBottom: 20, paddingHorizontal: 20 }}>
+                        <Text style={{ fontSize: 16, textAlign: 'center', color: 'blue' }}>
+                            {language === 'zh' ? '欢迎来到FindMyLease！本平台旨在帮助您找到完美的租赁地点。无论您是在寻找新家还是希望出租您的房产，我们的应用程序都能使过程变得简单高效。现在注册，解锁FindMyLease的全部功能！' : 
+                            'Welcome to FindMyLease! This platform is designed to help you find the perfect place to rent as a renter or post your property for others to rent. Whether you\'re searching for a new home or looking to rent out your property, our app makes the process easy and efficient. Sign up now to unlock the full functionality of FindMyLease!'}
+                        </Text>
+                    </View>
+                    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                        <View style={appStyles.loginSignUpFieldContainer}>
+                            <Text>{language === 'zh' ? '电子邮件' : 'Email'}</Text>
+                            <View style={appStyles.loginSignUpInput}>
+                                <TextInput
+                                    placeholder={language === 'zh' ? '电子邮件' : "Email"}
+                                    value={email}
+                                    autoCorrect={false}
+                                    autoCapitalize="none"
+                                    onChangeText={setEmail}
+                                />
+                            </View>
+                        </View>
 
-                <View style={appStyles.loginSignUpFieldContainer}>
-                    <Text>Password</Text>
-                    <View style={appStyles.loginSignUpInput}>
-                        <TextInput
-                            placeholder="Password"
-                            value={password}
-                            autoCorrect={false}
-                            autoCapitalize="none"
-                            secureTextEntry={true}
-                            onChangeText={(password) => {
-                                setPassword(password);
-                            }}
-                        />
-                    </View>
-                </View>
+                        <View style={appStyles.loginSignUpFieldContainer}>
+                            <Text>{language === 'zh' ? '密码' : 'Password'}</Text>
+                            <View style={appStyles.loginSignUpInput}>
+                                <TextInput
+                                    placeholder={language === 'zh' ? '密码' : "Password"}
+                                    value={password}
+                                    autoCorrect={false}
+                                    autoCapitalize="none"
+                                    secureTextEntry={true}
+                                    onChangeText={setPassword}
+                                />
+                            </View>
+                        </View>
 
-                <View style={appStyles.loginSignUpFieldContainer}>
-                    <Text>Confirm Password</Text>
-                    <View style={appStyles.loginSignUpInput}>
-                        <TextInput
-                            placeholder="Confirm Password"
-                            value={confirmPassword}
-                            autoCorrect={false}
-                            autoCapitalize="none"
-                            secureTextEntry={true}
-                            onChangeText={(confirmPassword) => {
-                                setConfirmPassword(confirmPassword);
-                            }}
-                        />
+                        <View style={appStyles.loginSignUpFieldContainer}>
+                            <Text>{language === 'zh' ? '确认密码' : 'Confirm Password'}</Text>
+                            <View style={appStyles.loginSignUpInput}>
+                                <TextInput
+                                    placeholder={language === 'zh' ? '确认密码' : "Confirm Password"}
+                                    value={confirmPassword}
+                                    autoCorrect={false}
+                                    autoCapitalize="none"
+                                    secureTextEntry={true}
+                                    onChangeText={setConfirmPassword}
+                                />
+                            </View>
+                        </View>
+
+                        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                            <PressableItem onPress={signupHandler} style={[appStyles.buttonStyle, appStyles.cancelButton]} >
+                                <Text style={appStyles.text}>{language === 'zh' ? '注册' : "Register"} </Text>
+                            </PressableItem>
+                            <PressableItem onPress={loginHandler} style={[appStyles.buttonStyle, appStyles.saveButton]} >
+                                <Text style={appStyles.text}>{language === 'zh' ? '已注册？登录' : "Already Registered? Log in"} </Text>
+                            </PressableItem>
+                        </View>
                     </View>
-                </View>
-            </View>
-            <View style={styles.buttonContainer}>
-                <PressableItem onPress={signupHandler} style={[appStyles.buttonStyle, appStyles.cancelButton]} >
-                    <Text style={appStyles.text}>Register </Text>
-                </PressableItem>
-                <PressableItem onPress={loginHandler} style={[appStyles.buttonStyle, appStyles.saveButton]} >
-                    <Text style={appStyles.text}>Already Registered? Log in </Text>
-                </PressableItem>
-            </View>
-            </ScrollView>
+                </ScrollView>
             </KeyboardAvoidingView>
         </SafeAreaView>
-    )
+    );
 }
+
 
 const styles = StyleSheet.create({
     iconContainer: {

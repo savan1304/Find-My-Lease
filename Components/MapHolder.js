@@ -1,7 +1,8 @@
 import { StyleSheet, Text, Alert, TouchableOpacity, Image } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import * as Location from 'expo-location';
 import MapView, { Marker } from "react-native-maps";
+import { AuthContext } from '../Components/AuthContext';
 
 
 export default function MapHolder({ navigation, houses }) {
@@ -9,6 +10,7 @@ export default function MapHolder({ navigation, houses }) {
   const [response, requestPermission] = Location.useForegroundPermissions()
   const [userLocation, setUserLocation] = useState(null)
   const receievdHousesToDisplayOnMap = houses.length > 0 && houses.some(house => 'latitude' in house && 'longitude' in house);
+  const { language } = useContext(AuthContext);
 
   async function verifyPermission() {
     console.log(response)
@@ -79,13 +81,13 @@ export default function MapHolder({ navigation, houses }) {
               </Marker>
             ))}
           </MapView>
-          <Text>Location permission granted</Text>
+          <Text>{language === 'zh' ? "成功获得地理位置权限 " : "Location permission granted "}</Text>
         </>
 
       ) : (
 
         <TouchableOpacity style={styles.container} onPress={mapHandler}>
-          <Text>Click here to check out the listings nearby</Text>
+          <Text>{language === 'zh' ? "点击此处查看附近的房源 " : "Click here to check out the listings nearby "}</Text>
         </TouchableOpacity >
 
       )}

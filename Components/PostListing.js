@@ -1,5 +1,5 @@
 import { View, Text, TextInput, ScrollView, Image, FlatList } from 'react-native'
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useState, useCallback, useRef, useContext } from 'react';
 import ImageManager from './ImageManager';
 import { appStyles } from '../Config/Styles';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -15,9 +15,10 @@ import { useRoute } from '@react-navigation/native';
 import { mapsApiKeyE } from '@env'
 import Geocoder from 'react-native-geocoding';
 import { getDownloadURL } from 'firebase/storage';
+import { AuthContext } from '../Components/AuthContext';
 
 export default function PostListing({ navigation }) {
-
+    const { language } = useContext(AuthContext);
     const user = auth.currentUser
     const route = useRoute();
     const { listingData = {} } = route.params || {};
@@ -282,7 +283,7 @@ export default function PostListing({ navigation }) {
                     {/* Option to add more images */}
                     <View style={appStyles.imageOptionsContainer}>
                         <PressableItem onPress={pickImage} style={{ margin: 25 }}>
-                            <Text style={appStyles.text}>Upload Images </Text>
+                        <Text style={appStyles.text}>{language === 'zh' ? '上传图片' : 'Upload Images'} </Text>
                         </PressableItem>
                         <ImageManager imageUriHandler={imageUriHandler} />
                     </View>
@@ -291,7 +292,7 @@ export default function PostListing({ navigation }) {
                 <View style={appStyles.postImageContainer} >
                     <View style={appStyles.imageOptionsContainer}>
                         <PressableItem onPress={pickImage} style={{ margin: 25 }}>
-                            <Text style={appStyles.text}>Upload Images </Text>
+                        <Text style={appStyles.text}>{language === 'zh' ? '上传图片' : 'Upload Images'} </Text>
                         </PressableItem>
                         <ImageManager imageUriHandler={imageUriHandler} />
                     </View>
@@ -304,7 +305,7 @@ export default function PostListing({ navigation }) {
 
                 <View style={appStyles.twoListingInputContainer}>
                     <View style={appStyles.addItemContainer}>
-                        <Text style={appStyles.addTitles}>Type*</Text>
+                    <Text style={appStyles.addTitles}>{language === 'zh' ? '类型*' : 'Type*'} </Text>
                         <View>
                             <DropDownPicker
                                 open={open}
@@ -322,7 +323,7 @@ export default function PostListing({ navigation }) {
                         </View>
                     </View>
                     <View style={appStyles.addItemContainer}>
-                        <Text style={appStyles.addTitles}>Area*</Text>
+                    <Text style={appStyles.addTitles}>{language === 'zh' ? '面积*' : 'Area*'} </Text>
                         <View style={[
                             appStyles.addInput,
                             isListingDataLengthPositive() && { alignItems: 'center', paddingLeft: 0 }
@@ -337,7 +338,7 @@ export default function PostListing({ navigation }) {
                 </View>
 
                 <View style={appStyles.addItemContainer}>
-                    <Text style={appStyles.addTitles}>Location*</Text>
+                <Text style={appStyles.addTitles}>{language === 'zh' ? '位置*' : 'Location*'} </Text>
                     <View style={[
                         appStyles.addInput, { width: '75%' },
                         isListingDataLengthPositive() && { alignItems: 'center', paddingLeft: 0 }
@@ -353,7 +354,7 @@ export default function PostListing({ navigation }) {
 
                 <View style={appStyles.twoListingInputContainer}>
                     <View style={appStyles.addItemContainer}>
-                        <Text style={appStyles.addTitles}>Price*</Text>
+                    <Text style={appStyles.addTitles}>{language === 'zh' ? '价格*' : 'Price*'} </Text>
                         <View style={[
                             appStyles.addInput,
                             isListingDataLengthPositive() && { alignItems: 'center', paddingLeft: 0 }
@@ -368,7 +369,7 @@ export default function PostListing({ navigation }) {
                         </View>
                     </View>
                     <View style={appStyles.addItemContainer}>
-                        <Text style={appStyles.addTitles}>Tenant Gender </Text>
+                    <Text style={appStyles.addTitles}>{language === 'zh' ? '租客性别' : 'Tenant Gender'} </Text>
                         <View style={[
                             appStyles.addInput,
                             isListingDataLengthPositive() && { alignItems: 'center', paddingLeft: 0 }
@@ -384,7 +385,7 @@ export default function PostListing({ navigation }) {
 
                 <View style={appStyles.twoListingInputContainer}>
                     <View style={appStyles.addItemContainer}>
-                        <Text style={appStyles.addTitles}>Bed*</Text>
+                    <Text style={appStyles.addTitles}>{language === 'zh' ? '卧室*' : 'Bed*'} </Text>
                         <View style={[
                             appStyles.addInput,
                             isListingDataLengthPositive() && { alignItems: 'center', paddingLeft: 0 }
@@ -398,7 +399,7 @@ export default function PostListing({ navigation }) {
                         </View>
                     </View>
                     <View style={appStyles.addItemContainer}>
-                        <Text style={appStyles.addTitles}>Bath*</Text>
+                    <Text style={appStyles.addTitles}>{language === 'zh' ? '浴室*' : 'Bath*'} </Text>
                         <View style={[
                             appStyles.addInput,
                             isListingDataLengthPositive() && { alignItems: 'center', paddingLeft: 0 }
@@ -414,7 +415,7 @@ export default function PostListing({ navigation }) {
                 </View>
 
                 <View style={appStyles.addItemContainer}>
-                    <Text style={appStyles.addTitles}>Transit options </Text>
+                <Text style={appStyles.addTitles}>{language === 'zh' ? '交通' : 'Transit options'} </Text>
                     <View style={[
                         appStyles.addInput, { width: '65%' },
                         isListingDataLengthPositive() && { alignItems: 'center', paddingLeft: 0 }
@@ -429,7 +430,7 @@ export default function PostListing({ navigation }) {
 
                 <View style={appStyles.twoListingInputContainer}>
                     <View style={[appStyles.checkboxContainer, appStyles.addItemContainer]}>
-                        <Text style={appStyles.addTitles}>Pet Friendly? </Text>
+                    <Text style={appStyles.addTitles}>{language === 'zh' ? '允许宠物？' : 'Pet Friendly?'} </Text>
                         <Checkbox
                             style={appStyles.checkbox}
                             value={formData.petFriendly}
@@ -438,7 +439,7 @@ export default function PostListing({ navigation }) {
                         />
                     </View>
                     <View style={appStyles.addItemContainer}>
-                        <Text style={appStyles.addTitles}>Year </Text>
+                    <Text style={appStyles.addTitles}>{language === 'zh' ? '年份' : 'Year'} </Text>
                         <View style={[
                             appStyles.addInput,
                             isListingDataLengthPositive() && { alignItems: 'center', paddingLeft: 0 }
@@ -459,14 +460,10 @@ export default function PostListing({ navigation }) {
                 <View style={appStyles.buttonContainer}>
                     <View style={appStyles.saveAndCancelButtonContainer}>
                         <PressableItem onPress={() => handleCancel()} style={[appStyles.buttonStyle, appStyles.cancelButton, { margin: 25, height: 40 }]} >
-                            <Text style={appStyles.text}>Cancel </Text>
+                        <Text style={appStyles.text}>{language === 'zh' ? '取消' : 'Cancel'} </Text>
                         </PressableItem>
                         <PressableItem onPress={() => handleSave()} style={[appStyles.buttonStyle, appStyles.saveButton, { margin: 25, height: 40 }]} >
-                            {isListingDataLengthPositive() ? (
-                                <Text style={appStyles.text}>Save </Text>
-                            ) : (
-                                <Text style={appStyles.text}>Post </Text>
-                            )}
+                        <Text style={appStyles.text}>{isListingDataLengthPositive() ? (language === 'zh' ? '保存' : 'Save') : (language === 'zh' ? '发布' : 'Post')} </Text>
                         </PressableItem>
                     </View>
                 </View>

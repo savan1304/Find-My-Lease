@@ -1,5 +1,5 @@
 import { Text, View, TouchableOpacity, TextInput, Switch, Image, ScrollView, FlatList, Alert } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { appStyles } from '../Config/Styles';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import PressableItem from './PressableItem';
@@ -11,9 +11,10 @@ import { scheduleNotification, requestNotificationPermissions } from '../Compone
 import { getDownloadURL, ref } from 'firebase/storage';
 import { storage } from '../Firebase/firebaseSetup';
 import { getVisitDocRefById } from '../Firebase/firestoreHelper';
+import { AuthContext } from '../Components/AuthContext';
 
 export default function ScheduleVisit({ navigation }) {
-
+    const { language } = useContext(AuthContext);
     const route = useRoute();
     const user = auth.currentUser;
     const { visitData = {}, listingData = {} } = route.params || {};
@@ -254,15 +255,15 @@ export default function ScheduleVisit({ navigation }) {
             }
 
             Alert.alert(
-                "Confirm",
-                `Are you sure you want to ${action} the visit?`,
+                language === 'zh' ? '确认' : 'Confirm',
+                language === 'zh' ? `您确定要${action}访问吗？` : `Are you sure you want to ${action} the visit?`,
                 [
                     {
-                        text: "Cancel",
+                        text: language === 'zh' ? '取消' : 'Cancel',
                         style: "cancel",
                     },
                     {
-                        text: "Save",
+                        text: language === 'zh' ? '保存' : 'Save',
                         onPress: async () => {
                             await saveVisit()
                         },
@@ -303,7 +304,7 @@ export default function ScheduleVisit({ navigation }) {
                     <Text style={[appStyles.title, { color: Colors.shadowColor }]}>{visit.listingLocation}</Text>
                 </View>
                 <View style={appStyles.locationOrPriceContainer2}>
-                    <Text style={[appStyles.title, { color: Colors.shadowColor }]}>C$ {visit.listingPrice}/mo</Text>
+                    <Text style={[appStyles.title, { color: Colors.shadowColor }]}>C$ {visit.listingPrice}{language === 'zh' ? "/月":"/mo"} </Text>
                 </View>
             </View>
 
@@ -322,7 +323,7 @@ export default function ScheduleVisit({ navigation }) {
             )}
 
             <View style={appStyles.addItemContainer}>
-                <Text style={appStyles.addTitles}>Date (dd/mm/yyy)</Text>
+                <Text style={appStyles.addTitles}>{language === "zh"?"日期":"Date"} (dd/mm/yyy)</Text>
                 <TouchableOpacity onPress={() => setShowDatePicker(true)} style={[appStyles.addInput, { width: '35%', height: '100%', alignItems: 'center' }]}>
                     <Text style={appStyles.addTitles}>{visit.date.toLocaleDateString()}</Text>
                 </TouchableOpacity>
@@ -340,7 +341,7 @@ export default function ScheduleVisit({ navigation }) {
             )}
 
             <View style={appStyles.addItemContainer}>
-                <Text style={appStyles.addTitles}>Time</Text>
+                <Text style={appStyles.addTitles}>{language === "zh"?"时间":"Time"} </Text>
                 <TouchableOpacity onPress={() => setShowTimePicker(true)} style={[appStyles.addInput, { width: '35%', height: '100%', alignItems: 'center' }]}>
                     <Text style={appStyles.addTitles}>{visit.time.toLocaleTimeString()}</Text>
                 </TouchableOpacity>
@@ -358,13 +359,14 @@ export default function ScheduleVisit({ navigation }) {
             )}
 
             <View style={[appStyles.addItemContainer, { alignItems: 'flex-start' }]}>
-                <Text style={appStyles.addTitles}>Questions</Text>
+                <Text style={appStyles.addTitles}>{language === "zh"?"疑问":"Questions"} </Text>
                 <View style={[appStyles.addInput, { height: 100, width: '70%', alignItems: 'flex-start' }]}
                 >
                     <TextInput
                         style={appStyles.addTitles}
                         multiline
-                        placeholder={"Any questions for the \nlandlord?"}
+                        placeholder={language === 'zh' ? '有什么问题要问房东吗？' : "Any questions for the \nlandlord?"}
+
                         value={visit.questions}
                         onChangeText={text => setVisit(prevVisit => ({ ...prevVisit, questions: text }))}
                     />
@@ -372,7 +374,9 @@ export default function ScheduleVisit({ navigation }) {
             </View>
 
             <View style={[appStyles.addItemContainer, { alignItems: 'center' }]}>
-                <Text style={[appStyles.addTitles, { padding: 0, margin: 0 }]}>Set reminder 1 day before?</Text>
+            <Text style={[appStyles.addTitles, { padding: 0, margin: 0 }]}>
+                {language === 'zh' ? '设置提前一天的提醒吗？' : 'Set reminder 1 day before?'} 
+            </Text>
                 <Switch
                     value={visit.setReminder}
                     onValueChange={async (value) => {
@@ -392,13 +396,13 @@ export default function ScheduleVisit({ navigation }) {
                 <View style={appStyles.buttonContainer}>
                     <View style={appStyles.saveAndCancelButtonContainerForVisit}>
                         <PressableItem onPress={handleCancel} style={[appStyles.buttonStyle, appStyles.cancelButton, { margin: 25, height: 40 }]} >
-                            <Text style={appStyles.text}>Cancel</Text>
+                            <Text style={appStyles.text}>{language === "zh"?"取消":"Cancel"} </Text>
                         </PressableItem>
                         <PressableItem onPress={handleSubmit} style={[appStyles.buttonStyle, appStyles.saveButton, { margin: 25, height: 40 }]} >
                             {isVisitDataLengthPositive() ? (
-                                <Text style={appStyles.text}>Save</Text>
+                                <Text style={appStyles.text}>{language === "zh"?"保存":"Save"} </Text>
                             ) : (
-                                <Text style={appStyles.text}>Schedule</Text>
+                                <Text style={appStyles.text}>{language === "zh"?"预约时间":"Schedule"} </Text>
                             )}
                         </PressableItem>
                     </View>
