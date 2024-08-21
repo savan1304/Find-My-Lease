@@ -68,17 +68,41 @@ export default function PostedListings({ navigation }) {
     }
   }
 
+  async function handlePostiveVisitRequestCounterPress(visitRequest, listingId) {
+    console.log("visit request counter pressed with visitRequest: ", visitRequest)
+    console.log("visit request counter pressed with listingId: ", listingId)
+    try {
+      let listingData = {}
+      listingData = await getDataById(listingId, 'Listing')
+      console.log('listingData before navigating to VisitRequests inside handlePostiveVisitRequestCounterPress: ', listingData)
+      navigation.navigate('VisitRequests', { visitRequest: visitRequest, listingData: listingData });
+    }
+    catch (error) {
+      console.log("Error navigating to VisitRequests in handlePostiveVisitRequestCounterPress: ", error)
+    }
+  }
+
   function handleZeroVisitRequestCounterPress() {
     Alert.alert(language === 'zh' ? '无请求' : 'No requests', language === 'zh' ? '此列表尚无观看请求。' : 'There are no viewing requests for this listing yet.', [
       { text: 'Ok', style: 'default' },
     ]);
   }
 
+
   console.log('listingss value in PostedListing: ', listings);
   return (
-    <View>
+    <View style={styles.outerContainer}>
+
       {listings.length === 0 ? (
-        <Text style={styles.text}>{language === 'zh' ? '您尚未发布任何列表。' : 'You have not posted any listings yet.'}</Text>
+        <View style={styles.noItemsContainer}>
+          <View style={styles.noItemsTextContainer}>
+            {/* needs translation below*/}
+            <Text style={styles.noItemsText}>{language === 'zh' ? '您尚未发布任何列表。' : 'You have not posted any listings yet! \nPost a listing to meet your next tenant'}</Text>
+          </View>
+          <PressableItem onPress={() => { navigation.navigate('PostListing') }} style={{ width: '35%' }}>
+            <Text style={styles.buttonText}>Post a Listing</Text>
+          </PressableItem>
+        </View>
       ) : (
         <FlatList
           data={listings}
@@ -120,7 +144,7 @@ export default function PostedListings({ navigation }) {
     </View>
   );
 }
-  
+
 
 
 const styles = StyleSheet.create({
@@ -134,9 +158,9 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc',
     flex: 3
   },
-  listingDetails: {
-    flex: 2,
-    marginVertical: 5
+  outerContainer: {
+    flex: 1,
+    backgroundColor: '#fff',
   },
   info: {
     fontSize: 16,
@@ -151,6 +175,24 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
+  },
+  buttonText: {
+    color: '#f5f5f7',
+    fontSize: 16,
+    textAlign: 'center'
+  },
+  noItemsContainer: {
+    flex: 1,
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  noItemsTextContainer: {
+    marginBottom: 25
+  },
+  noItemsText: {
+    fontWeight: '600',
+    fontSize: 16,
+    textAlign: 'center',
   }
 
 })
