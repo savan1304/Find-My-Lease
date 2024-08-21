@@ -104,10 +104,13 @@ export default function PostedListings({ navigation }) {
           <View style={styles.noItemsContainer}>
             <View style={styles.noItemsTextContainer}>
               {/* needs translation below*/}
-              <Text style={styles.noItemsText}>{language === 'zh' ? '您尚未发布任何列表。' : 'You have not posted any listings yet! \nPost a listing to meet your next tenant'}</Text>
+              <Text style={styles.noItemsText}>
+                  {language === 'zh' ? '您尚未发布任何列表。\n发布房源来寻找您的下一位租客。' : 'You have not posted any listings yet! \nPost a listing to meet your next tenant.'}
+              </Text>
+
             </View>
             <PressableItem onPress={() => { navigation.navigate('PostListing') }} style={{ width: '35%' }}>
-              <Text style={styles.buttonText}>Post a Listing</Text>
+              <Text style={styles.buttonText}>{language === 'zh' ? '发布房源: ' : 'Post a Listing: '}</Text>
             </PressableItem>
           </View>
         </View>
