@@ -72,7 +72,7 @@ const Home = ({ navigation }) => {
             filters.type === null || house.type === filters.type
         );
 
-        return bedroomsWithinRange && areaWithinRange && bathWithinRange && priceWithinRange && petFriendlyMatch && typeMatch&&searchMatch;
+        return bedroomsWithinRange && areaWithinRange && bathWithinRange && priceWithinRange && petFriendlyMatch && typeMatch && searchMatch;
     });
 
     const clearFilters = () => {
@@ -95,7 +95,7 @@ const Home = ({ navigation }) => {
         <View style={styles.container}>
             <TextInput
                 style={styles.searchBar}
-                placeholder={language === 'zh' ? "搜索..." : "Search..."}
+                placeholder={language === 'zh' ? "搜索位置..." : "Search Location..."}
                 value={searchText}
                 onChangeText={setSearchText}
             />
