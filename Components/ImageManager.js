@@ -1,11 +1,12 @@
 import { Alert, StyleSheet, Text, View, Image } from 'react-native'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import * as ImagePicker from "expo-image-picker"
 import PressableItem from './PressableItem';
 import { appStyles } from '../Config/Styles';
+import { AuthContext } from '../Components/AuthContext'; 
 
 export default function ImageManager({ imageUriHandler }) {
-
+    const { language } = useContext(AuthContext);
     const [response, requestPermission] = ImagePicker.useCameraPermissions();
     const [imageUris, setImageUris] = useState([]);
 
@@ -23,7 +24,7 @@ export default function ImageManager({ imageUriHandler }) {
         try {
             const hasPermission = await verifyPermission()
             if (!hasPermission) {
-                Alert.alert("You need to give permission to launch camera")
+                Alert.alert(language === 'zh' ? "需要使用相机权限" : "You need to give permission to launch camera");
                 return;
             }
 
@@ -42,7 +43,7 @@ export default function ImageManager({ imageUriHandler }) {
     return (
         <View>
             <PressableItem onPress={takeImageHandler} style={{ margin: 25 }}>
-                <Text style={appStyles.text}>Take a photo </Text>
+                <Text style={appStyles.text}>{language === 'zh' ? "拍照" : "Take a photo"} </Text>
             </PressableItem>
             {imageUris.map((uri, index) => (
                 <Image

@@ -172,41 +172,41 @@ const HouseDetails = ({ route, navigation }) => {
                 />
             )}
             <View style={styles.detailsContainer}>
-                <Text style={styles.detail}>{language === 'zh' ? '面积: ' : 'Area: '}{house.area}</Text>
-                <Text style={styles.detail}>{language === 'zh' ? '卫生间: ' : 'Bathrooms: '}{house.bath}</Text>
-                <Text style={styles.detail}>{language === 'zh' ? '卧室: ' : 'Bedrooms: '}{house.bed}</Text>
-                <Text style={styles.detail}>{language === 'zh' ? '位置: ' : 'Location: '}{house.location}</Text>
-                <Text style={styles.detail}>{language === 'zh' ? '宠物友好: ' : 'Pet Friendly: '}{house.petFriendly ? (language === 'zh' ? '是' : 'Yes') : (language === 'zh' ? '否' : 'No')}</Text>
-                <Text style={styles.detail}>{language === 'zh' ? '价格: ' : 'Price: '}{house.price}</Text>
-                <Text style={styles.detail}>{language === 'zh' ? '租户性别: ' : 'Tenant Gender: '}{house.tenantGender}</Text>
-                <Text style={styles.detail}>{language === 'zh' ? '交通: ' : 'Transit: '}{house.transit}</Text>
-                <Text style={styles.detail}>{language === 'zh' ? '类型: ' : 'Type: '}{house.type}</Text>
-                <Text style={styles.detail}>{language === 'zh' ? '建筑年份: ' : 'Year Built: '}{house.year}</Text>
+                <Text style={styles.detail}>{language === 'zh' ? '面积: ' : 'Area: '}{house.area} </Text>
+                <Text style={styles.detail}>{language === 'zh' ? '卫生间: ' : 'Bathrooms: '}{house.bath} </Text>
+                <Text style={styles.detail}>{language === 'zh' ? '卧室: ' : 'Bedrooms: '}{house.bed} </Text>
+                <Text style={styles.detail}>{language === 'zh' ? '位置: ' : 'Location: '}{house.location} </Text>
+                <Text style={styles.detail}>{language === 'zh' ? '宠物友好: ' : 'Pet Friendly: '}{house.petFriendly ? (language === 'zh' ? '是' : 'Yes') : (language === 'zh' ? '否' : 'No')} </Text>
+                <Text style={styles.detail}>{language === 'zh' ? '价格: ' : 'Price: '}{house.price} </Text>
+                <Text style={styles.detail}>{language === 'zh' ? '租户性别: ' : 'Tenant Gender: '}{house.tenantGender} </Text>
+                <Text style={styles.detail}>{language === 'zh' ? '交通: ' : 'Transit: '}{house.transit} </Text>
+                <Text style={styles.detail}>{language === 'zh' ? '类型: ' : 'Type: '}{house.type} </Text>
+                <Text style={styles.detail}>{language === 'zh' ? '建筑年份: ' : 'Year Built: '}{house.year} </Text>
                 {locationScores && (
                     <View style={styles.scoresContainer}>
                         <View style={styles.scoreDetail}>
                             <Ionicons name="walk" size={24} color="black" />
-                            <Text style={styles.detail}>{language === 'zh' ? '步行评分: ' : 'Walking Score: '}{locationScores.walkscore} ({locationScores.description})</Text>
+                            <Text style={styles.detail}>{language === 'zh' ? '步行评分: ' : 'Walking Score: '}{locationScores.walkscore} ({locationScores.description}) </Text>
                         </View>
                         <View style={styles.scoreDetail}>
                             <Ionicons name="bus" size={24} color="black" />
-                            <Text style={styles.detail}>{language === 'zh' ? '交通评分: ' : 'Transit Score: '}{locationScores.transit.score} ({locationScores.transit.description})</Text>
+                            <Text style={styles.detail}>{language === 'zh' ? '交通评分: ' : 'Transit Score: '}{locationScores.transit.score} ({locationScores.transit.description}) </Text>
                         </View>
                         <View style={styles.scoreDetail}>
                             <Ionicons name="bicycle" size={24} color="black" />
-                            <Text style={styles.detail}>{language === 'zh' ? '自行车评分: ' : 'Biking Score: '}{locationScores.bike.score} ({locationScores.bike.description})</Text>
+                            <Text style={styles.detail}>{language === 'zh' ? '自行车评分: ' : 'Biking Score: '}{locationScores.bike.score} ({locationScores.bike.description}) </Text>
                         </View>
                     </View>
                 )}
             </View>
             <PressableItem style={styles.button} onPress={handleContact}>
-                <Text style={styles.buttonText}>{language === 'zh' ? '联系' : 'Contact'}</Text>
+                <Text style={styles.buttonText}>{language === 'zh' ? '联系' : 'Contact'} </Text>
             </PressableItem>
             <PressableItem style={styles.button} onPress={confirmSave}>
-                <Text style={styles.buttonText}>{language === 'zh' ? '保存' : 'Save'}</Text>
+                <Text style={styles.buttonText}>{language === 'zh' ? '保存' : 'Save'} </Text>
             </PressableItem>
             <PressableItem style={styles.button} onPress={handleScheduleViewing}>
-                <Text style={styles.buttonText}>{language === 'zh' ? '预约看房' : 'Schedule Viewing'}</Text>
+                <Text style={styles.buttonText}>{language === 'zh' ? '预约看房' : 'Schedule Viewing'} </Text>
             </PressableItem>
 
             {/* Modal for Contact Information */}
@@ -218,13 +218,13 @@ const HouseDetails = ({ route, navigation }) => {
             >
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
-                        <Text style={styles.modalTitle}>{language === 'zh' ? '联系信息' : 'Contact Information'}</Text>
-                        <Text style={styles.modalTitle}>({language === 'zh' ? '长按复制' : 'Hold to Copy'})</Text>
+                        <Text style={styles.modalTitle}>{language === 'zh' ? '联系信息' : 'Contact Information'} </Text>
+                        <Text style={styles.modalTitle}>({language === 'zh' ? '长按复制' : 'Hold to Copy'}) </Text>
                         <TouchableOpacity onPress={() => copyToClipboard(ownerContact?.email || 'N/A')}>
-                            <Text style={styles.modalText}>{language === 'zh' ? '电邮: ' : 'Email: '}{ownerContact?.email || 'N/A'}</Text>
+                            <Text style={styles.modalText}>{language === 'zh' ? '电邮: ' : 'Email: '}{ownerContact?.email || 'N/A'} </Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => copyToClipboard(ownerContact?.phoneNumber || 'N/A')}>
-                            <Text style={styles.modalText}>{language === 'zh' ? '电话: ' : 'Phone: '}{ownerContact?.phoneNumber || 'N/A'}</Text>
+                            <Text style={styles.modalText}>{language === 'zh' ? '电话: ' : 'Phone: '}{ownerContact?.phoneNumber || 'N/A'} </Text>
                         </TouchableOpacity>
                         <Button title={language === 'zh' ? '关闭' : 'Close'} onPress={() => setModalVisible(false)} />
                     </View>
