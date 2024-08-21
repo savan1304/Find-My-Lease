@@ -5,7 +5,7 @@ import { auth, database } from '../Firebase/firebaseSetup';
 import { appStyles } from '../Config/Styles';
 import PressableItem from '../Components/PressableItem';
 import { collection, doc, setDoc } from 'firebase/firestore';
-import { MaterialIcons } from '@expo/vector-icons'; 
+import { MaterialIcons } from '@expo/vector-icons';
 
 export default function SignUp({ navigation }) {
     const [email, setEmail] = useState('');
@@ -63,74 +63,75 @@ export default function SignUp({ navigation }) {
     return (
         <SafeAreaView style={appStyles.loginSignUpContainer}>
             <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
-            <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
-            <View style={styles.iconContainer}>
-                <MaterialIcons name="apartment" size={64} color="blue" />
-            </View>
-            <View style={styles.introContainer}>
-                <Text style={styles.introText}>
-                    Welcome to FindMyLease! This platform is designed to help you find the perfect place to rent as a renter or post your property for others to rent. Whether you're searching for a new home or looking to rent out your property, our app makes the process easy and efficient. 
-                    {"\n\n"}
-                    Sign up now to unlock the full functionality of FindMyLease!
-                </Text>
-            </View>
-            <View style={styles.centeredView}>
-                <View style={appStyles.loginSignUpFieldContainer}>
-                    <Text>Email</Text>
-                    <View style={appStyles.loginSignUpInput}>
-                        <TextInput
-                            placeholder="Email"
-                            value={email}
-                            autoCorrect={false}
-                            autoCapitalize="none"
-                            onChangeText={(email) => {
-                                setEmail(email);
-                            }}
-                        />
+                <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
+                    <View style={styles.iconContainer}>
+                        <MaterialIcons name="apartment" size={64} color="blue" />
                     </View>
-                </View>
+                    <View style={styles.introContainer}>
+                        <Text style={styles.introText}>
+                            Welcome to FindMyLease!{"\n"}
+                            Find your perfect place to rent as a renter or post your property for others to rent. Whether you're searching for a new home or looking to rent out your property, our app makes it easy and efficient for you.
+                            {"\n\n"}
+                            Sign up now to unlock all features of FindMyLease!
+                        </Text>
+                    </View>
+                    <View style={styles.centeredView}>
+                        <View style={appStyles.loginSignUpFieldContainer}>
+                            <Text style={styles.addTitles}>Email</Text>
+                            <View style={appStyles.loginSignUpInput}>
+                                <TextInput
+                                    placeholder="Email"
+                                    value={email}
+                                    autoCorrect={false}
+                                    autoCapitalize="none"
+                                    onChangeText={(email) => {
+                                        setEmail(email);
+                                    }}
+                                />
+                            </View>
+                        </View>
 
-                <View style={appStyles.loginSignUpFieldContainer}>
-                    <Text>Password</Text>
-                    <View style={appStyles.loginSignUpInput}>
-                        <TextInput
-                            placeholder="Password"
-                            value={password}
-                            autoCorrect={false}
-                            autoCapitalize="none"
-                            secureTextEntry={true}
-                            onChangeText={(password) => {
-                                setPassword(password);
-                            }}
-                        />
-                    </View>
-                </View>
+                        <View style={appStyles.loginSignUpFieldContainer}>
+                            <Text style={styles.addTitles}>Password</Text>
+                            <View style={appStyles.loginSignUpInput}>
+                                <TextInput
+                                    placeholder="Password"
+                                    value={password}
+                                    autoCorrect={false}
+                                    autoCapitalize="none"
+                                    secureTextEntry={true}
+                                    onChangeText={(password) => {
+                                        setPassword(password);
+                                    }}
+                                />
+                            </View>
+                        </View>
 
-                <View style={appStyles.loginSignUpFieldContainer}>
-                    <Text>Confirm Password</Text>
-                    <View style={appStyles.loginSignUpInput}>
-                        <TextInput
-                            placeholder="Confirm Password"
-                            value={confirmPassword}
-                            autoCorrect={false}
-                            autoCapitalize="none"
-                            secureTextEntry={true}
-                            onChangeText={(confirmPassword) => {
-                                setConfirmPassword(confirmPassword);
-                            }}
-                        />
+                        <View style={appStyles.loginSignUpFieldContainer}>
+                            <Text style={styles.addTitles}>Confirm Password</Text>
+                            <View style={appStyles.loginSignUpInput}>
+                                <TextInput
+                                    placeholder="Confirm Password"
+                                    value={confirmPassword}
+                                    autoCorrect={false}
+                                    autoCapitalize="none"
+                                    secureTextEntry={true}
+                                    onChangeText={(confirmPassword) => {
+                                        setConfirmPassword(confirmPassword);
+                                    }}
+                                />
+                            </View>
+                        </View>
                     </View>
-                </View>
-            </View>
-            <View style={styles.buttonContainer}>
-                <PressableItem onPress={signupHandler} style={[appStyles.buttonStyle, appStyles.cancelButton]} >
-                    <Text style={appStyles.text}>Register </Text>
-                </PressableItem>
-                <PressableItem onPress={loginHandler} style={[appStyles.buttonStyle, appStyles.saveButton]} >
-                    <Text style={appStyles.text}>Already Registered? Log in </Text>
-                </PressableItem>
-            </View>
-            </ScrollView>
+                    <View style={styles.buttonContainer}>
+                        <PressableItem onPress={signupHandler} style={[appStyles.buttonStyle, appStyles.cancelButton, { width: '35%' }]} >
+                            <Text style={appStyles.text}>Register </Text>
+                        </PressableItem>
+                        <PressableItem onPress={loginHandler} style={[appStyles.buttonStyle, appStyles.saveButton, { width: '55%' }]} >
+                            <Text style={appStyles.text}>Already Registered? Log in </Text>
+                        </PressableItem>
+                    </View>
+                </ScrollView>
             </KeyboardAvoidingView>
         </SafeAreaView>
     )
@@ -158,5 +159,8 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+    },
+    addTitles: {
+        fontWeight: 'bold'
     }
 });
