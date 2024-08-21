@@ -109,7 +109,7 @@ export default function Login({ navigation }) {
                                 setModalVisible(!modalVisible);
                             }}
                         >
-                            <View style={styles.centeredView}>
+                            <View style={styles.modalContainer}>
                                 <View style={styles.modalView}>
                                     <TextInput
                                         style={styles.modalText}
@@ -123,7 +123,7 @@ export default function Login({ navigation }) {
                                     <PressableItem onPress={handleForgotPassword} >
                                         <Text style={appStyles.text}>Send Reset Email </Text>
                                     </PressableItem>
-                                    <PressableItem onPress={() => setModalVisible(!modalVisible)} style={{ backgroundColor: 'rgb(255, 59, 48)' }}>
+                                    <PressableItem onPress={() => setModalVisible(!modalVisible)} style={{ backgroundColor: 'rgb(255, 59, 48)', width: 95, alignItems: 'center' }}>
                                         <Text style={appStyles.text}>Cancel </Text>
                                     </PressableItem >
                                 </View>
@@ -165,6 +165,12 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     modalView: {
         margin: 20,

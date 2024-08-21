@@ -221,14 +221,16 @@ const HouseDetails = ({ route, navigation }) => {
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
                         <Text style={styles.modalTitle}>Contact Information</Text>
-                        <Text style={styles.modalTitle}>(Hold to Copy)</Text>
+                        <Text style={styles.modalTitle}>(Tap to Copy)</Text>
                         <TouchableOpacity onPress={() => copyToClipboard(ownerContact?.email || 'N/A')}>
                             <Text style={styles.modalText}>Email: {ownerContact?.email || 'N/A'}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => copyToClipboard(ownerContact?.phoneNumber || 'N/A')}>
                             <Text style={styles.modalText}>Phone: {ownerContact?.phoneNumber || 'N/A'}</Text>
                         </TouchableOpacity>
-                        <Button title="Close" onPress={() => setModalVisible(false)} />
+                        <PressableItem style={{ backgroundColor: 'rgb(255, 59, 48)', width: '30%' }} onPress={() => setModalVisible(false)}>
+                            <Text style={styles.buttonText}>Close</Text>
+                        </PressableItem>
                     </View>
                 </View>
             </Modal>

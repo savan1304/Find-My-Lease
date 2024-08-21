@@ -96,11 +96,17 @@ export default function PostedListings({ navigation }) {
 
   console.log('listingss value in PostedListing: ', listings)
   return (
-    <View>
+    <View style={styles.outerContainer}>
 
       {listings.length === 0 ? (
-        <Text style={styles.text}>You have not posted any listings yet</Text>
-      ) :
+        <View style={styles.noItemsContainer}>
+          <View style={styles.noItemsTextContainer}>
+            <Text style={styles.noItemsText}>You have not posted any listing yet! {'\n'}Post a listing to meet your next tenant.</Text>
+          </View>
+          <PressableItem onPress={() => { navigation.navigate('My Home') }}>
+            <Text style={styles.buttonText}>Post a Listing</Text>
+          </PressableItem>
+        </View>) :
         (
           <FlatList data={listings}
             renderItem={({ item }) => {
@@ -153,6 +159,10 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc',
     flex: 3
   },
+  outerContainer: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
   listingDetails: {
     flex: 2,
     marginVertical: 5
@@ -170,6 +180,24 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    textAlign: 'center'
+  },
+  noItemsContainer: {
+    flex: 1,
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  noItemsTextContainer: {
+    marginBottom: 25
+  },
+  noItemsText: {
+    fontWeight: '600',
+    fontSize: 16,
+    textAlign: 'center',
   }
 
 })
