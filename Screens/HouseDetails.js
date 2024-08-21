@@ -176,7 +176,7 @@ const HouseDetails = ({ route, navigation }) => {
                 <Text style={styles.detail}>{language === 'zh' ? '卫生间: ' : 'Bathrooms: '}{house.bath} </Text>
                 <Text style={styles.detail}>{language === 'zh' ? '卧室: ' : 'Bedrooms: '}{house.bed} </Text>
                 <Text style={styles.detail}>{language === 'zh' ? '位置: ' : 'Location: '}{house.location} </Text>
-                <Text style={styles.detail}>{language === 'zh' ? '宠物友好: ' : 'Pet Friendly: '}{house.petFriendly ? (language === 'zh' ? '是' : 'Yes') : (language === 'zh' ? '否' : 'No')} </Text>
+                <Text style={styles.detail}>{language === 'zh' ? '允许宠物: ' : 'Pet Friendly: '}{house.petFriendly ? (language === 'zh' ? '是' : 'Yes') : (language === 'zh' ? '否' : 'No')} </Text>
                 <Text style={styles.detail}>{language === 'zh' ? '价格: ' : 'Price: '}{house.price} </Text>
                 <Text style={styles.detail}>{language === 'zh' ? '租户性别: ' : 'Tenant Gender: '}{house.tenantGender} </Text>
                 <Text style={styles.detail}>{language === 'zh' ? '交通: ' : 'Transit: '}{house.transit} </Text>
