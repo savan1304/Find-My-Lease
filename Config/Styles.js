@@ -141,7 +141,7 @@ export const appStyles = StyleSheet.create({
   loginSignUpFieldContainer: {
     width: 200,
     alignContent: "flex-start",
-    margin: 10
+    margin: 10,
   },
   loginSignUpInput: {
     borderRadius: 5,

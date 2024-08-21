@@ -42,7 +42,7 @@ const Home = ({ navigation }) => {
             setHouses(newArray);
         }, (e) => { console.log(e) });
 
-        return () => unsubscribe(); 
+        return () => unsubscribe();
     }, [user]);
 
 
@@ -229,7 +229,7 @@ const Home = ({ navigation }) => {
                                 <View style={styles.inputContainer}>
                                     <Text style={styles.label}>{language === 'zh' ? "允许宠物" : "Pet Friendly"}</Text>
                                     <PressableItem
-                                        style={styles.checkbox}
+                                        style={[styles.checkbox, { width: '25%' }]}
                                         onPress={() => setFilters(prev => ({
                                             ...prev,
                                             petFriendly: !filters.petFriendly
@@ -241,7 +241,7 @@ const Home = ({ navigation }) => {
                                 <View style={styles.inputContainer}>
                                     <Text style={styles.label}>{language === 'zh' ? "类型" : "Type"}</Text>
                                     <PressableItem
-                                        style={styles.checkbox}
+                                        style={[styles.checkbox, { width: '35%' }]}
                                         onPress={() => setFilters(prev => ({
                                             ...prev,
                                             type: filters.type === 'Private' ? 'Shared' : 'Private'
@@ -339,12 +339,12 @@ const styles = StyleSheet.create({
         marginRight: 25,
     },
     button: {
-        borderRadius: 20,
+        borderRadius: 10,
         padding: 10,
         elevation: 2
     },
     buttonClose: {
-        backgroundColor: '#2196F3',
+        backgroundColor: 'rgb(0, 122, 255)',
     },
     textStyle: {
         color: "white",
@@ -358,11 +358,10 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     buttonClear: {
-        backgroundColor: '#FF6347',
+        backgroundColor: 'rgb(255, 59, 48)',
     },
     checkbox: {
-        width: '40%',
-        height: 50,
+        height: 45,
         borderWidth: 1,
         borderColor: '#ddd',
         borderRadius: 10,
@@ -372,6 +371,7 @@ const styles = StyleSheet.create({
     },
     checkboxLabel: {
         fontSize: 16,
+        color: '#f5f5f7'
     },
 });
 
