@@ -160,7 +160,11 @@ export default function ScheduleVisit({ navigation }) {
 
 
     function handleCancel() {
-        navigation.goBack();
+        if (isVisitDataLengthPositive()) {
+            navigation.navigate('ScheduledVisits')
+        } else {
+            navigation.goBack();
+        }
         reset()
     }
 
