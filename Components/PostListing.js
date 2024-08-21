@@ -430,7 +430,7 @@ export default function PostListing({ navigation }) {
 
                 <View style={appStyles.twoListingInputContainer}>
                     <View style={[appStyles.checkboxContainer, appStyles.addItemContainer]}>
-                    <Text style={appStyles.addTitles}>{language === 'zh' ? '宠物友好？' : 'Pet Friendly?'} </Text>
+                    <Text style={appStyles.addTitles}>{language === 'zh' ? '允许宠物？' : 'Pet Friendly?'} </Text>
                         <Checkbox
                             style={appStyles.checkbox}
                             value={formData.petFriendly}

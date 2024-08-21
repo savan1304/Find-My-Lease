@@ -227,7 +227,7 @@ const Home = ({ navigation }) => {
                                     />
                                 </View>
                                 <View style={styles.inputContainer}>
-                                    <Text style={styles.label}>{language === 'zh' ? "宠物友好" : "Pet Friendly"}</Text>
+                                    <Text style={styles.label}>{language === 'zh' ? "允许宠物" : "Pet Friendly"}</Text>
                                     <PressableItem
                                         style={styles.checkbox}
                                         onPress={() => setFilters(prev => ({
