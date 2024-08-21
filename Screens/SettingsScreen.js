@@ -14,7 +14,7 @@ export default function SettingsScreen() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.settingItem}>
-        <Text style={styles.settingText}>{language === 'en' ? 'Language:English' : '语言:中文'}</Text>
+        <Text style={styles.settingText}>{language === 'en' ? 'Language:English' : '语言:中文'} </Text>
         <PressableItem onPress={toggleLanguage}>
           <Text style={styles.buttonText}>{language === 'en' ? '切换至中文' : 'Switch to English'}</Text>
         </PressableItem>
@@ -43,6 +43,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   settingText:{
-    fontSize: 20,
+    fontSize: 16,
   }
 })
