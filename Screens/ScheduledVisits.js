@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, FlatList, Alert } from 'react-native'
+import { StyleSheet, Text, View, FlatList, Alert, Linking } from 'react-native'
 import React, { useState, useEffect, useContext } from 'react'
 import PressableItem from '../Components/PressableItem';
 import Visit from '../Components/Visit';
@@ -107,13 +107,21 @@ export default function ScheduledVisits({ navigation }) {
         }
 
     }
-
+    
 
     return (
-        <View>
+        <View style={styles.outerContainer}>
 
             {visits.length === 0 ? (
-                <Text style={styles.text}>{language === 'zh' ? '您没有即将到来的预定访问' : 'You have no upcoming scheduled visits'} </Text>
+                // needs translation below
+                <View style={styles.noItemsContainer}>
+                    <View style={styles.noItemsTextContainer}>
+                        <Text style={styles.noItemsText}>{language === 'zh' ? '您没有即将到来的预定访问' : 'You have no upcoming scheduled visits! \nExplore the available listings now to schedule a visit.'}  {'\n'}</Text>
+                    </View>
+                    <PressableItem onPress={() => { navigation.navigate('My Home') }} style={{ width: '35%' }}>
+                        <Text style={styles.buttonText}>Explore</Text>
+                    </PressableItem>
+                </View>
             ) :
                 (
                     <FlatList data={visits}
@@ -126,11 +134,33 @@ export default function ScheduledVisits({ navigation }) {
                                 const landlordId = listingData.createdBy
                                 const landLordData = await getDataById(landlordId, 'User')
                                 const landlordNumber = landLordData.phoneNumber
-                                const args = {
-                                    number: landlordNumber,
-                                    prompt: true
-                                }
-                                call(args).catch(console.error)
+                                const landlordEmail = landLordData.email;
+                                Alert.alert(
+                                    language === 'zh' ? "联系房东" : "Contact Landlord",
+                                    language === 'zh' ? "您想如何联系房东？" : "How would you like to contact the landlord?",
+                                    [
+                                        {
+                                            text: language === 'zh' ? "取消" : "Cancel",
+                                            style: "cancel",
+                                        },
+                                        {
+                                            text: language === 'zh' ? "打电话" : "Call",
+                                            onPress: () => {
+                                                const args = {
+                                                    number: landlordNumber,
+                                                    prompt: true
+                                                }
+                                                call(args).catch(console.error)
+                                            },
+                                        },
+                                        {
+                                            text: language === 'zh' ? "发邮件" : "Email",
+                                            onPress: () => {
+                                                Linking.openURL(`mailto:${landlordEmail}`);
+                                            },
+                                        },
+                                    ]
+                                );
                             }
 
                             function renderRescheduleOptions() {
@@ -189,7 +219,7 @@ export default function ScheduledVisits({ navigation }) {
                                         )}
                                         <View style={styles.rescheduleRequestActionsContainer}>
                                             <PressableItem onPress={() => { handleContactLandlord() }} style={[styles.rescheduleRequestActionsStyle, { width: '55%' }]} >
-                                            <Text style={{ color: Colors.background }}>{language === 'zh' ? '联系房东' : 'Contact Landlord'} </Text>
+                                                <Text style={{ color: Colors.background }}>{language === 'zh' ? '联系房东' : 'Contact Landlord'} </Text>
                                             </PressableItem>
                                             {item.status === 'rescheduled' && renderRescheduleOptions() && (
                                                 <PressableItem onPress={() => { handleAcceptReschedule() }} style={[styles.rescheduleRequestActionsStyle, { width: '40%' }]} >
@@ -228,6 +258,9 @@ const styles = StyleSheet.create({
         borderBottomColor: '#ccc',
         flex: 3
     },
+    outerContainer: {
+        flex: 1,
+    },
     visitDetails: {
         flex: 2,
         marginVertical: 5
@@ -254,5 +287,23 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.blue,
         alignItems: 'center',
         marginVertical: 7
+    },
+    buttonText: {
+        color: 'white',
+        fontSize: 16,
+        textAlign: 'center'
+    },
+    noItemsContainer: {
+        flex: 1,
+        alignItems: 'center',
+        marginVertical: 20,
+    },
+    noItemsTextContainer: {
+        marginBottom: 25
+    },
+    noItemsText: {
+        fontWeight: '600',
+        fontSize: 16,
+        textAlign: 'center',
     }
 })
