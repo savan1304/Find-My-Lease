@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, ScrollView, Alert, Modal, TouchableOpacity, Button, Dimensions } from 'react-native';
 import { writeToDB } from '../Firebase/firestoreHelper';
-import { scoreApiKey } from '@env';  
+import { scoreApiKey } from '@env';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { AuthContext } from '../Components/AuthContext';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
-import { storage, database } from '../Firebase/firebaseSetup'; 
-import { ref, getDownloadURL } from 'firebase/storage'; 
+import { storage, database } from '../Firebase/firebaseSetup';
+import { ref, getDownloadURL } from 'firebase/storage';
 import PressableItem from '../Components/PressableItem';
 import * as Clipboard from 'expo-clipboard';
 
@@ -22,11 +22,11 @@ const HouseDetails = ({ route, navigation }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const copyToClipboard = async (text) => {
         await Clipboard.setStringAsync(text);
-        const copiedText = await Clipboard.getStringAsync(); 
+        const copiedText = await Clipboard.getStringAsync();
         Alert.alert('Copied', `Copied to clipboard: ${copiedText}`);
     };
-    
-    
+
+
     useEffect(() => {
         fetchLocationScores();
         if (house.imageUris && house.imageUris.length > 0) {
@@ -35,7 +35,7 @@ const HouseDetails = ({ route, navigation }) => {
     }, []);
 
     useEffect(() => {
-        if (house.createdBy) { 
+        if (house.createdBy) {
             fetchOwnerContact();
         } else {
             console.log('No owner information available for this house.');
@@ -124,7 +124,7 @@ const HouseDetails = ({ route, navigation }) => {
             Alert.alert('Error', 'No user is signed in');
             return;
         }
-        
+
         const userRef = doc(database, `User/${user.uid}`);
         try {
             const docSnap = await getDoc(userRef);
@@ -150,7 +150,7 @@ const HouseDetails = ({ route, navigation }) => {
             Alert.alert('Error', 'Failed to save house. Please try again.');
         }
     };
-    
+
 
     const handleScheduleViewing = () => {
         requireLogin(() => {
@@ -163,7 +163,7 @@ const HouseDetails = ({ route, navigation }) => {
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
             {imageUrls.length > 0 && (
                 <FlatList
-                    data={imageUrls} 
+                    data={imageUrls}
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     renderItem={({ item }) => (
@@ -220,15 +220,15 @@ const HouseDetails = ({ route, navigation }) => {
             >
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
-                    <Text style={styles.modalTitle}>Contact Information</Text>
-                    <Text style={styles.modalTitle}>(Hold to Copy)</Text>
-                    <TouchableOpacity onPress={() => copyToClipboard(ownerContact?.email || 'N/A')}>
-                        <Text style={styles.modalText}>Email: {ownerContact?.email || 'N/A'}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => copyToClipboard(ownerContact?.phoneNumber || 'N/A')}>
-                        <Text style={styles.modalText}>Phone: {ownerContact?.phoneNumber || 'N/A'}</Text>
-                    </TouchableOpacity>
-                    <Button title="Close" onPress={() => setModalVisible(false)} />
+                        <Text style={styles.modalTitle}>Contact Information</Text>
+                        <Text style={styles.modalTitle}>(Hold to Copy)</Text>
+                        <TouchableOpacity onPress={() => copyToClipboard(ownerContact?.email || 'N/A')}>
+                            <Text style={styles.modalText}>Email: {ownerContact?.email || 'N/A'}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => copyToClipboard(ownerContact?.phoneNumber || 'N/A')}>
+                            <Text style={styles.modalText}>Phone: {ownerContact?.phoneNumber || 'N/A'}</Text>
+                        </TouchableOpacity>
+                        <Button title="Close" onPress={() => setModalVisible(false)} />
                     </View>
                 </View>
             </Modal>
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         padding: 20,
-        paddingBottom: 100  
+        paddingBottom: 100
     },
     detailsContainer: {
         marginBottom: 20,
@@ -269,8 +269,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#007BFF',
         padding: 10,
         borderRadius: 5,
-        width: '80%',
-        alignSelf: 'center'  
+        width: '51%',
+        alignSelf: 'center'
     },
     buttonText: {
         color: '#fff',
@@ -285,12 +285,12 @@ const styles = StyleSheet.create({
     },
     scoreDetail: {
         flexDirection: 'row',
-        alignItems: 'center',  
+        alignItems: 'center',
         marginBottom: 10,
     },
     detail: {
         fontSize: 18,
-        marginLeft: 5,  
+        marginLeft: 5,
     },
     modalContainer: {
         flex: 1,
@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     modalContent: {
-        width: screenWidth*0.75,
+        width: screenWidth * 0.75,
         backgroundColor: 'white',
         borderRadius: 10,
         padding: 20,

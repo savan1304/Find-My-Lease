@@ -38,21 +38,21 @@ const Saved = ({ navigation }) => {
         }
       });
     }
-    return undefined; 
+    return undefined;
   };
-  
+
   useEffect(() => {
     const housesUnsub = fetchHouses();
-    const savedIdsUnsub = fetchSavedIds(); 
-  
+    const savedIdsUnsub = fetchSavedIds();
+
     return () => {
       housesUnsub();
       if (savedIdsUnsub) {
-        savedIdsUnsub(); 
+        savedIdsUnsub();
       }
     };
   }, [user]);
-  
+
 
   const filteredHouses = houses.filter(house => savedIds.includes(house.id));
 
@@ -93,7 +93,7 @@ const Saved = ({ navigation }) => {
                 onPress={() => handleHousePress(item)}
               />
               <PressableItem onPress={() => confirmRemove(item.id)} style={styles.removeButton}>
-                  <Text style={styles.buttonText}>Remove</Text>
+                <Text style={styles.buttonText}>Remove</Text>
               </PressableItem>
             </View>
           )}
@@ -113,18 +113,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   listItemContainer: {
-    flexDirection: 'column', 
+    flexDirection: 'column',
     justifyContent: 'space-between',
-    alignItems: 'stretch', 
+    alignItems: 'center',
     marginBottom: 10,
     padding: 10,
-    borderWidth: 1, 
-    borderColor: '#ccc', 
+    borderWidth: 1,
+    borderColor: '#ccc',
   },
   removeButton: {
-    backgroundColor: 'red',
+    backgroundColor: 'rgb(255, 59, 48)',
     padding: 10,
     borderRadius: 5,
+    width: 90
   },
   buttonText: {
     color: 'white',
