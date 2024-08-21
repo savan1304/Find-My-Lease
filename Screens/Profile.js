@@ -6,6 +6,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { editToDB } from '../Firebase/firestoreHelper';
 import { AuthContext } from '../Components/AuthContext';
 import PressableItem from '../Components/PressableItem';
+import { EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
