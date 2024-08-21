@@ -100,7 +100,8 @@ const HouseDetails = ({ route, navigation }) => {
         if (ownerContact) {
             setModalVisible(true);
         } else {
-            Alert.alert(language === 'zh' ? '错误' : 'Error', language === 'zh' ? '没有此房东的联系信息。' : 'No contact information available for this owner.');
+            // needs translation below
+            Alert.alert(language === 'zh' ? '错误' : 'Not found', language === 'zh' ? '没有此房东的联系信息。' : 'No contact information available for this owner.');
         }
     };
 
