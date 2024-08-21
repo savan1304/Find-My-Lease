@@ -68,43 +68,68 @@ const Profile = ({ navigation }) => {
     setShowPasswordInput(true);
   };
 
+  // needs translation for this function below
   const handleDelete = async () => {
-    Alert.alert(
-      "Final Confirmation",
-      "Are you sure you want to delete your account? This action cannot be undone.",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Delete",
-          onPress: async () => {
-            try {
-              const credential = EmailAuthProvider.credential(user.email, password);
-              await reauthenticateWithCredential(user, credential);
-
-              // Delete the user document from Firestore
-              const userDocRef = doc(database, 'User', user.uid);
-              await deleteDoc(userDocRef);
-
-              // Delete the user from Firebase Authentication
-              await user.delete();
-
-              // Navigate to the 'SignUp' screen
-              navigation.navigate('My Home');
-
-              // Close the modal
-              setIsDeleteModalVisible(false);
-            } catch (error) {
-              console.error("Error deleting account:", error);
-              // Handle errors appropriately (e.g., show an error message to the user)
-            }
+    if (password === '') {
+      Alert.alert(
+        "Missing Information",
+        "Please type your password to confirm deleting your account, or \nPress Cancel if you have changed your mind!",
+        [
+          {
+            text: "Ok",
+            style: "Ok",
           },
-          style: "destructive",
-        },
-      ]
-    );
+        ]
+      );
+    } else {
+      Alert.alert(
+        "Final Confirmation",
+        "Are you sure you want to delete your account? This action cannot be undone.",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+          {
+            text: "Delete",
+            onPress: async () => {
+              try {
+                const credential = EmailAuthProvider.credential(user.email, password);
+                await reauthenticateWithCredential(user, credential);
+
+                // Deleting the user document from Firestore
+                const userDocRef = doc(database, 'User', user.uid);
+                await deleteDoc(userDocRef);
+
+                // Deletng the user from Firebase Authentication
+                await user.delete();
+
+                // Navigating to the 'SignUp' screen
+                navigation.navigate('My Home');
+
+                // Closing the modal
+                setIsDeleteModalVisible(false);
+              } catch (error) {
+                console.log("Error deleting account:", error);
+                Alert.alert(
+                  "Error Deleting Account!",
+                  error.message,
+                  [
+                    {
+                      text: "Ok",
+                      style: "Ok",
+                    },
+                  ]
+                );
+              }
+            },
+            style: "destructive",
+          },
+        ]
+      );
+    }
+
+
   };
 
   return (
@@ -147,7 +172,7 @@ const Profile = ({ navigation }) => {
       </View>
 
       {user && user.uid && (
-        <View style={styles.profileOptionsContainer}>
+        <View style={styles.deleteAccountContainer}>
           <PressableItem style={[styles.button, { backgroundColor: 'rgb(255, 59, 48)' }]} onPress={() => setIsDeleteModalVisible(true)}>
             <Text style={styles.buttonText}>Delete My Account</Text>
           </PressableItem>
@@ -197,7 +222,7 @@ const Profile = ({ navigation }) => {
         </View>
       </Modal>
 
-      {/* needs translation in the modal component below */}
+      {/* needs translation for the modal component below */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -210,7 +235,7 @@ const Profile = ({ navigation }) => {
           <ScrollView contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} keyboardShouldPersistTaps='handled'>
             <View style={styles.modalView}>
               <Text style={styles.modalTitle}>Delete Account</Text>
-              <Text style={[styles.info, { color: 'rgb(255, 59, 48)', fontWeight: '600' }]}>You will lose all your visits and saved or posted listings! {"\n"}Are you sure you want to proceed?</Text>
+              <Text style={[styles.info, { color: 'rgb(255, 59, 48)', fontWeight: '600' }]}>You will lose all of your visits and saved or posted listings! {"\n"}Are you sure you want to proceed?</Text>
 
 
               {!showPasswordInput && (
@@ -274,8 +299,13 @@ const styles = StyleSheet.create({
   },
   profileOptionsContainer: {
     alignItems: 'center',
-    marginTop: 25,
+    marginTop: 35,
     justifyContent: 'center',
+  },
+  deleteAccountContainer: {
+    flex: 3,
+    justifyContent: 'flex-end',
+    alignItems: 'center'
   },
   button: {
     margin: 10,
