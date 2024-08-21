@@ -115,10 +115,17 @@ export default function ScheduledVisits({ navigation }) {
 
 
     return (
-        <View>
+        <View style={styles.outerContainer}>
 
             {visits.length === 0 ? (
-                <Text style={styles.text}>You have no upcoming scheduled visits</Text>
+                <View style={styles.noItemsContainer}>
+                    <View style={styles.noItemsTextContainer}>
+                        <Text style={styles.noItemsText}>You have no upcoming scheduled visits! {'\n'}Explore the available listings now to schedule a visit.</Text>
+                    </View>
+                    <PressableItem onPress={() => { navigation.navigate('My Home') }} style={{ width: '30%' }}>
+                        <Text style={styles.buttonText}>Explore</Text>
+                    </PressableItem>
+                </View>
             ) :
                 (
                     <FlatList data={visits}
@@ -233,6 +240,10 @@ const styles = StyleSheet.create({
         borderBottomColor: '#ccc',
         flex: 3
     },
+    outerContainer: {
+        flex: 1,
+        backgroundColor: '#fff',
+    },
     visitDetails: {
         flex: 2,
         marginVertical: 5
@@ -259,5 +270,23 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.blue,
         alignItems: 'center',
         marginVertical: 7
+    },
+    buttonText: {
+        color: 'white',
+        fontSize: 16,
+        textAlign: 'center'
+    },
+    noItemsContainer: {
+        flex: 1,
+        alignItems: 'center',
+        marginVertical: 20,
+    },
+    noItemsTextContainer: {
+        marginBottom: 25
+    },
+    noItemsText: {
+        fontWeight: '600',
+        fontSize: 16,
+        textAlign: 'center',
     }
 })

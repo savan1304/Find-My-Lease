@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { StyleSheet, Text, View, Modal, TextInput, Button, Alert, ScrollView, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, Modal, TextInput, Button, Alert, ScrollView, Dimensions, Switch } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { auth, database } from '../Firebase/firebaseSetup';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, deleteDoc } from 'firebase/firestore';
 import { editToDB } from '../Firebase/firestoreHelper';
 import { AuthContext } from '../Components/AuthContext';
 import PressableItem from '../Components/PressableItem';
+import { EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -13,9 +14,55 @@ const screenHeight = Dimensions.get('window').height;
 const Profile = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [showPasswordInput, setShowPasswordInput] = useState(false);
+  const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const { user } = useContext(AuthContext);
+
+  const handleProceed = () => {
+    setShowPasswordInput(true);
+  };
+
+  const handleDelete = async () => {
+    Alert.alert(
+      "Final Confirmation",
+      "Are you sure you want to delete your account? This action cannot be undone.",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          onPress: async () => {
+            try {
+              const credential = EmailAuthProvider.credential(user.email, password);
+              await reauthenticateWithCredential(user, credential);
+
+              // Delete the user document from Firestore
+              const userDocRef = doc(database, 'User', user.uid);
+              await deleteDoc(userDocRef);
+
+              // Delete the user from Firebase Authentication
+              await user.delete();
+
+              // Navigate to the 'SignUp' screen
+              navigation.navigate('My Home');
+
+              // Close the modal
+              setIsDeleteModalVisible(false);
+            } catch (error) {
+              console.error("Error deleting account:", error);
+              // Handle errors appropriately (e.g., show an error message to the user)
+            }
+          },
+          style: "destructive",
+        },
+      ]
+    );
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -97,6 +144,14 @@ const Profile = ({ navigation }) => {
         </PressableItem>
       </View>
 
+      {user && user.uid && (
+        <View style={styles.profileOptionsContainer}>
+          <PressableItem style={[styles.button, { backgroundColor: 'rgb(255, 59, 48)', width: '45%' }]} onPress={() => setIsDeleteModalVisible(true)}>
+            <Text style={styles.buttonText}>Delete My Account</Text>
+          </PressableItem>
+        </View>
+      )}
+
       <Modal
         animationType="slide"
         transparent={true}
@@ -126,12 +181,67 @@ const Profile = ({ navigation }) => {
                 keyboardType="phone-pad"
               />
 
-              <PressableItem style={styles.saveButton} onPress={handleSave}>
-                <Text style={styles.buttonText}>Save</Text>
-              </PressableItem>
-              <PressableItem style={styles.cancelButton} onPress={() => setIsModalVisible(false)}>
-                <Text style={styles.buttonText}>Cancel</Text>
-              </PressableItem>
+              <View style={styles.accountActionsContainer}>
+                <PressableItem style={styles.cancelButton} onPress={() => setIsModalVisible(false)}>
+                  <Text style={styles.buttonText}>Cancel</Text>
+                </PressableItem>
+                <PressableItem style={styles.saveButton} onPress={handleSave}>
+                  <Text style={styles.buttonText}>Save</Text>
+                </PressableItem>
+              </View>
+            </View>
+          </ScrollView>
+        </View>
+      </Modal>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isDeleteModalVisible}
+        onRequestClose={() => {
+          setIsModalVisible(false);
+        }}
+      >
+        <View style={styles.modalContainer}>
+          <ScrollView contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} keyboardShouldPersistTaps='handled'>
+            <View style={styles.modalView}>
+              <Text style={styles.modalTitle}>Delete Account</Text>
+              <Text style={[styles.info, { color: 'rgb(255, 59, 48)', fontWeight: '600' }]}>You will lose all your visits and saved or posted listings! {"\n"}Are you sure you want to proceed?</Text>
+
+
+              {!showPasswordInput && (
+                <View style={styles.accountActionsContainer}>
+                  <PressableItem style={styles.cancelButton} onPress={() => { setIsDeleteModalVisible(false); setShowPasswordInput(false) }}>
+                    <Text style={styles.buttonText}>Cancel</Text>
+                  </PressableItem>
+                  <PressableItem style={styles.saveButton} onPress={handleProceed}>
+                    <Text style={styles.buttonText}>Proceed</Text>
+                  </PressableItem>
+                </View>
+              )}
+
+              {showPasswordInput && (
+                <>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter your password to confirm"
+                    placeholderTextColor="gray"
+                    secureTextEntry
+                    value={password}
+                    onChangeText={setPassword}
+                  />
+                  <View style={styles.accountActionsContainer}>
+                    <PressableItem style={styles.cancelButton} onPress={() => { setIsDeleteModalVisible(false); setShowPasswordInput(false) }}>
+                      <Text style={styles.buttonText}>Cancel</Text>
+                    </PressableItem>
+                    <PressableItem style={styles.saveButton} onPress={handleDelete}>
+                      <Text style={styles.buttonText}>Delete</Text>
+                    </PressableItem>
+                  </View>
+                </>
+              )}
+
+
             </View>
           </ScrollView>
         </View>
@@ -193,7 +303,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
-    width: '35%'
+    width: '35%',
   },
   buttonText: {
     color: 'white',
@@ -206,11 +316,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalView: {
-    width: screenWidth * .7,
+    width: screenWidth * .8,
     backgroundColor: 'white',
     borderRadius: 20,
     padding: 20,
-    alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -234,4 +343,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 15,
   },
+  accountActionsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 25
+  }
 });

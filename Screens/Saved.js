@@ -100,7 +100,14 @@ const Saved = ({ navigation }) => {
           keyExtractor={item => item.id}
         />
       ) : (
-        <Text>No saved listings found.</Text>
+        <View style={styles.noItemsContainer}>
+          <View style={styles.noItemsTextContainer}>
+            <Text style={styles.noItemsText}>No saved listings found! {'\n'}Explore the available listings to save them.</Text>
+          </View>
+          <PressableItem onPress={() => { navigation.navigate('My Home') }} style={{ width: '30%' }}>
+            <Text style={styles.buttonText}>Explore</Text>
+          </PressableItem>
+        </View>
       )}
     </View>
   );
@@ -132,6 +139,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center'
   },
+  noItemsContainer: {
+    flex: 1,
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  noItemsTextContainer: {
+    marginBottom: 25
+  },
+  noItemsText: {
+    fontWeight: '600',
+    fontSize: 16,
+    textAlign: 'center',
+  }
 });
 
 export default Saved;
