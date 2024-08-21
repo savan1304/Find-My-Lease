@@ -133,13 +133,13 @@ export default function Login({ navigation }) {
                             </View>
                         </Modal>
                         <View style={styles.buttonContainer}>
-                            <PressableItem onPress={loginHandler} style={[appStyles.buttonStyle, appStyles.cancelButton, { width: 135 }]}>
+                            <PressableItem onPress={loginHandler} style={[appStyles.buttonStyle, appStyles.cancelButton, { width: 150 }]}>
                                 <Text style={appStyles.text}>{language === 'zh' ? '登录' : "Log in"} </Text>
                             </PressableItem>
-                            <PressableItem onPress={signupHandler} style={[appStyles.buttonStyle, appStyles.saveButton, { width: 135 }]}>
+                            <PressableItem onPress={signupHandler} style={[appStyles.buttonStyle, appStyles.saveButton, { width: 150 }]}>
                                 <Text style={appStyles.text}>{language === 'zh' ? '注册' : "Sign Up"} </Text>
                             </PressableItem>
-                            <PressableItem onPress={() => setModalVisible(true)} style={[appStyles.buttonStyle, appStyles.saveButton]}>
+                            <PressableItem onPress={() => setModalVisible(true)} style={[appStyles.buttonStyle, appStyles.saveButton, { width: 150 }]}>
                                 <Text style={appStyles.text}>{language === 'zh' ? '忘记密码？' : "Forgot Password?"} </Text>
                             </PressableItem>
                         </View>
