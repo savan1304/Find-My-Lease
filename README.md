@@ -45,11 +45,10 @@ User can Delete their account from Profile screen. Asking for their password as 
 
     Listing: location, latitude, longitude, price, bed, bath, area, petFriendly(?), transit (options), type (shared/private), year (of construction), (preferred) tenant gender, imageUris, visitRequests (of visit objects), createdBy (a user id)
 
-    User: email, name, phoneNumber (password will be stored and handled by firestore)
+    User: email, name, phoneNumber, savedHouses (password will be stored and handled by firestore)
 
     ScheduledVisits: date, time, questions, setReminder(?), listingId, listingLocation, listingPrice, status, requester (a user id), rescheduleDate, rescheduleTime, rescheduleResponse, 
 
-    saved: A {Listing} object
 
     
 ==> 4 collections in firestore: User, ScheduledVisits (a subcollection of User), Saved (a subcollection of User), Listing
