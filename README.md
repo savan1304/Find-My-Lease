@@ -9,20 +9,20 @@ _Current state (or functionalities) of the application:_
 <br>
 
 **Authentication**: 
-Users can log in or sign up in our App. The app has instruction text to help users understand what this App does. During sign-up, the password cannot be too simple(must be letter+number). In log-in page, User can reset their password if they forget.
-With State Management, Users cannot access certain functions if they do not log into the App. However, temp users still can view the listings. User can see their profile page with their contact information, and they can edit their information. Users cannot edit the listing that was posted by other users, and they cannot check the personal info of other users. 
+Users can log in or sign up in the App. The app has instructions to help users understand what this App is for. During the sign-up, the password cannot be too simple(must be a combination of letters and numbers). In the log-in page, User can reset their password if they forget.
+With State Management, Users cannot access certain functions if they do not log into the App. However, temp users still can view the listings. User can see their profile page with their contact information, and they can edit their information. Users cannot edit the listing that was posted by other users, and they cannot check the personal information of other users. 
 <br>
 <br>
 **State Management:**
     State Management with React Context. 
     
-    The App has the user check the user login status while using our App. The app will not allow users to use certain functions if they do not log in/sign up. It will pop an alert to direct the user to the log-in page.
-    If the user is not logged in, the user will be set as null. This is how the App handles our authentication part to create the difference between the temp user and the logged-in user. 
+    The App checks the user login status while using our App. The app will not allow users to use certain functions if they do not log in/sign up. It will pop an alert directing the user to the log-in page.
+    If the user is not logged in, the user will be set as null. This is how the App handles the authentication part to create a difference between the temp user and the logged-in user. 
 <br>
 <br>
 
 **Language:**
-    The other state management component is language. The App can switch the language on the Settings screen. Currently, the App has two languages (English/Simplified Chinese). Once the state language changes, almost all the text will switch to a different language for users. The App has two languages for in-app text, alerts, and buttons. 
+    The other state management component is language. The App can switch the language on the Settings screen. Currently, the App has two languages (English and Simplified Chinese). Once the state language changes, it will switch to a different language. The App has two languages for in-app text, alerts, and buttons. 
 <br>
 <br>
 
