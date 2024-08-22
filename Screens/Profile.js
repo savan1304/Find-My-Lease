@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { StyleSheet, Text, View, Modal, TextInput, Button, Alert, ScrollView, Dimensions, Switch } from 'react-native';
+import { StyleSheet, Text, View, Modal, TextInput, Button, Alert, ScrollView, Dimensions } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { auth, database } from '../Firebase/firebaseSetup';
-import { doc, getDoc, deleteDoc } from 'firebase/firestore';
+import { database } from '../Firebase/firebaseSetup';
+import { doc, getDoc } from 'firebase/firestore';
 import { editToDB } from '../Firebase/firestoreHelper';
 import { AuthContext } from '../Components/AuthContext';
 import PressableItem from '../Components/PressableItem';
@@ -19,7 +19,7 @@ const Profile = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const { user, language  } = useContext(AuthContext);
+  const { user, language } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -58,45 +58,126 @@ const Profile = ({ navigation }) => {
       navigation.navigate(screen);
     } else {
       Alert.alert(language === 'zh' ? '需要登录' : 'Login Required', language === 'zh' ? '您需要登录才能执行此操作。' : 'You need to be logged in to perform this action.', [
-          { text: language === 'zh' ? '取消' : 'Cancel', style: 'cancel' },
-          { text: language === 'zh' ? '登录' : 'Login', onPress: () => navigation.navigate('Login') }
+        { text: language === 'zh' ? '取消' : 'Cancel', style: 'cancel' },
+        { text: language === 'zh' ? '登录' : 'Login', onPress: () => navigation.navigate('Login') }
       ]);
     }
+  };
+
+  const handleProceed = () => {
+    setShowPasswordInput(true);
+  };
+
+  // needs translation for this function below
+  const handleDelete = async () => {
+    if (password === '') {
+      Alert.alert(
+        language === 'zh' ? "缺少信息" : "Missing Information",
+            language === 'zh' ? "请输入您的密码以确认删除您的账户，或者如果您改变主意了，请按取消！" : "Please type your password to confirm deleting your account, or \nPress Cancel if you have changed your mind!",
+            [
+              {
+                text: language === 'zh' ? "确定" : "Ok",
+                style: "Ok",
+              },
+            ]
+          );
+        } else {
+          Alert.alert(
+            language === 'zh' ? "最后确认" : "Final Confirmation",
+            language === 'zh' ? "您确定要删除您的账户吗？此操作无法撤销。" : "Are you sure you want to delete your account? This action cannot be undone.",
+            [
+              {
+                text: language === 'zh' ? "取消" : "Cancel",
+                style: "cancel",
+              },
+              {
+                text: language === 'zh' ? "删除" : "Delete",
+            onPress: async () => {
+              try {
+                const credential = EmailAuthProvider.credential(user.email, password);
+                await reauthenticateWithCredential(user, credential);
+
+                // Deleting the user document from Firestore
+                const userDocRef = doc(database, 'User', user.uid);
+                await deleteDoc(userDocRef);
+
+                // Deletng the user from Firebase Authentication
+                await user.delete();
+
+                // Navigating to the 'SignUp' screen
+                navigation.navigate('My Home');
+
+                // Closing the modal
+                setIsDeleteModalVisible(false);
+              } catch (error) {
+                console.log("Error deleting account:", error);
+                Alert.alert(
+                  "Error Deleting Account!",
+                  error.message,
+                  [
+                    {
+                      text: "Ok",
+                      style: "Ok",
+                    },
+                  ]
+                );
+              }
+            },
+            style: "destructive",
+          },
+        ]
+      );
+    }
+
+
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
+        <View style={styles.profileDetailsContainer}>
+          {user ? (
+            <>
+              <Text style={styles.info}>{language === 'zh' ? '用户ID: ' : 'UID: '}{user.uid}</Text>
+              <Text style={styles.info}>{language === 'zh' ? '姓名: ' : 'Name: '}{userData?.name || 'N/A'}</Text>
+              {/* needs translation below */}
+              <Text style={styles.info}>{language === 'zh' ? '联系方式: ' : 'Email: '}{user.email}</Text>
+              <Text style={styles.info}>{language === 'zh' ? '电话号码: ' : 'Phone Number: '}{userData?.phoneNumber || 'N/A'}</Text>
+            </>
+          ) : (
+            <>
+              <Text style={styles.info}>{language === 'zh' ? '用户ID: 临时用户' : 'UID: Temp UID'} </Text>
+              <Text style={styles.info}>{language === 'zh' ? '姓名: 临时用户' : 'Name: Temp User '} </Text>
+              <Text style={styles.info}>{language === 'zh' ? '联系方式: ' : 'Email: '}N/A</Text>
+              <Text style={styles.info}>{language === 'zh' ? '电话号码: ' : 'Phone Number: '}N/A</Text>
+            </>
+          )}
+        </View>
+
         <PressableItem style={styles.editButton} onPress={() => setIsModalVisible(true)}>
-          <Icon name="edit" size={24} color="#fff" />
+          <Ionicons name="pencil" size={24} color="rgb(0, 122, 255)" />
         </PressableItem>
       </View>
 
-      {user ? (
-        <>
-        <Text style={styles.info}>{language === 'zh' ? '用户ID: ' : 'UID: '}{user.uid} </Text>
-        <Text style={styles.info}>{language === 'zh' ? '姓名: ' : 'Name: '}{userData?.name || 'N/A'} </Text>
-        <Text style={styles.info}>{language === 'zh' ? '联系方式: ' : 'Contact Info: '}{user.email} </Text>
-        <Text style={styles.info}>{language === 'zh' ? '电话号码: ' : 'Phone Number: '}{userData?.phoneNumber || 'N/A'} </Text>
-      </>
-      ) : (
-        <>
-          <Text style={styles.info}>{language === 'zh' ? '用户ID: ' : 'UID: '}Temp UID </Text>
-          <Text style={styles.info}>{language === 'zh' ? '姓名: ' : 'Name: '}Temp User </Text>
-          <Text style={styles.info}>{language === 'zh' ? '联系方式: ' : 'Contact Info: '}N/A </Text>
-          <Text style={styles.info}>{language === 'zh' ? '电话号码: ' : 'Phone Number: '}N/A </Text>
-        </>
-      )}
+      <View style={styles.profileOptionsContainer}>
+        <PressableItem style={styles.button} onPress={() => handleNavigation('PostListing')}>
+          <Text style={styles.buttonText}>{language === 'zh' ? '发布列表' : 'Post a listing'} </Text>
+        </PressableItem>
+        <PressableItem style={styles.button} onPress={() => handleNavigation('PostedListings')}>
+          <Text style={styles.buttonText}>{language === 'zh' ? '我的已发布列表' : 'My Posted Listings'} </Text>
+        </PressableItem>
+        <PressableItem style={styles.button} onPress={() => handleNavigation('ScheduledVisits')}>
+          <Text style={styles.buttonText}>{language === 'zh' ? '我的预定访问' : 'My Scheduled Visits'} </Text>
+        </PressableItem>
+      </View>
 
-      <PressableItem style={styles.button} onPress={() => handleNavigation('PostedListings')}>
-        <Text style={styles.buttonText}>{language === 'zh' ? '我的已发布列表' : 'My Posted Listings'} </Text>
-      </PressableItem>
-      <PressableItem style={styles.button} onPress={() => handleNavigation('ScheduledVisits')}>
-        <Text style={styles.buttonText}>{language === 'zh' ? '我的预定访问' : 'My Scheduled Visits'} </Text>
-      </PressableItem>
-      <PressableItem style={styles.button} onPress={() => handleNavigation('PostListing')}>
-        <Text style={styles.buttonText}>{language === 'zh' ? '发布列表' : 'Post a listing'} </Text>
-      </PressableItem>
+      {user && user.uid && (
+        <View style={styles.deleteAccountContainer}>
+          <PressableItem style={[styles.button, { backgroundColor: 'rgb(255, 59, 48)' }]} onPress={() => setIsDeleteModalVisible(true)}>
+            <Text style={styles.buttonText}>{language === 'zh' ? '删除我的账户' : 'Delete My Account'} </Text>
+          </PressableItem>
+        </View>
+      )}
 
       <Modal
         animationType="slide"
@@ -108,32 +189,88 @@ const Profile = ({ navigation }) => {
       >
 
         <View style={styles.modalContainer}>
-        <ScrollView contentContainerStyle={{flex:1, justifyContent: 'center', alignItems: 'center' }} keyboardShouldPersistTaps='handled'>
-          <View style={styles.modalView}>  
-            <Text style={styles.modalTitle}>{language === 'zh' ? '编辑个人资料' : 'Edit Profile'} </Text>
-            <TextInput
-              style={styles.input}
-              placeholder={language === 'zh' ? '姓名' : 'Name'}
-              placeholderTextColor="gray"
-              value={name}
-              onChangeText={setName}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder={language === 'zh' ? '电话号码' : 'Phone Number'}
-              placeholderTextColor="gray"
-              value={phoneNumber}
-              onChangeText={setPhoneNumber}
-              keyboardType="phone-pad"
-            />
+          <ScrollView contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} keyboardShouldPersistTaps='handled'>
+            <View style={styles.modalView}>
+              <Text style={styles.modalTitle}>{language === 'zh' ? '编辑个人资料' : 'Edit Profile'} </Text>
+              <TextInput
+                style={styles.input}
+                placeholder={language === 'zh' ? '姓名' : 'Name'}
+                placeholderTextColor="gray"
+                value={name}
+                onChangeText={setName}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder={language === 'zh' ? '电话号码' : 'Phone Number'}
+                placeholderTextColor="gray"
+                value={phoneNumber}
+                onChangeText={setPhoneNumber}
+                keyboardType="phone-pad"
+              />
 
-          <PressableItem style={styles.saveButton} onPress={handleSave}>
-              <Text style={styles.buttonText}>{language === 'zh' ? '保存' : 'Save'} </Text>
-          </PressableItem>
-          <PressableItem style={styles.cancelButton} onPress={() => setIsModalVisible(false)}>
-              <Text style={styles.buttonText}>{language === 'zh' ? '取消' : 'Cancel'} </Text>
-          </PressableItem>
-          </View>
+              <View style={styles.accountActionsContainer}>
+                <PressableItem style={styles.cancelButton} onPress={() => setIsModalVisible(false)}>
+                  <Text style={styles.buttonText}>{language === 'zh' ? '取消' : 'Cancel'} </Text>
+                </PressableItem>
+                <PressableItem style={styles.saveButton} onPress={handleSave}>
+                  <Text style={styles.buttonText}>{language === 'zh' ? '保存' : 'Save'} </Text>
+                </PressableItem>
+              </View>
+
+            </View>
+          </ScrollView>
+        </View>
+      </Modal>
+
+      {/* needs translation for the modal component below */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isDeleteModalVisible}
+        onRequestClose={() => {
+          setIsModalVisible(false);
+        }}
+      >
+        <View style={styles.modalContainer}>
+          <ScrollView contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} keyboardShouldPersistTaps='handled'>
+            <View style={styles.modalView}>
+              <Text style={styles.modalTitle}>{language === 'zh' ? '删除账户' : 'Delete Account'} </Text>
+              <Text style={[styles.info, { color: 'rgb(255, 59, 48)', fontWeight: '600' }]}>
+                {language === 'zh' ? '您将失去所有的访问记录以及已保存或发布的房源列表！\n您确定要继续吗？' : 'You will lose all of your visits and saved or posted listings! \nAre you sure you want to proceed?'}
+              </Text>
+
+              {!showPasswordInput && (
+                <View style={styles.accountActionsContainer}>
+                  <PressableItem style={styles.cancelButton} onPress={() => { setIsDeleteModalVisible(false); setShowPasswordInput(false) }}>
+                    <Text style={styles.buttonText}>{language === 'zh' ? '取消' : 'Cancel'} </Text>
+                  </PressableItem>
+                  <PressableItem style={styles.saveButton} onPress={handleProceed}>
+                    <Text style={styles.buttonText}>{language === 'zh' ? '继续' : 'Proceed'} </Text>
+                  </PressableItem>
+                </View>
+              )}
+
+              {showPasswordInput && (
+                <>
+                  <TextInput
+                    style={styles.input}
+                    placeholder={language === 'zh' ? '输入密码以确认' : 'Enter your password to confirm'}
+                    placeholderTextColor="gray"
+                    secureTextEntry
+                    value={password}
+                    onChangeText={setPassword}
+                  />
+                  <View style={styles.accountActionsContainer}>
+                    <PressableItem style={styles.cancelButton} onPress={() => { setIsDeleteModalVisible(false); setShowPasswordInput(false) }}>
+                      <Text style={styles.buttonText}>{language === 'zh' ? '取消' : 'Cancel'} </Text>
+                    </PressableItem>
+                    <PressableItem style={styles.saveButton} onPress={handleDelete}>
+                      <Text style={styles.buttonText}>{language === 'zh' ? '删除' : 'Delete'} </Text>
+                    </PressableItem>
+                  </View>
+                </>
+              )}
+            </View>
           </ScrollView>
         </View>
       </Modal>
@@ -163,8 +300,13 @@ const styles = StyleSheet.create({
   },
   profileOptionsContainer: {
     alignItems: 'center',
-    marginTop: 25,
+    marginTop: 35,
     justifyContent: 'center',
+  },
+  deleteAccountContainer: {
+    flex: 3,
+    justifyContent: 'flex-end',
+    alignItems: 'center'
   },
   button: {
     margin: 10,
