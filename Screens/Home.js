@@ -72,7 +72,7 @@ const Home = ({ navigation }) => {
             filters.type === null || house.type === filters.type
         );
 
-        return bedroomsWithinRange && areaWithinRange && bathWithinRange && priceWithinRange && petFriendlyMatch && typeMatch&&searchMatch;
+        return bedroomsWithinRange && areaWithinRange && bathWithinRange && priceWithinRange && petFriendlyMatch && typeMatch && searchMatch;
     });
 
     const clearFilters = () => {
@@ -102,7 +102,7 @@ const Home = ({ navigation }) => {
             <PressableItem onPress={() => setModalVisible(true)} style={{ margin: 0 }}>
                 <Text style={appStyles.text}>{language === 'zh' ? "打开筛选器" : "Open Filters"}</Text>
             </PressableItem>
-            <MapHolder navigation={navigation} houses={houses} />
+            <MapHolder navigation={navigation} houses={filteredHouses} />
             <FlatList
                 data={filteredHouses}
                 renderItem={({ item }) => (
