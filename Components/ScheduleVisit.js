@@ -64,17 +64,13 @@ export default function ScheduleVisit({ navigation }) {
             });
 
             await fetchImageUrls()
-
-            console.log("fetchedImageUrls at the end of useEffect: ", imageUrls)
         }
-
         populateData()
 
     }, [route]); // Adding route as a dependency
 
 
     async function fetchImageUrls() {
-        console.log("entered fetchImageUrls function with listingData: ", listing)
         try {
 
             let data = {}
@@ -92,8 +88,6 @@ export default function ScheduleVisit({ navigation }) {
                 )
             );
             setImageUrls(urls);
-
-            console.log("Fetched image URLs:", imageUrls);
         } catch (error) {
             console.error("Error fetching image URLs:", error);
         }
@@ -180,7 +174,6 @@ export default function ScheduleVisit({ navigation }) {
                 rescheduleTime: visitData.rescheduleTime,
                 status: visitData.status
             };
-            console.log("visit value after editing: ", visit)
 
             if (visitData.rescheduleDate !== '' && visitData.rescheduleTime !== '') {
                 const visitDataRescheduleDateString = visitData.rescheduleDate.toDate().toLocaleDateString('en-GB');
@@ -190,11 +183,9 @@ export default function ScheduleVisit({ navigation }) {
                 const visitTimeString = visit.time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
                 if (visitDateString !== visitDataRescheduleDateString || visitTimeString !== visitDataRescheduleTimeString) {
-                    console.log('setting updatedVisit rescheduleResponse to pending')
                     updatedVisit.rescheduleResponse = 'pending';
                 } else {
                     if (visitDateString === visitDataRescheduleDateString && visitTimeString === visitDataRescheduleTimeString) {
-                        console.log('setting updatedVisit rescheduleResponse to empty string')
                         updatedVisit.rescheduleResponse = ''
                     }
                 }
@@ -217,8 +208,6 @@ export default function ScheduleVisit({ navigation }) {
             console.log("creating a visit with: ", visit)
             const newVisitDocRef = await addDoc(scheduledVisitsCollectionRef, visit);   // creating a visit in 'ScheduledVisits'
             visitID = newVisitDocRef.id
-            console.log('visitID from newVsitDocRef after adding visit in ScheduledVisits: ', visitID)
-            console.log("listing.visitRequests before updating with new visit: ", listing.visitRequests)
 
             updatedVisitRequests = [                // For storing the visit in visitRequests in 'Listing'
                 ...(listing.visitRequests || []),
@@ -242,7 +231,6 @@ export default function ScheduleVisit({ navigation }) {
             await scheduleNotification(reminderDate, "Reminder", `Visit scheduled for ${visit.listingLocation} at ${visit.date.toLocaleDateString()}`);
         }
 
-        console.log("scheduled a visit: ", visit);
         if (visitData.id) {
             navigation.goBack()
         } else {
@@ -294,8 +282,6 @@ export default function ScheduleVisit({ navigation }) {
         }
         return false
     }
-
-    console.log("inside ScheduleVisit with listing: ", listing)
 
 
     return (

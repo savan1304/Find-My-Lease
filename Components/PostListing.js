@@ -79,11 +79,7 @@ export default function PostListing({ navigation }) {
     }, [route]); // Adding route as a dependency
 
 
-    console.log("form data after use effect: ", formData)
-
-
     async function fetchImageUrls() {
-        console.log("entered fetchImageUrls function with listingData: ", listingData)
         if (listingData && listingData.imageUris && listingData.imageUris.length > 0) {
             try {
                 fetchedImageUrls = await Promise.all(
@@ -102,7 +98,6 @@ export default function PostListing({ navigation }) {
 
 
     useEffect(() => {
-        console.log("enteredLocation inside useEffect: ", enteredLocation)
         if (enteredLocation !== '') {
             let latLngFromGeocoder = ''
             Geocoder.from(formData.location)
@@ -113,11 +108,9 @@ export default function PostListing({ navigation }) {
                         latitude: Number(json.results[0].geometry.location.lat),
                         longitude: Number(json.results[0].geometry.location.lng)
                     }));
-                    console.log("location from Geocoder: ", latLngFromGeocoder);
                 })
                 .catch(error => console.warn(error));
         }
-        console.log("formData after setting lat and lng: ", formData)
     }, [enteredLocation])
 
 
@@ -141,7 +134,6 @@ export default function PostListing({ navigation }) {
 
 
     async function imageUriHandler(newImageUris) {
-        console.log("inside imageUriHandler: ", newImageUris);
         setImages(prevImages => [...prevImages, ...newImageUris.map(uri => ({ uri }))]);
         setFormData(prevFormData => ({
             ...prevFormData,
@@ -191,16 +183,13 @@ export default function PostListing({ navigation }) {
 
 
     async function retrieveAndUploadImage(imageUri) {
-        console.log("inside retrieveAndUploadImage uri: ", imageUri)
         try {
             const response = await fetch(imageUri);
             if (!response.ok) {
                 throw new Error("The request was not successful")
             }
             const blob = await response.blob();
-            console.log("inside retrieveAndUploadImage blob:", blob)
             const imageName = imageUri.substring(imageUri.lastIndexOf('/') + 1);
-            console.log("inside retrieveAndUploadImage imageName:", imageName)
             const imageRef = ref(storage, `images/${imageName}`)
             const uploadResult = await uploadBytesResumable(imageRef, blob);
             return uploadResult.metadata.fullPath
@@ -231,11 +220,9 @@ export default function PostListing({ navigation }) {
             imageUris: imageUrls, // Storing an array of image URLs
         };
 
-        console.log("inside handleSave: ", listingDataToSave)
         if (listingData.id) {
             console.log("updating existing listing with new data: ", formData)
             const listingRef = doc(database, 'Listing', listingData.id);
-            console.log(listingRef)
             await updateDoc(listingRef, listingDataToSave);
             navigation.navigate('PostedListings')
         } else {

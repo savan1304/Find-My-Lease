@@ -20,7 +20,6 @@ export default function ImageManager({ imageUriHandler }) {
     }
 
     const takeImageHandler = async () => {
-        console.log("inside takeImageHandler")
         try {
             const hasPermission = await verifyPermission()
             if (!hasPermission) {
