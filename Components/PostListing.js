@@ -38,7 +38,7 @@ export default function PostListing({ navigation }) {
         year: '',
         tenantGender: '',
         imageUris: [],
-        createdBy: user.uid
+        createdBy: user?.uid || ''
     });
     const [open, setOpen] = useState(false);
     const [type, setType] = useState('');
@@ -72,7 +72,7 @@ export default function PostListing({ navigation }) {
                 year: listingData?.year || '',
                 tenantGender: listingData?.tenantGender || '',
                 imageUris: fetchedImageUrls,
-                createdBy: user.uid
+                createdBy: user?.uid || ''
             });
         }
         populateData()
