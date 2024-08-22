@@ -6,6 +6,7 @@ import { AuthContext } from '../Components/AuthContext';
 import HouseListItem from '../Components/HouseListItem';
 import PressableItem from '../Components/PressableItem';
 
+
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
@@ -42,14 +43,18 @@ const Saved = ({ navigation }) => {
   };
 
   useEffect(() => {
-    const housesUnsub = fetchHouses();
-    const savedIdsUnsub = fetchSavedIds();
-
+    let housesUnsub = () => {};
+    let savedIdsUnsub = () => {};
+    if(user){
+      housesUnsub = fetchHouses();
+      savedIdsUnsub = fetchSavedIds();
+    } else{
+      setHouses([]);
+      setSavedIds([]);
+    }
     return () => {
       housesUnsub();
-      if (savedIdsUnsub) {
-        savedIdsUnsub();
-      }
+      savedIdsUnsub();
     };
   }, [user]);
 
