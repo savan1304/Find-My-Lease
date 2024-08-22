@@ -90,7 +90,6 @@ export default function MapHolder({ navigation, houses }) {
               </Marker>
             ))}
           </MapView>
-          <Text>{language === 'zh' ? "成功获得地理位置权限 " : "Location permission granted "}</Text>
         </>
 
       ) : (
