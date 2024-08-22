@@ -1,7 +1,5 @@
 **Iteration-3:**
 <br>
-<br>
-
 _Current state (or functionalities) of the application:_
 <br>
 
