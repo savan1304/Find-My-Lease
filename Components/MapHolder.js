@@ -9,6 +9,7 @@ export default function MapHolder({ navigation, houses }) {
   console.log("houses receievd from Home page: ", houses)
   const [response, requestPermission] = Location.useForegroundPermissions()
   const [userLocation, setUserLocation] = useState(null)
+  const [selectedMarker, setSelectedMarker] = useState(null);
   const receievdHousesToDisplayOnMap = houses.length > 0 && houses.some(house => 'latitude' in house && 'longitude' in house);
   const { language } = useContext(AuthContext);
 
@@ -41,9 +42,15 @@ export default function MapHolder({ navigation, houses }) {
 
   }
 
-  const handleMarkerPress = house => {
-    console.log('House selected:', house);
-    navigation.navigate('HouseDetails', { house });
+  const handleMarkerPress = (house) => {
+    if (selectedMarker === house.id) {
+      // navigating to HouseDetails on the second tap
+      navigation.navigate('HouseDetails', { house });
+      setSelectedMarker(null); // resetting selected marker
+    } else {
+      // showing title on the first tap
+      setSelectedMarker(house.id);
+    }
   };
 
   console.log("user location in Map component: ", userLocation)
@@ -76,7 +83,9 @@ export default function MapHolder({ navigation, houses }) {
                 }}
                 title={`C$${house.price}`}
                 image={require('../assets/house_location.png')}
-                onPress={() => {handleMarkerPress(house)}}
+                onPress={() => handleMarkerPress(house)}
+                // Adding a callout to display the title on first tap
+                calloutVisible={selectedMarker === house.id}
               >
               </Marker>
             ))}
