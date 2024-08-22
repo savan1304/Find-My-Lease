@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.shadowColor,
     },
     defaultStyle: {
-        backgroundColor: Colors.themeColor,
+        backgroundColor: Colors.blue,
         padding: 10,
         marginVertical: 10,
         borderRadius: 5,
