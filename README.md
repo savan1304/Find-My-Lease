@@ -1,12 +1,42 @@
 **Iteration-3:**
-==> **State Management:**
+<br>
+==> **Features included/completed:**
+<br>
+**State Management:**
     State Management with React Context. 
     
     The App has the user check the user login status while using our App. The app will not allow users to use certain functions if they do not log in/sign up. It will pop an alert to direct the user to the log-in page.
     If the user is not logged in, the user will be set as null. This is how the App handles our authentication part to create the difference between the temp user and the logged-in user. 
+<br>
+<br>
+<br>
 
-    The other state management component is language. The App can switch the language on the Settings screen. Currently, the App has two languages (English/Simplified Chinese). Once the state language changes, almost all the text will switch to 
-    a different language for users. The App has two languages for in-app text, alerts, and buttons. 
+**Language:**
+    The other state management component is language. The App can switch the language on the Settings screen. Currently, the App has two languages (English/Simplified Chinese). Once the state language changes, almost all the text will switch to a different language for users. The App has two languages for in-app text, alerts, and buttons. 
+<br>
+<br>
+<br>
+
+**VisitRequests:**
+After potential tenant (visit-requester) schedules a visit, the status of their visit request 'pending' will be displayed in ScheduledVisits screen with Contact landlord option.
+<br>
+The landlord can see the visit request details from PostedListings screen using the 'Visit Requests: ' button with counter. After pressing on it, the details of all visit requests for that listing will displayed with options to Approve or Reschedule them. If they reschedule a visit request, the details of reschedule date and time with initial reschedule response as 'Pending' will be displayed to the landlord.
+<br>
+After landlord requests a reschedule, the visit-requester will see their visit status as 'Rescheduled' in ScheduledVisits with an option to Accept it and the details of reschedule date and time. If they accept the reschedule date and time, the date and time of the visit is updated to the reschedule date and time. And the landlord can see the reschedule response as 'Accepted'.
+<br>
+Additional scenarios are handled regarding this feature, which can be seen in the screenshots below.
+<br>
+<br>
+<br>
+
+**Delete account:**
+User can Delete their account from Profile screen. Asking for their password as confirmation and for reauthentication.
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 
 **_Zhecheng Li's work in Iteration-3:_**
 <br>
@@ -35,6 +65,15 @@ User can cancel all the local notification with top right button
 ![IMG_0683](https://github.com/user-attachments/assets/e88a1c72-d456-4641-beab-b5b08e7caf5c)
 
 Add the Chinese language to our App. Users can switch different languages in the App. The picture only shows the Chinese in the profile page, but it works on all the App. 
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 **Iteration-2:**
 
 _Current state (or functionalities) of the application:_
