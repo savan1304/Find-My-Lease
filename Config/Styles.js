@@ -11,7 +11,7 @@ export const appStyles = StyleSheet.create({
     padding: 2,
   },
   addTitles: {
-    color: Colors.themeColor,
+    color: Colors.blue,
     fontWeight: 'bold'
   },
   saveAndCancelButtonContainer: {
