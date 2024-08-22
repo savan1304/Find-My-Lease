@@ -153,7 +153,7 @@ const AppContent = () => {
 
   const handleLogout = async (navigation) => {
     try {
-      navigation.replace('Root');
+      navigation.navigate('Root');
       await signOut(auth);
       
     } catch (error) {
