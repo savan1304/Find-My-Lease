@@ -34,7 +34,6 @@ export default function PostedListings({ navigation }) {
       setListings([]);
     }
 
-    return () => unsubscribe();
   }, [user]);
 
 
@@ -129,7 +128,7 @@ export default function PostedListings({ navigation }) {
                 {item.visitRequests ? (
                   <PressableItem
                     onPress={async () => await handlePostiveVisitRequestCounterPress(item.visitRequests, item.id)}
-                    style={[styles.editDeleteButtonStyle, { backgroundColor: Colors.shadowColor, marginHorizontal: 0, marginVertical: 5, width: '55%' }]}
+                    style={[styles.editDeleteButtonStyle, { backgroundColor: Colors.shadowColor, marginHorizontal: 0, marginVertical: 5, paddingRight:0, width: '55%' }]}
                   >
                     {/* needs translation below */}
                     <Text style={{ color: Colors.background }}>{language === 'zh' ? '观看请求: ' : 'Visit Requests: '}{item.visitRequests.length}</Text>
