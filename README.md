@@ -165,7 +165,7 @@ Delete account modal after 'Delete Account' is pressed from Profile screen:
 
 <br>
 
-Delete account asking user to enter the password for confirmation:
+Delete account after user press proceed, asking user to enter the password for confirmation:
 ![DeleteAccount_enter_password](https://github.com/user-attachments/assets/12367ce7-1c6f-47ef-84ad-83701103a5de)
 
 
