@@ -36,7 +36,7 @@ const HouseListItem = ({ house, onPress, style }) => {
             </View>
             <View style={styles.right}>
                 <Text style={styles.info}>{language === 'zh' ? "位置: " : "Location: "}{house.location} </Text>
-                <Text style={styles.info}>{language === 'zh' ? "价格: " : "Price: "}${house.price}/{language === 'zh' ? "月 " : "Month "}</Text>
+                <Text style={styles.info}>{language === 'zh' ? "价格: " : "Price: "}C${house.price}/{language === 'zh' ? "月 " : "Month "}</Text>
                 <Text style={styles.info}>{language === 'zh' ? "类型: " : "Type: "}{house.type} </Text>
             </View>
         </TouchableOpacity>
