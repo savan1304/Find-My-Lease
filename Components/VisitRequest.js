@@ -291,15 +291,15 @@ const VisitRequestItem = ({ visit, listing }) => {
                     <>
                         <Text style={styles.info}>{language === 'zh' ? '日期：' : 'Date: '}{updatedVisitDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</Text>
                         <Text style={styles.info}>{language === 'zh' ? '时间：' : 'Time: '}{updatedVisitTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</Text>
+                        <Text style={styles.info}>{language === 'zh' ? '疑问：' : 'Questions: '}{updatedVisit.questions}</Text>
                     </>
                 ) : (
                     <>
                         <Text style={styles.info}>{language === 'zh' ? '日期：' : 'Date: '}{visitDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</Text>
                         <Text style={styles.info}>{language === 'zh' ? '时间：' : 'Time: '}{visitTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</Text>
+                        <Text style={styles.info}>{language === 'zh' ? '疑问：' : 'Questions: '}{visit.questions}</Text>
                     </>
                 )}
-
-                <Text style={styles.info}>{language === 'zh' ? '疑问：' : 'Questions: '}{visit.questions}</Text>
 
                 {isLoading ? (
                     <Text>{language === 'zh' ? '加载请求者数据中...' : 'Loading requester data...'}</Text>
@@ -315,7 +315,7 @@ const VisitRequestItem = ({ visit, listing }) => {
                 {checkRescheduleDateTimeDisplay() && (
                     <View style={{ width: 312 }}>
                         <Text style={styles.info}>
-                        {language === 'zh' ? '重新安排：' : 'Rescheduled to: '}{new Date(updatedVisit.rescheduleDate.seconds * 1000).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}{language === 'zh' ? ' 于 ' : ' at '}{new Date(updatedVisit.rescheduleTime.seconds * 1000).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
+                            {language === 'zh' ? '重新安排：' : 'Rescheduled to: '}{new Date(updatedVisit.rescheduleDate.seconds * 1000).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}{language === 'zh' ? ' 于 ' : ' at '}{new Date(updatedVisit.rescheduleTime.seconds * 1000).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
                         </Text>
                     </View>
                 )}
@@ -333,7 +333,7 @@ const VisitRequestItem = ({ visit, listing }) => {
 
                 {visitStatus === 'approved' ? (
                     <PressableItem onPress={() => { console.log("pressed on already approved request") }} style={[styles.approveButtonStyle, { backgroundColor: Colors.shadowColor, width: '75%' }]} >
-                        <Text style={{ color: Colors.background }}>{language === 'zh' ? '批准 ' : 'Approve '}</Text>
+                        <Text style={{ color: Colors.background }}>{language === 'zh' ? '批准 ' : 'Approved '}</Text>
                     </PressableItem>) : (
                     <PressableItem onPress={() => { handleApprove(visit.id) }} style={styles.approveButtonStyle} >
                         <Text style={{ color: Colors.background }}>{language === 'zh' ? '批准 ' : 'Approve '}</Text>
