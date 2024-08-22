@@ -1,6 +1,8 @@
 **Iteration-3:**
 <br>
 ==> **Features included/completed:**
+Authentication: Users can log in or sign up in our App. The app has instruction text to help users understand what this App does. During sign-up, the password cannot be too simple(must be letter+number). In log-in page, User can reset their password if they forget.
+With State Management, Users cannot access certain functions if they do not log into the App. However, temp users still can view the listings. User can see their profile page with their contact information, and they can edit their information. Users cannot edit the listing that was posted by other users, and they cannot check the personal info of other users. 
 <br>
 **State Management:**
     State Management with React Context. 
