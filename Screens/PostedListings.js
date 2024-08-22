@@ -13,6 +13,7 @@ export default function PostedListings({ navigation }) {
   const { language } = useContext(AuthContext);
   const user = auth.currentUser;
 
+
   useEffect(() => {
     const unsubscribe = onSnapshot(query(
       collection(database, 'Listing'),
@@ -32,6 +33,7 @@ export default function PostedListings({ navigation }) {
 
     return () => unsubscribe();
   }, []);
+
 
   function handleDeleteListing(listingToBeDeletedID) {
     console.log("Inside handleDeleteListing");
@@ -55,6 +57,7 @@ export default function PostedListings({ navigation }) {
     );
   }
 
+
   async function handleEditListing(listingToBeEditedID) {
     console.log("Inside handleEditListing");
 
@@ -68,17 +71,49 @@ export default function PostedListings({ navigation }) {
     }
   }
 
+
+  async function handlePostiveVisitRequestCounterPress(visitRequest, listingId) {
+    console.log("visit request counter pressed with visitRequest: ", visitRequest)
+    console.log("visit request counter pressed with listingId: ", listingId)
+    try {
+      let listingData = {}
+      listingData = await getDataById(listingId, 'Listing')
+      console.log('listingData before navigating to VisitRequests inside handlePostiveVisitRequestCounterPress: ', listingData)
+      navigation.navigate('VisitRequests', { visitRequest: visitRequest, listingData: listingData });
+    }
+    catch (error) {
+      console.log("Error navigating to VisitRequests in handlePostiveVisitRequestCounterPress: ", error)
+    }
+  }
+
+
   function handleZeroVisitRequestCounterPress() {
     Alert.alert(language === 'zh' ? '无请求' : 'No requests', language === 'zh' ? '此列表尚无观看请求。' : 'There are no viewing requests for this listing yet.', [
       { text: 'Ok', style: 'default' },
     ]);
   }
 
+
   console.log('listingss value in PostedListing: ', listings);
+
+
   return (
-    <View>
+    <>
       {listings.length === 0 ? (
-        <Text style={styles.text}>{language === 'zh' ? '您尚未发布任何列表。' : 'You have not posted any listings yet.'}</Text>
+        <View style={styles.outerContainer}>
+          <View style={styles.noItemsContainer}>
+            <View style={styles.noItemsTextContainer}>
+              {/* needs translation below*/}
+              <Text style={styles.noItemsText}>
+                  {language === 'zh' ? '您尚未发布任何列表。\n发布房源来寻找您的下一位租客。' : 'You have not posted any listings yet! \nPost a listing to meet your next tenant.'}
+              </Text>
+
+            </View>
+            <PressableItem onPress={() => { navigation.navigate('PostListing') }} style={{ width: '35%' }}>
+              <Text style={styles.buttonText}>{language === 'zh' ? '发布房源: ' : 'Post a Listing: '}</Text>
+            </PressableItem>
+          </View>
+        </View>
       ) : (
         <FlatList
           data={listings}
@@ -91,16 +126,18 @@ export default function PostedListings({ navigation }) {
                 {item.visitRequests ? (
                   <PressableItem
                     onPress={async () => await handlePostiveVisitRequestCounterPress(item.visitRequests, item.id)}
-                    style={[styles.editDeleteButtonStyle, { backgroundColor: Colors.shadowColor, marginHorizontal: 0, marginVertical: 5, width: '64%' }]}
+                    style={[styles.editDeleteButtonStyle, { backgroundColor: Colors.shadowColor, marginHorizontal: 0, marginVertical: 5, width: '55%' }]}
                   >
-                    <Text style={{ color: Colors.background }}>{language === 'zh' ? '观看请求: ' : 'Viewing Requests: '}{item.visitRequests.length}</Text>
+                    {/* needs translation below */}
+                    <Text style={{ color: Colors.background }}>{language === 'zh' ? '观看请求: ' : 'Visit Requests: '}{item.visitRequests.length}</Text>
                   </PressableItem>
                 ) : (
                   <PressableItem
                     onPress={handleZeroVisitRequestCounterPress}
-                    style={[styles.editDeleteButtonStyle, { backgroundColor: Colors.shadowColor, marginHorizontal: 0, marginVertical: 5, width: '64%' }]}
+                    style={[styles.editDeleteButtonStyle, { backgroundColor: Colors.shadowColor, marginHorizontal: 0, marginVertical: 5, width: '55%' }]}
                   >
-                    <Text style={{ color: Colors.background }}>{language === 'zh' ? '观看请求: 0' : 'Viewing Requests: 0'}</Text>
+                    {/* needs translation below */}
+                    <Text style={{ color: Colors.background }}>{language === 'zh' ? '观看请求: 0' : 'Visit Requests: 0'}</Text>
                   </PressableItem>
                 )}
               </View>
@@ -117,10 +154,10 @@ export default function PostedListings({ navigation }) {
           keyExtractor={item => item.id.toString()}
         />
       )}
-    </View>
+    </>
   );
 }
-  
+
 
 
 const styles = StyleSheet.create({
@@ -132,15 +169,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
-    flex: 3
+    flex: 3,
+  },
+  listingDetails: {
+    flex: 2
   },
   outerContainer: {
     flex: 1,
-    backgroundColor: '#fff',
-  },
-  listingDetails: {
-    flex: 2,
-    marginVertical: 5
   },
   info: {
     fontSize: 16,
@@ -157,7 +192,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   buttonText: {
-    color: 'white',
+    color: '#f5f5f7',
     fontSize: 16,
     textAlign: 'center'
   },
@@ -174,5 +209,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
   }
-
 })

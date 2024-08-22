@@ -22,7 +22,7 @@ const HouseDetails = ({ route, navigation }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const copyToClipboard = async (text) => {
         await Clipboard.setStringAsync(text);
-        const copiedText = await Clipboard.getStringAsync(); 
+        const copiedText = await Clipboard.getStringAsync();
         Alert.alert(language === 'zh' ? '已复制' : 'Copied', `${language === 'zh' ? '已复制到剪贴板: ' : 'Copied to clipboard: '} ${copiedText}`);
     };
 
@@ -100,7 +100,8 @@ const HouseDetails = ({ route, navigation }) => {
         if (ownerContact) {
             setModalVisible(true);
         } else {
-            Alert.alert(language === 'zh' ? '错误' : 'Error', language === 'zh' ? '没有此房东的联系信息。' : 'No contact information available for this owner.');
+            // needs translation below
+            Alert.alert(language === 'zh' ? '错误' : 'Not found', language === 'zh' ? '没有此房东的联系信息。' : 'No contact information available for this owner.');
         }
     };
 
@@ -219,14 +220,17 @@ const HouseDetails = ({ route, navigation }) => {
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
                         <Text style={styles.modalTitle}>{language === 'zh' ? '联系信息' : 'Contact Information'} </Text>
-                        <Text style={styles.modalTitle}>({language === 'zh' ? '长按复制' : 'Hold to Copy'}) </Text>
+                        {/* needs translation below */}
+                        <Text style={styles.modalTitle}>({language === 'zh' ? '长按复制' : 'Tap to Copy'}) </Text>
                         <TouchableOpacity onPress={() => copyToClipboard(ownerContact?.email || 'N/A')}>
                             <Text style={styles.modalText}>{language === 'zh' ? '电邮: ' : 'Email: '}{ownerContact?.email || 'N/A'} </Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => copyToClipboard(ownerContact?.phoneNumber || 'N/A')}>
                             <Text style={styles.modalText}>{language === 'zh' ? '电话: ' : 'Phone: '}{ownerContact?.phoneNumber || 'N/A'} </Text>
                         </TouchableOpacity>
-                        <Button title={language === 'zh' ? '关闭' : 'Close'} onPress={() => setModalVisible(false)} />
+                        <PressableItem style={{ backgroundColor: 'rgb(255, 59, 48)', width: '30%' }} onPress={() => setModalVisible(false)}>
+                            <Text style={styles.buttonText}>{language === 'zh' ? '关闭' : 'Close'}</Text>
+                        </PressableItem>
                     </View>
                 </View>
             </Modal>

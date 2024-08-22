@@ -47,6 +47,7 @@ const Home = ({ navigation }) => {
 
 
     const filteredHouses = houses.filter(house => {
+        const searchMatch = searchText === '' || house.location.toLowerCase().includes(searchText.toLowerCase());
         const bedroomsWithinRange = (
             (filters.bedrooms.min === null || house.bed >= filters.bedrooms.min) &&
             (filters.bedrooms.max === null || house.bed <= filters.bedrooms.max)
@@ -71,7 +72,7 @@ const Home = ({ navigation }) => {
             filters.type === null || house.type === filters.type
         );
 
-        return bedroomsWithinRange && areaWithinRange && bathWithinRange && priceWithinRange && petFriendlyMatch && typeMatch;
+        return bedroomsWithinRange && areaWithinRange && bathWithinRange && priceWithinRange && petFriendlyMatch && typeMatch&&searchMatch;
     });
 
     const clearFilters = () => {
@@ -94,14 +95,14 @@ const Home = ({ navigation }) => {
         <View style={styles.container}>
             <TextInput
                 style={styles.searchBar}
-                placeholder={language === 'zh' ? "搜索..." : "Search..."}
+                placeholder={language === 'zh' ? "搜索位置..." : "Search Location..."}
                 value={searchText}
                 onChangeText={setSearchText}
             />
             <PressableItem onPress={() => setModalVisible(true)} style={{ margin: 0 }}>
                 <Text style={appStyles.text}>{language === 'zh' ? "打开筛选器" : "Open Filters"}</Text>
             </PressableItem>
-            <MapHolder navigation={navigation} houses={houses} />
+            <MapHolder navigation={navigation} houses={filteredHouses} />
             <FlatList
                 data={filteredHouses}
                 renderItem={({ item }) => (
@@ -229,7 +230,7 @@ const Home = ({ navigation }) => {
                                 <View style={styles.inputContainer}>
                                     <Text style={styles.label}>{language === 'zh' ? "允许宠物" : "Pet Friendly"}</Text>
                                     <PressableItem
-                                        style={styles.checkbox}
+                                        style={[styles.checkbox, { width: '25%' }]}
                                         onPress={() => setFilters(prev => ({
                                             ...prev,
                                             petFriendly: !filters.petFriendly
@@ -241,7 +242,7 @@ const Home = ({ navigation }) => {
                                 <View style={styles.inputContainer}>
                                     <Text style={styles.label}>{language === 'zh' ? "类型" : "Type"}</Text>
                                     <PressableItem
-                                        style={styles.checkbox}
+                                        style={[styles.checkbox, { width: '35%' }]}
                                         onPress={() => setFilters(prev => ({
                                             ...prev,
                                             type: filters.type === 'Private' ? 'Shared' : 'Private'
@@ -339,12 +340,12 @@ const styles = StyleSheet.create({
         marginRight: 25,
     },
     button: {
-        borderRadius: 20,
+        borderRadius: 10,
         padding: 10,
         elevation: 2
     },
     buttonClose: {
-        backgroundColor: '#2196F3',
+        backgroundColor: 'rgb(0, 122, 255)',
     },
     textStyle: {
         color: "white",
@@ -358,11 +359,10 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     buttonClear: {
-        backgroundColor: '#FF6347',
+        backgroundColor: 'rgb(255, 59, 48)',
     },
     checkbox: {
-        width: '40%',
-        height: 50,
+        height: 45,
         borderWidth: 1,
         borderColor: '#ddd',
         borderRadius: 10,
