@@ -154,9 +154,22 @@ const Profile = ({ navigation }) => {
           )}
         </View>
 
-        <PressableItem style={styles.editButton} onPress={() => setIsModalVisible(true)}>
-          <Ionicons name="pencil" size={24} color="rgb(0, 122, 255)" />
-        </PressableItem>
+        <PressableItem style={styles.editButton} onPress={() => {
+            if (user) {
+              setIsModalVisible(true);
+            } else {
+              Alert.alert(
+                language === 'zh' ? '需要登录' : 'Login Required',
+                language === 'zh' ? '您需要登录才能编辑您的资料。' : 'You need to be logged in to edit your profile.',
+                [
+                  { text: language === 'zh' ? '取消' : 'Cancel', style: 'cancel' },
+                  { text: language === 'zh' ? '登录' : 'Login', onPress: () => navigation.navigate('Login') }
+                ]
+              );
+            }
+          }}>
+            <Ionicons name="pencil" size={24} color="rgb(0, 122, 255)" />
+          </PressableItem>
       </View>
 
       <View style={styles.profileOptionsContainer}>
