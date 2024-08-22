@@ -96,10 +96,10 @@ const VisitRequestItem = ({ visit, listing }) => {
         try {
             const visitDocRef = getVisitDocRefById(visitId, visit.requester)
             console.log("approving the visit with: ", visitId)
-            await updateDoc(visitDocRef, { status: 'approved' });
+            await updateDoc(visitDocRef, { status: 'approved', rescheduleResponse: '' });
 
             const updatedVisitRequests = listing.visitRequests.map(request =>
-                request.id === visitId ? { ...request, status: 'approved' } : request
+                request.id === visitId ? { ...request, status: 'approved', rescheduleResponse: '' } : request
             );
             const listingDocRef = doc(database, 'Listing', visit.listingId);
             await updateDoc(listingDocRef, { visitRequests: updatedVisitRequests });
