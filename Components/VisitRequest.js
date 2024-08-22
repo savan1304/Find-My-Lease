@@ -301,8 +301,6 @@ const VisitRequestItem = ({ visit, listing }) => {
                     </>
                 )}
 
-                <Text style={styles.info}>{language === 'zh' ? '疑问：' : 'Questions: '}{visit.questions}</Text>
-
                 {isLoading ? (
                     <Text>{language === 'zh' ? '加载请求者数据中...' : 'Loading requester data...'}</Text>
                 ) : (
