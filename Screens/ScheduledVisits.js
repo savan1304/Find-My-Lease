@@ -290,7 +290,8 @@ const styles = StyleSheet.create({
         marginLeft: 0,
         backgroundColor: Colors.blue,
         alignItems: 'center',
-        marginVertical: 7
+        marginVertical: 7,
+        marginRight: 10
     },
     buttonText: {
         color: 'white',
