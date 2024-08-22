@@ -51,13 +51,11 @@ User can Delete their account from Profile screen. Asking for their password as 
 
 
     
-==> 4 collections in firestore: User, ScheduledVisits (a subcollection of User), Saved (a subcollection of User), Listing
+==> 3 collections in firestore: User, ScheduledVisits (a subcollection of User), Listing
 
      User collection: Add doc (C) after a new user registration
 
      ScheduledVisits collection: Add doc (C) after scheduling a visit, Read (R) for Scheduled Visits page, Read (R) and Update (E) for VisitRequests
-
-     Saved collection: Add doc(C) after saving a listing, Read(R) saved listing, Delete(D) listing from the saved collection
 
      Listing collection: Add doc (R) after posting a listing, Read(R) listing for 'Home', 'HouseDetails', 'My Posted listings' screens, Edit(U) for Edit listing option from 'My posted listings' screens, Delete(D) for deleting the listing from 'My Posted listings' or the 'Saved' screen. Read (R) and Update (E) for VisitRequests
 
