@@ -153,8 +153,9 @@ const AppContent = () => {
 
   const handleLogout = async (navigation) => {
     try {
+      navigation.replace('My Home');
       await signOut(auth);
-      navigation.navigate('Login');
+      
     } catch (error) {
       console.error("Logout error: ", error);
     }
