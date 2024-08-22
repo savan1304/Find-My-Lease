@@ -335,7 +335,7 @@ const VisitRequestItem = ({ visit, listing }) => {
 
                 {visitStatus === 'approved' ? (
                     <PressableItem onPress={() => { console.log("pressed on already approved request") }} style={[styles.approveButtonStyle, { backgroundColor: Colors.shadowColor, width: '75%' }]} >
-                        <Text style={{ color: Colors.background }}>{language === 'zh' ? '批准 ' : 'Approve '}</Text>
+                        <Text style={{ color: Colors.background }}>{language === 'zh' ? '批准 ' : 'Approved '}</Text>
                     </PressableItem>) : (
                     <PressableItem onPress={() => { handleApprove(visit.id) }} style={styles.approveButtonStyle} >
                         <Text style={{ color: Colors.background }}>{language === 'zh' ? '批准 ' : 'Approve '}</Text>
