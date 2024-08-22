@@ -138,7 +138,6 @@ const Profile = ({ navigation }) => {
         <View style={styles.profileDetailsContainer}>
           {user ? (
             <>
-              <Text style={styles.info}>{language === 'zh' ? '用户ID: ' : 'UID: '}{user.uid}</Text>
               <Text style={styles.info}>{language === 'zh' ? '姓名: ' : 'Name: '}{userData?.name || 'N/A'}</Text>
               {/* needs translation below */}
               <Text style={styles.info}>{language === 'zh' ? '联系方式: ' : 'Email: '}{user.email}</Text>
@@ -146,7 +145,6 @@ const Profile = ({ navigation }) => {
             </>
           ) : (
             <>
-              <Text style={styles.info}>{language === 'zh' ? '用户ID: 临时用户' : 'UID: Temp UID'} </Text>
               <Text style={styles.info}>{language === 'zh' ? '姓名: 临时用户' : 'Name: Temp User '} </Text>
               <Text style={styles.info}>{language === 'zh' ? '联系方式: ' : 'Email: '}N/A</Text>
               <Text style={styles.info}>{language === 'zh' ? '电话号码: ' : 'Phone Number: '}N/A</Text>
