@@ -28,9 +28,6 @@ export default function ScheduledVisits({ navigation }) {
                     querySnapshot.forEach((docSnapShot) => {
                         let rescheduleDate;
                         let rescheduleTime;
-                        console.log(docSnapShot.id)
-                        console.log('docSnapShot data: ', docSnapShot.data())
-                        console.log('docSnapShot date: ', docSnapShot.data().date)
                         const date = docSnapShot.data().date
                         const time = docSnapShot.data().time
                         if (docSnapShot.data().rescheduleDate) {
@@ -49,7 +46,6 @@ export default function ScheduledVisits({ navigation }) {
                         })
                     });
                 }
-                console.log("newArray in scheduledVisits: ", newArray)
                 setVisits(newArray);
             }, (e) => { console.log(e) })
 
@@ -92,17 +88,13 @@ export default function ScheduledVisits({ navigation }) {
 
 
     async function handleEditVisit(visitToBeEditedID) {
-        console.log("Inside handleEditVisit")
         let visitData = {}
         let listingData = {}
         try {
             visitData = await getVisitDataById(visitToBeEditedID, user.uid);
-            console.log("inside if block with visitData: ", visitData)
             visitData.id = visitToBeEditedID
-            console.log("visitData before navigating to ScheduleVisit page: ", visitData)
 
             listingData = await getDataById(visitData.listingId, 'Listing')
-            console.log("listingData before navigating to ScheduleVisit page: ", listingData)
 
             navigation.navigate('ScheduleVisit', { visitData, listingData });
 
@@ -117,7 +109,6 @@ export default function ScheduledVisits({ navigation }) {
         <View style={styles.outerContainer}>
 
             {visits.length === 0 ? (
-                // needs translation below
                 <View style={styles.noItemsContainer}>
                     <View style={styles.noItemsTextContainer}>
                     <Text style={styles.noItemsText}>
@@ -134,7 +125,6 @@ export default function ScheduledVisits({ navigation }) {
                 (
                     <FlatList data={visits}
                         renderItem={({ item }) => {
-                            console.log('item in Flatlist in ScheduledVisits: ', item)
 
                             async function handleContactLandlord() {
                                 const listingId = item.listingId
@@ -185,7 +175,6 @@ export default function ScheduledVisits({ navigation }) {
                             async function handleAcceptReschedule() {
                                 try {
                                     const visitData = await getVisitDataById(item.id, user.uid);
-                                    console.log("visitData in handleAcceptReschedule: ", visitData)
 
                                     const visitDocRef = getVisitDocRefById(item.id, user.uid)
                                     await updateDoc(visitDocRef, {
@@ -195,7 +184,6 @@ export default function ScheduledVisits({ navigation }) {
                                     });
 
                                     const listingData = await getDataById(visitData.listingId, 'Listing')
-                                    console.log("existing visitRequest from listingData: ", listingData.visitRequests)
                                     const updatedVisitRequests = listingData.visitRequests.map(request =>
                                         request.id === visitData.id ? {
                                             ...request,
@@ -204,7 +192,6 @@ export default function ScheduledVisits({ navigation }) {
                                             rescheduleResponse: 'accepted'
                                         } : request
                                     );
-                                    console.log("updatedVisitRequests in handleAcceptReschedule: ", updatedVisitRequests)
                                     const listingDocRef = doc(database, 'Listing', visitData.listingId);
                                     await updateDoc(listingDocRef, { visitRequests: updatedVisitRequests });
 
