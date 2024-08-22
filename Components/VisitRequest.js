@@ -291,11 +291,13 @@ const VisitRequestItem = ({ visit, listing }) => {
                     <>
                         <Text style={styles.info}>{language === 'zh' ? '日期：' : 'Date: '}{updatedVisitDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</Text>
                         <Text style={styles.info}>{language === 'zh' ? '时间：' : 'Time: '}{updatedVisitTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</Text>
+                        <Text style={styles.info}>{language === 'zh' ? '疑问：' : 'Questions: '}{updatedVisit.questions}</Text>
                     </>
                 ) : (
                     <>
                         <Text style={styles.info}>{language === 'zh' ? '日期：' : 'Date: '}{visitDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</Text>
                         <Text style={styles.info}>{language === 'zh' ? '时间：' : 'Time: '}{visitTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</Text>
+                        <Text style={styles.info}>{language === 'zh' ? '疑问：' : 'Questions: '}{visit.questions}</Text>
                     </>
                 )}
 
@@ -315,7 +317,7 @@ const VisitRequestItem = ({ visit, listing }) => {
                 {checkRescheduleDateTimeDisplay() && (
                     <View style={{ width: 312 }}>
                         <Text style={styles.info}>
-                        {language === 'zh' ? '重新安排：' : 'Rescheduled to: '}{new Date(updatedVisit.rescheduleDate.seconds * 1000).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}{language === 'zh' ? ' 于 ' : ' at '}{new Date(updatedVisit.rescheduleTime.seconds * 1000).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
+                            {language === 'zh' ? '重新安排：' : 'Rescheduled to: '}{new Date(updatedVisit.rescheduleDate.seconds * 1000).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}{language === 'zh' ? ' 于 ' : ' at '}{new Date(updatedVisit.rescheduleTime.seconds * 1000).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
                         </Text>
                     </View>
                 )}
