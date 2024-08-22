@@ -6,7 +6,6 @@ import { AuthContext } from '../Components/AuthContext';
 
 
 export default function MapHolder({ navigation, houses }) {
-  console.log("houses receievd from Home page: ", houses)
   const [response, requestPermission] = Location.useForegroundPermissions()
   const [userLocation, setUserLocation] = useState(null)
   const [selectedMarker, setSelectedMarker] = useState(null);
@@ -19,7 +18,6 @@ export default function MapHolder({ navigation, houses }) {
       return true;
     }
     const permissionResponse = await requestPermission()
-    console.log("permission response in verifyPermission: ", permissionResponse)
     return permissionResponse.granted;
   }
 
@@ -33,7 +31,6 @@ export default function MapHolder({ navigation, houses }) {
     if (hasPermission) {
       try {
         const result = await Location.getCurrentPositionAsync();
-        console.log("Location in locateUserHandler: ", result)
         setUserLocation({ latitude: result.coords.latitude, longitude: result.coords.longitude })
       } catch (error) {
         console.log("Location error in locateUserHandler: ", error)
@@ -53,7 +50,6 @@ export default function MapHolder({ navigation, houses }) {
     }
   };
 
-  console.log("user location in Map component: ", userLocation)
 
   return (
     <>

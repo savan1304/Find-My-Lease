@@ -38,7 +38,6 @@ export default function PostedListings({ navigation }) {
 
 
   function handleDeleteListing(listingToBeDeletedID) {
-    console.log("Inside handleDeleteListing");
 
     Alert.alert(
       language === 'zh' ? "确认删除" : "Confirm Delete",
@@ -61,12 +60,10 @@ export default function PostedListings({ navigation }) {
 
 
   async function handleEditListing(listingToBeEditedID) {
-    console.log("Inside handleEditListing");
 
     try {
       const listingData = await getDataById(listingToBeEditedID, 'Listing');
       listingData.id = listingToBeEditedID;
-      console.log("listingData before navigating to PostListing page: ", listingData);
       navigation.navigate('PostListing', { listingData: listingData });
     } catch (error) {
       console.error('Error in navigating to editing listing page:', error);
@@ -75,12 +72,9 @@ export default function PostedListings({ navigation }) {
 
 
   async function handlePostiveVisitRequestCounterPress(visitRequest, listingId) {
-    console.log("visit request counter pressed with visitRequest: ", visitRequest)
-    console.log("visit request counter pressed with listingId: ", listingId)
     try {
       let listingData = {}
       listingData = await getDataById(listingId, 'Listing')
-      console.log('listingData before navigating to VisitRequests inside handlePostiveVisitRequestCounterPress: ', listingData)
       navigation.navigate('VisitRequests', { visitRequest: visitRequest, listingData: listingData });
     }
     catch (error) {
@@ -96,16 +90,12 @@ export default function PostedListings({ navigation }) {
   }
 
 
-  console.log('listingss value in PostedListing: ', listings);
-
-
   return (
     <>
       {listings.length === 0 ? (
         <View style={styles.outerContainer}>
           <View style={styles.noItemsContainer}>
             <View style={styles.noItemsTextContainer}>
-              {/* needs translation below*/}
               <Text style={styles.noItemsText}>
                 {language === 'zh' ? '您尚未发布任何列表。\n发布房源来寻找您的下一位租客。' : 'You have not posted any listings yet! \nPost a listing to meet your next tenant.'}
               </Text>
@@ -130,7 +120,6 @@ export default function PostedListings({ navigation }) {
                     onPress={async () => await handlePostiveVisitRequestCounterPress(item.visitRequests, item.id)}
                     style={[styles.editDeleteButtonStyle, { backgroundColor: Colors.shadowColor, marginHorizontal: 0, marginVertical: 5, paddingRight:0, width: '55%' }]}
                   >
-                    {/* needs translation below */}
                     <Text style={{ color: Colors.background }}>{language === 'zh' ? '观看请求: ' : 'Visit Requests: '}{item.visitRequests.length}</Text>
                   </PressableItem>
                 ) : (
@@ -138,7 +127,6 @@ export default function PostedListings({ navigation }) {
                     onPress={handleZeroVisitRequestCounterPress}
                     style={[styles.editDeleteButtonStyle, { backgroundColor: Colors.shadowColor, marginHorizontal: 0, marginVertical: 5, width: '55%' }]}
                   >
-                    {/* needs translation below */}
                     <Text style={{ color: Colors.background }}>{language === 'zh' ? '观看请求: 0' : 'Visit Requests: 0'}</Text>
                   </PressableItem>
                 )}
