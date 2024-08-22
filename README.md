@@ -1,8 +1,14 @@
 **Iteration-3:**
 <br>
+<br>
+<br>
+
 ==> **Features included/completed:**
 <br>
-Authentication: Users can log in or sign up in our App. The app has instruction text to help users understand what this App does. During sign-up, the password cannot be too simple(must be letter+number). In log-in page, User can reset their password if they forget.
+<br>
+
+**Authentication**: 
+Users can log in or sign up in our App. The app has instruction text to help users understand what this App does. During sign-up, the password cannot be too simple(must be letter+number). In log-in page, User can reset their password if they forget.
 With State Management, Users cannot access certain functions if they do not log into the App. However, temp users still can view the listings. User can see their profile page with their contact information, and they can edit their information. Users cannot edit the listing that was posted by other users, and they cannot check the personal info of other users. 
 <br>
 **State Management:**
@@ -12,11 +18,9 @@ With State Management, Users cannot access certain functions if they do not log 
     If the user is not logged in, the user will be set as null. This is how the App handles our authentication part to create the difference between the temp user and the logged-in user. 
 <br>
 <br>
-<br>
 
 **Language:**
     The other state management component is language. The App can switch the language on the Settings screen. Currently, the App has two languages (English/Simplified Chinese). Once the state language changes, almost all the text will switch to a different language for users. The App has two languages for in-app text, alerts, and buttons. 
-<br>
 <br>
 <br>
 
@@ -30,17 +34,37 @@ After landlord requests a reschedule, the visit-requester will see their visit s
 Additional scenarios are handled regarding this feature, which can be seen in the screenshots below.
 <br>
 <br>
-<br>
 
 **Delete account:**
 User can Delete their account from Profile screen. Asking for their password as confirmation and for reauthentication.
 <br>
 <br>
-<br>
-<br>
-<br>
-<br>
 
+==> Current high-level data model:
+
+    Listing: location, latitude, longitude, price, bed, bath, area, petFriendly(?), transit (options), type (shared/private), year (of construction), (preferred) tenant gender, imageUris, visitRequests (of visit objects), createdBy (a user id)
+
+    User: email, name, phoneNumber (password will be stored and handled by firestore)
+
+    ScheduledVisits: date, time, questions, setReminder(?), listingId, listingLocation, listingPrice, status, requester (a user id), rescheduleDate, rescheduleTime, rescheduleResponse, 
+
+    saved: A {Listing} object
+
+    
+==> 4 collections in firestore: User, ScheduledVisits (a subcollection of User), Saved (a subcollection of User), Listing
+
+     User collection: Add doc (C) after a new user registration
+
+     ScheduledVisits collection: Add doc (C) after scheduling a visit, Read (R) for Scheduled Visits page, Read (R) and Update (E) for VisitRequests
+
+     Saved collection: Add doc(C) after saving a listing, Read(R) saved listing, Delete(D) listing from the saved collection
+
+     Listing collection: Add doc (R) after posting a listing, Read(R) listing for 'Home', 'HouseDetails', 'My Posted listings' screens, Edit(U) for Edit listing option from 'My posted listings' screens, Delete(D) for deleting the listing from 'My Posted listings' or the 'Saved' screen. Read (R) and Update (E) for VisitRequests
+
+ 
+==> The listed above is an addition to iteration-1 and iteratioin-2. Therefore all the functionalities from iteration-1 and iteration-2 are included.
+<br>
+<br>
 **_Zhecheng Li's work in Iteration-3:_**
 <br>
 ![IMG_0686](https://github.com/user-attachments/assets/cc65d62a-0ad7-47fe-abbc-a4f364604bbc)
@@ -72,11 +96,100 @@ Add the Chinese language to our App. Users can switch different languages in the
 <br>
 <br>
 <br>
+
+**_Savan Parmar - Iteration-2:_**
+<br>
+Confirm alert while scheduling/editing a visit:
+![VisitRequest_scheduleVisit_save_alert](https://github.com/user-attachments/assets/0d8767d3-e471-48d2-b5fe-e41c232e4f9b)
+
+<br>
+
+ScheduledVisit initial screen for visit-requester after scheduling the visit:
+![VisitRequest_scheduledVisit_initial_Detail](https://github.com/user-attachments/assets/265b8d8b-c90c-4b54-a192-fa80ddc934e9)
+
+<br>
+
+PostedListings with counter and VisitRequests initial screens for landlord after a visit is scheduled:
+![VisitRequest_landlord_counter](https://github.com/user-attachments/assets/e075d0c9-e3bd-4e66-81c7-a23542219a8e)
+![VisitRequest_landlord_initial_Details](https://github.com/user-attachments/assets/64d0d12e-31ec-49fd-a79f-52f2566e76e2)
+
+<br>
+
+VisitRequest normal approve and after approval for landlord:
+![VisitRequest_landlord_normal_approve](https://github.com/user-attachments/assets/1f5e3f1c-c020-4b48-b184-9f32bd72668e)
+![VisitRequest_landlord_approved](https://github.com/user-attachments/assets/d873e9db-5763-4794-9cd2-92b17a4c75c7)
+
+
+<br>
+
+VisitRequest if landlord attempts to reschedule at the same date and time as current:
+![VisitRequest_landlord_same_date_and_time](https://github.com/user-attachments/assets/f20a3b59-4b1f-4dbc-bea3-1849d527d483)
+
+<br>
+
+VisitRequest after landlord reschedules the visit:
+![VisitRequest_landlord_after_Reschedule](https://github.com/user-attachments/assets/579edc93-dac9-4a05-b2e9-ecd812e6ccb1)
+
+<br>
+
+ScheduledVisits for visit-requester after the visit is rescheduled:
+![VisitRequest_visitRequester_after_Reschedule](https://github.com/user-attachments/assets/369d9aa9-36f3-4ee8-b89f-4bc6844aabe4)
+
+<br>
+
+ScheduledVisits is visit-requester accepts the reschedule request (visit date or time or both updated to reschedule date and time):
+![VisitRequest_visitRequester_after_rescheduleResponse_Accepted](https://github.com/user-attachments/assets/7dda1229-152c-4557-8f21-f79af22555ad)
+
+<br>
+
+ScheduleVisits for visit-requester after pressing contact landlord option:
+![VisitRequest_contact_landlord_options](https://github.com/user-attachments/assets/63b24a7b-2bff-47eb-adf0-94bbdaf0ef4b)
+![VisitRequest_visitRequester_call_landlord](https://github.com/user-attachments/assets/d6c83b2d-a048-4bcd-8aaf-ca67af021976)
+![VisitRequest_visitRequester_email_landlord](https://github.com/user-attachments/assets/748243a4-7d09-4d75-905b-adff4759ed03)
+
+<br>
+
+VisitRequests for landlord after visit-requester accepts the reschedule request: (date and time of the visit is updated to reschedule date and time):
+![VisitRequest_landlord_rescheduleResponse_accepted](https://github.com/user-attachments/assets/2d07c19a-0ff9-4970-a782-c5118514c957)
+
+<br>
+
+VisitRequest approve alert for landlord if reschedule request is not accepted by visit-requester yet:
+![VisitRequest_landlord_approval_without_rescheduleResponse_accepted](https://github.com/user-attachments/assets/3cbf23c3-ef73-4ea3-9bd5-fe95b0742d09)
+
+<br>
+
+Delete account modal after 'Delete Account' is pressed from Profile screen:
+![DeleteAccount_initial_warning](https://github.com/user-attachments/assets/5c006e06-53d8-4fc0-b1f5-98584c0726eb)
+
+
+<br>
+
+Delete account asking user to enter the password for confirmation:
+![DeleteAccount_enter_password](https://github.com/user-attachments/assets/12367ce7-1c6f-47ef-84ad-83701103a5de)
+
+
+<br>
+
+Delete account final confirmation:
+![DeleteAccount_Final_confirmation](https://github.com/user-attachments/assets/126ff146-e6c2-4181-b532-c445a96bff3c)
+
+
+
+
+
+
+
+
+
+
+
 <br>
 <br>
 <br>
 <br>
 <br>
+
 **Iteration-2:**
 
 _Current state (or functionalities) of the application:_
