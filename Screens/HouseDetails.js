@@ -100,7 +100,6 @@ const HouseDetails = ({ route, navigation }) => {
         if (ownerContact) {
             setModalVisible(true);
         } else {
-            // needs translation below
             Alert.alert(language === 'zh' ? '错误' : 'Not found', language === 'zh' ? '没有此房东的联系信息。' : 'No contact information available for this owner.');
         }
     };
@@ -220,7 +219,6 @@ const HouseDetails = ({ route, navigation }) => {
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
                         <Text style={styles.modalTitle}>{language === 'zh' ? '联系信息' : 'Contact Information'} </Text>
-                        {/* needs translation below */}
                         <Text style={styles.modalTitle}>({language === 'zh' ? '长按复制' : 'Tap to Copy'}) </Text>
                         <TouchableOpacity onPress={() => copyToClipboard(ownerContact?.email || 'N/A')}>
                             <Text style={styles.modalText}>{language === 'zh' ? '电邮: ' : 'Email: '}{ownerContact?.email || 'N/A'} </Text>

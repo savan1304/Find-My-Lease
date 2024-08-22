@@ -68,7 +68,6 @@ const Profile = ({ navigation }) => {
     setShowPasswordInput(true);
   };
 
-  // needs translation for this function below
   const handleDelete = async () => {
     if (password === '') {
       Alert.alert(
@@ -139,7 +138,6 @@ const Profile = ({ navigation }) => {
           {user ? (
             <>
               <Text style={styles.info}>{language === 'zh' ? '姓名: ' : 'Name: '}{userData?.name || 'N/A'}</Text>
-              {/* needs translation below */}
               <Text style={styles.info}>{language === 'zh' ? '联系方式: ' : 'Email: '}{user.email}</Text>
               <Text style={styles.info}>{language === 'zh' ? '电话号码: ' : 'Phone Number: '}{userData?.phoneNumber || 'N/A'}</Text>
             </>
@@ -233,7 +231,6 @@ const Profile = ({ navigation }) => {
         </View>
       </Modal>
 
-      {/* needs translation for the modal component below */}
       <Modal
         animationType="slide"
         transparent={true}

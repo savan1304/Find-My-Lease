@@ -11,8 +11,6 @@ import { AuthContext } from '../Components/AuthContext';
 
 const VisitRequestItem = ({ visit, listing }) => {
     const { language } = useContext(AuthContext);
-    console.log("inside VisitRequestItem with visit: ", visit)
-    console.log("inside VisitRequestItem with listing: ", listing)
 
     // State for storing requester data and loading state
     const [requesterData, setRequesterData] = useState(null);
@@ -66,7 +64,6 @@ const VisitRequestItem = ({ visit, listing }) => {
             setVisitStatus(updatedVisit.status)
         }
     }, [updatedVisit]);
-    console.log("updated visit value: ", updatedVisit)
 
 
     useEffect(() => {
@@ -88,14 +85,11 @@ const VisitRequestItem = ({ visit, listing }) => {
         fetchRequesterData();
     }, [visit.requester]); // Running this effect whenever visit.requester changes
 
-    console.log("visit requester: ", requesterData)
-    console.log("visit status: ", visitStatus)
-
 
     async function approveVisitInScheduledVisitsAndVisitRequests(visitId) {
         try {
             const visitDocRef = getVisitDocRefById(visitId, visit.requester)
-            console.log("approving the visit with: ", visitId)
+            console.log("approving the visit with id: ", visitId)
             await updateDoc(visitDocRef, { status: 'approved', rescheduleResponse: '' });
 
             const updatedVisitRequests = listing.visitRequests.map(request =>
@@ -263,10 +257,8 @@ const VisitRequestItem = ({ visit, listing }) => {
             Object.keys(updatedVisit).length !== 0 && (updatedVisit.rescheduleDate !== '' && updatedVisit.rescheduleTime !== '' && visitStatus !== 'approved') &&
             !isCurrentAndRescheduleSame()
         ) {
-            console.log('checkRescheduleDateTimeDisplay returning true');
             return true;
         }
-        console.log('checkRescheduleDateTimeDisplay returning false');
         return false;
     }
 
@@ -275,10 +267,8 @@ const VisitRequestItem = ({ visit, listing }) => {
         if (Object.keys(updatedVisit).length !== 0 && (updatedVisit.rescheduleResponse !== '' && visitStatus !== 'approved') &&
             !isCurrentAndRescheduleSame()
         ) {
-            console.log('checkRescheduleResponseDisplay returning true');
             return true;
         }
-        console.log('checkRescheduleResponseDisplay returning false');
         return false
     }
 
