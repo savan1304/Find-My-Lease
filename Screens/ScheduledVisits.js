@@ -19,6 +19,7 @@ export default function ScheduledVisits({ navigation }) {
 
 
     useEffect(() => {
+        if(user){
         const unsubscribe = onSnapshot(query(
             collection(database, 'User', user.uid, 'ScheduledVisits')),
             (querySnapshot) => {
@@ -54,7 +55,10 @@ export default function ScheduledVisits({ navigation }) {
 
 
         return () => unsubscribe()  // Detaching the listener when no longer listening to the changes in data
-    }, [])
+        }else{
+            setVisits([]);
+        }
+    }, [user])
 
 
     async function handleDeleteVisit(visit) {

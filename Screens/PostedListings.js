@@ -15,24 +15,27 @@ export default function PostedListings({ navigation }) {
 
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(query(
-      collection(database, 'Listing'),
-      where('createdBy', '==', user.uid)
-    ),
-      (querySnapshot) => {
-        let newArray = [];
-        if (!querySnapshot.empty) {
-          querySnapshot.forEach((docSnapShot) => {
-            console.log(docSnapShot.id);
-            newArray.push({ ...docSnapShot.data(), id: docSnapShot.id });
-          });
-        }
-        setListings(newArray);
-
-      }, (e) => { console.log(e) });
+    if (user) {
+      const unsubscribe = onSnapshot(query(
+        collection(database, 'Listing'),
+        where('createdBy', '==', user.uid)
+      ),
+        (querySnapshot) => {
+          let newArray = [];
+          if (!querySnapshot.empty) {
+            querySnapshot.forEach((docSnapShot) => {
+              newArray.push({ ...docSnapShot.data(), id: docSnapShot.id });
+            });
+          }
+          setListings(newArray);
+        }, (e) => { console.log(e) });
+      return () => unsubscribe();
+    } else {
+      setListings([]);
+    }
 
     return () => unsubscribe();
-  }, []);
+  }, [user]);
 
 
   function handleDeleteListing(listingToBeDeletedID) {
