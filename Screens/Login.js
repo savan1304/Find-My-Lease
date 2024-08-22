@@ -34,7 +34,7 @@ export default function Login({ navigation }) {
             const userCred = await signInWithEmailAndPassword(auth, email, password);
             console.log("Login successful: ", userCred);
             setIsLoading(false);
-            navigation.navigate('My Home');
+            navigation.navigate('Root');
         } catch (err) {
             setIsLoading(false);
             Alert.alert(language === 'zh' ? '登录错误' : 'Login Error', err.message);
