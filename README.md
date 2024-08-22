@@ -1,3 +1,12 @@
+==> **State Management:**
+    State Management with React Context. 
+    
+    The App has the user check the user login status while using our App. The app will not allow users to use certain functions if they do not log in/sign up. It will pop an alert to direct the user to the log-in page.
+    If the user is not logged in, the user will be set as null. This is how the App handles our authentication part to create the difference between the temp user and the logged-in user. 
+
+    The other state management component is language. The App can switch the language on the Settings screen. Currently, the App has two languages (English/Simplified Chinese). Once the state language changes, almost all the text will switch to 
+    a different language for users. The App has two languages for in-app text, alerts, and buttons. 
+    
 **Iteration-2:**
 
 _Current state (or functionalities) of the application:_
