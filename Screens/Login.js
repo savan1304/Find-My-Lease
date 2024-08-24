@@ -37,7 +37,13 @@ export default function Login({ navigation }) {
             navigation.navigate('Root');
         } catch (err) {
             setIsLoading(false);
-            Alert.alert(language === 'zh' ? '登录错误' : 'Login Error', err.message);
+            if (err.code === 'auth/invalid-credential') {
+                Alert.alert(language === 'zh' ? '凭证无效' : 'Invalid credentials', 'Please check the email and password you have entered and try again.');
+            } else {
+                // Handling other errors
+                console.error('Error during reset password:', err);
+                Alert.alert(language === 'zh' ? '错误' : 'Error', 'An error occurred during while resetting the password. Please try again later.');
+            }
         }
     };
 
@@ -58,7 +64,13 @@ export default function Login({ navigation }) {
                 setResetEmail('');
             })
             .catch((error) => {
-                Alert.alert(language === 'zh' ? '错误' : "Error", error.message);
+                if (error.code === 'auth/invalid-credential') {
+                    Alert.alert(language === 'zh' ? '凭证无效' : 'Invalid credentials', 'Please check the email and password you have entered and try again.');
+                } else {
+                    // Handling other errors
+                    console.error('Error during reset password:', error);
+                    Alert.alert(language === 'zh' ? '错误' : 'Error', 'An error occurred during while resetting the password. Please try again later.');
+                }
             });
     };
 
