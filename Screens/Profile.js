@@ -2,11 +2,12 @@ import React, { useEffect, useState, useContext } from 'react';
 import { StyleSheet, Text, View, Modal, TextInput, Button, Alert, ScrollView, Dimensions } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { database } from '../Firebase/firebaseSetup';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, deleteDoc, getDocs } from 'firebase/firestore';
 import { editToDB } from '../Firebase/firestoreHelper';
 import { AuthContext } from '../Components/AuthContext';
 import PressableItem from '../Components/PressableItem';
 import { EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
+import { collection, query, where } from 'firebase/firestore';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -72,29 +73,39 @@ const Profile = ({ navigation }) => {
     if (password === '') {
       Alert.alert(
         language === 'zh' ? "缺少信息" : "Missing Information",
-            language === 'zh' ? "请输入您的密码以确认删除您的账户，或者如果您改变主意了，请按取消！" : "Please type your password to confirm deleting your account, or \nPress Cancel if you have changed your mind!",
-            [
-              {
-                text: language === 'zh' ? "确定" : "Ok",
-                style: "Ok",
-              },
-            ]
-          );
-        } else {
-          Alert.alert(
-            language === 'zh' ? "最后确认" : "Final Confirmation",
-            language === 'zh' ? "您确定要删除您的账户吗？此操作无法撤销。" : "Are you sure you want to delete your account? This action cannot be undone.",
-            [
-              {
-                text: language === 'zh' ? "取消" : "Cancel",
-                style: "cancel",
-              },
-              {
-                text: language === 'zh' ? "删除" : "Delete",
+        language === 'zh' ? "请输入您的密码以确认删除您的账户，或者如果您改变主意了，请按取消！" : "Please type your password to confirm deleting your account, or \nPress Cancel if you have changed your mind!",
+        [
+          {
+            text: language === 'zh' ? "确定" : "Ok",
+            style: "Ok",
+          },
+        ]
+      );
+    } else {
+      Alert.alert(
+        language === 'zh' ? "最后确认" : "Final Confirmation",
+        language === 'zh' ? "您确定要删除您的账户吗？此操作无法撤销。" : "Are you sure you want to delete your account? This action cannot be undone.",
+        [
+          {
+            text: language === 'zh' ? "取消" : "Cancel",
+            style: "cancel",
+          },
+          {
+            text: language === 'zh' ? "删除" : "Delete",
             onPress: async () => {
               try {
                 const credential = EmailAuthProvider.credential(user.email, password);
                 await reauthenticateWithCredential(user, credential);
+
+                // fetching listings created by the user
+                const listingsQuery = query(collection(database, 'Listing'), where('createdBy', '==', user.uid));
+                const listingsSnapshot = await getDocs(listingsQuery);
+
+                // Deleting each listing posted by the user
+                const deleteListingPromises = listingsSnapshot.docs.map(async (listingDoc) => {
+                  await deleteDoc(listingDoc.ref);
+                });
+                await Promise.all(deleteListingPromises);
 
                 // Deleting the user document from Firestore
                 const userDocRef = doc(database, 'User', user.uid);
@@ -151,21 +162,21 @@ const Profile = ({ navigation }) => {
         </View>
 
         <PressableItem style={styles.editButton} onPress={() => {
-            if (user) {
-              setIsModalVisible(true);
-            } else {
-              Alert.alert(
-                language === 'zh' ? '需要登录' : 'Login Required',
-                language === 'zh' ? '您需要登录才能编辑您的资料。' : 'You need to be logged in to edit your profile.',
-                [
-                  { text: language === 'zh' ? '取消' : 'Cancel', style: 'cancel' },
-                  { text: language === 'zh' ? '登录' : 'Login', onPress: () => navigation.navigate('Login') }
-                ]
-              );
-            }
-          }}>
-            <Ionicons name="pencil" size={24} color="rgb(0, 122, 255)" />
-          </PressableItem>
+          if (user) {
+            setIsModalVisible(true);
+          } else {
+            Alert.alert(
+              language === 'zh' ? '需要登录' : 'Login Required',
+              language === 'zh' ? '您需要登录才能编辑您的资料。' : 'You need to be logged in to edit your profile.',
+              [
+                { text: language === 'zh' ? '取消' : 'Cancel', style: 'cancel' },
+                { text: language === 'zh' ? '登录' : 'Login', onPress: () => navigation.navigate('Login') }
+              ]
+            );
+          }
+        }}>
+          <Ionicons name="pencil" size={24} color="rgb(0, 122, 255)" />
+        </PressableItem>
       </View>
 
       <View style={styles.profileOptionsContainer}>
