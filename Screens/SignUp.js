@@ -48,10 +48,16 @@ export default function SignUp({ navigation }) {
             const usersCollectionRef = collection(database, 'User');
             await setDoc(doc(usersCollectionRef, user.uid), {
                 email: user.email,
-            });
-            navigation.navigate('My Home');
+            }); 
+            navigation.navigate('Root');
         } catch (err) {
-            Alert.alert(language === 'zh' ? '注册错误' : "SIGN UP Error", err.message);
+            if (err.code === 'auth/email-already-in-use') {
+                Alert.alert(language === 'zh' ? '电子邮件已在使用' : 'Email Already in Use', 'This email is already in use. Please try a different email or log in if you already have an account.');
+            } else {
+                // Handling other errors
+                console.error('Error during signup:', err);
+                Alert.alert(language === 'zh' ? '错误' : 'Error', 'An error occurred during signup. Please try again later.');
+            }
         }
     }
 
