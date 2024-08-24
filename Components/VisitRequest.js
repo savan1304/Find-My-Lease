@@ -11,6 +11,8 @@ import { AuthContext } from '../Components/AuthContext';
 
 const VisitRequestItem = ({ visit, listing }) => {
     const { language } = useContext(AuthContext);
+    console.log("inside VisitRequestItem with visit: ", visit)
+    console.log("inside VisitRequestItem with listing: ", listing)
 
     // State for storing requester data and loading state
     const [requesterData, setRequesterData] = useState(null);
