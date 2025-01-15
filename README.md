@@ -1,4 +1,3 @@
-Demo Video: https://www.youtube.com/watch?v=k0f0aWqtg1M
 <br>
 <br>
 **Iteration-3:**
@@ -64,39 +63,8 @@ User can Delete their account from Profile screen. Asking for their password as 
 ==> The listed above is an addition to iteration-1 and iteratioin-2. Therefore all the functionalities from iteration-1 and iteration-2 are included.
 <br>
 <br>
-**_Zhecheng Li's work in Iteration-3:_**
-<br>
-![IMG_0686](https://github.com/user-attachments/assets/cc65d62a-0ad7-47fe-abbc-a4f364604bbc)
 
-Allow users to check the contact information of the landlord. Use Clipboard so they can hold and copy.
-<br>
-![IMG_0685](https://github.com/user-attachments/assets/10981f09-d172-4e92-b002-673f0b6f5e47)
-
-Temp Users will not access certain functions, they have to log in first.
-<br>
-![IMG_0684](https://github.com/user-attachments/assets/b6b88a31-b91a-4fa1-ae42-cce337da2fc9)
-
-The search bar can filter with the location. 
-<br>
-![IMG_0678](https://github.com/user-attachments/assets/46fcc860-6997-448f-a524-812d84e6dc46)
-![IMG_0679](https://github.com/user-attachments/assets/ba6ce0c3-962a-4480-8ccd-32b262924310)
-
-Updated profile page, move the saved part into the bottom tab. Updated the layout and rule for the saved part. 
-<br>
-![IMG_0680](https://github.com/user-attachments/assets/b3041fba-5847-49ed-b72b-5d9ddd28fc0d)
-
-User can cancel all the local notification with top right button
-<br>
-![IMG_0682](https://github.com/user-attachments/assets/0a203dd4-bfe2-443f-90e8-8deb6141cf5d)
-![IMG_0683](https://github.com/user-attachments/assets/e88a1c72-d456-4641-beab-b5b08e7caf5c)
-
-Add the Chinese language to our App. Users can switch different languages in the App. The picture only shows the Chinese in the profile page, but it works on all the App. 
-
-<br>
-<br>
-<br>
-
-**_Savan Parmar - Iteration-2:_**
+**_Savan Parmar - Iteration-3:_**
 <br>
 Confirm alert while scheduling/editing a visit:
 ![VisitRequest_scheduleVisit_save_alert](https://github.com/user-attachments/assets/0d8767d3-e471-48d2-b5fe-e41c232e4f9b)
@@ -174,6 +142,36 @@ Delete account final confirmation:
 ![DeleteAccount_Final_confirmation](https://github.com/user-attachments/assets/126ff146-e6c2-4181-b532-c445a96bff3c)
 
 
+<br>
+![IMG_0686](https://github.com/user-attachments/assets/cc65d62a-0ad7-47fe-abbc-a4f364604bbc)
+
+Allow users to check the contact information of the landlord. Use Clipboard so they can hold and copy.
+<br>
+![IMG_0685](https://github.com/user-attachments/assets/10981f09-d172-4e92-b002-673f0b6f5e47)
+
+Temp Users will not access certain functions, they have to log in first.
+<br>
+![IMG_0684](https://github.com/user-attachments/assets/b6b88a31-b91a-4fa1-ae42-cce337da2fc9)
+
+The search bar can filter with the location. 
+<br>
+![IMG_0678](https://github.com/user-attachments/assets/46fcc860-6997-448f-a524-812d84e6dc46)
+![IMG_0679](https://github.com/user-attachments/assets/ba6ce0c3-962a-4480-8ccd-32b262924310)
+
+Updated profile page, move the saved part into the bottom tab. Updated the layout and rule for the saved part. 
+<br>
+![IMG_0680](https://github.com/user-attachments/assets/b3041fba-5847-49ed-b72b-5d9ddd28fc0d)
+
+User can cancel all the local notification with top right button
+<br>
+![IMG_0682](https://github.com/user-attachments/assets/0a203dd4-bfe2-443f-90e8-8deb6141cf5d)
+![IMG_0683](https://github.com/user-attachments/assets/e88a1c72-d456-4641-beab-b5b08e7caf5c)
+
+Add the Chinese language to our App. Users can switch different languages in the App. The picture only shows the Chinese in the profile page, but it works on all the App. 
+
+<br>
+<br>
+<br>
 
 
 
@@ -229,31 +227,6 @@ _Current state (or functionalities) of the application:_
      Listing collection: Add doc (R) after posting a listing, Read(R) listing for 'Home', 'HouseDetails', 'My Posted listings' screens, Edit(U) for Edit listing option from 'My posted listings' screens, Delete(D) for deleting the listing from 'My Posted listings' or the 'Saved' screen.
 
  
-==> The listed above is an addition to iteration-1. Therefore all the functionalities from iteration-1 are included.
-<br>
-
-**_Zhecheng Li's work in Iteration-2:_**
-<br>
-![Capture_Iteration2_0](https://github.com/user-attachments/assets/202abccc-ec03-4d2c-9c47-c6a119f4b41c)
-![Capture_Iteration2_1](https://github.com/user-attachments/assets/e7c5f9e4-0ce2-45be-bde9-2197b5ef8855)
-![Capture_Iteration2_2](https://github.com/user-attachments/assets/9019d5ca-2f20-45c7-aa75-902895857af3)
-
-Updated the login and sign-up screen with a description. User can use forget password button to reset their password. 
-<br>
-![Capture_Iteration2_5](https://github.com/user-attachments/assets/da5d9693-2912-434b-848c-5dd0707258c6)
-<br>
-In sign up screen, user cannot create too simple password(must contain number+letter)
-<br>
-![Capture_Iteration2_3](https://github.com/user-attachments/assets/b066c846-af8f-42ec-9a0c-6d90ec3b95f3)
-<br>
-On the detailed page, the user can view the details with external API to show the walking score, biking score, and transit score. 
-<br>
-![Capture_Iteration2_4](https://github.com/user-attachments/assets/c5e9710f-2859-42c1-943d-bb0a9a25713d)
-
-Create the notification 1 day before the user's schedule (local notification)
-
-<br>
-<br>
 
 **_Savan Parmar - Iteration-2:_**
 <br>
@@ -286,6 +259,31 @@ Displaying existing images of the listing while editing a scheduled visit:
 ![Schedule_Visit_Edit](https://github.com/user-attachments/assets/2f1e301f-1e31-4deb-838b-870b2f51e570)
 
 
+
+==> The listed above is an addition to iteration-1. Therefore all the functionalities from iteration-1 are included.
+<br>
+
+<br>
+![Capture_Iteration2_0](https://github.com/user-attachments/assets/202abccc-ec03-4d2c-9c47-c6a119f4b41c)
+![Capture_Iteration2_1](https://github.com/user-attachments/assets/e7c5f9e4-0ce2-45be-bde9-2197b5ef8855)
+![Capture_Iteration2_2](https://github.com/user-attachments/assets/9019d5ca-2f20-45c7-aa75-902895857af3)
+
+Updated the login and sign-up screen with a description. User can use forget password button to reset their password. 
+<br>
+![Capture_Iteration2_5](https://github.com/user-attachments/assets/da5d9693-2912-434b-848c-5dd0707258c6)
+<br>
+In sign up screen, user cannot create too simple password(must contain number+letter)
+<br>
+![Capture_Iteration2_3](https://github.com/user-attachments/assets/b066c846-af8f-42ec-9a0c-6d90ec3b95f3)
+<br>
+On the detailed page, the user can view the details with external API to show the walking score, biking score, and transit score. 
+<br>
+![Capture_Iteration2_4](https://github.com/user-attachments/assets/c5e9710f-2859-42c1-943d-bb0a9a25713d)
+
+Create the notification 1 day before the user's schedule (local notification)
+
+<br>
+<br>
 <br>
 <br>
 <br>
@@ -339,18 +337,7 @@ _Current state (or functionalities) of the application:_
 
 
 
-**_Zhecheng Li's work in Iteration-1:_**
-![IMG_0643](https://github.com/user-attachments/assets/2b885339-fc7a-4e63-8c0a-8d9201c2ff73)
-![IMG_0647](https://github.com/user-attachments/assets/bc8a12ae-7f7c-4ba2-b8d7-cf5788941af6)
-Home Screen with Search and Filter function. Showing on listing from database
-![IMG_0644](https://github.com/user-attachments/assets/8d5ab284-54ba-43c2-95fa-4fb9a83b766e)
-Detail page for each Listing 
-![IMG_0645](https://github.com/user-attachments/assets/a9b3d3dd-6856-4537-8744-bb2c779f60a5)
-Profile Layout 
 
-![IMG_0646](https://github.com/user-attachments/assets/04ba1bc1-4d60-47fc-b3dc-8d5e25a1bd6b)
-
-Saved List for each indivual user, users can delete what he saved here
 
 **_Savan Parmar - Iteration-1:_**
 Login screen with email and password:
@@ -377,4 +364,16 @@ Schedule a visit screen (Navigated from HouseDetails screen), creating a visit d
 ![Screenshot_20240807_224014_Expo Go](https://github.com/user-attachments/assets/cee37a3e-6d81-4dde-8dc0-83238a3436b6)
 
 
+Home Screen with Search and Filter function. Showing on listing from database
+![IMG_0643](https://github.com/user-attachments/assets/2b885339-fc7a-4e63-8c0a-8d9201c2ff73)
+![IMG_0647](https://github.com/user-attachments/assets/bc8a12ae-7f7c-4ba2-b8d7-cf5788941af6)
+
+Detail page for each Listing 
+![IMG_0644](https://github.com/user-attachments/assets/8d5ab284-54ba-43c2-95fa-4fb9a83b766e)
+
+Profile Layout 
+![IMG_0645](https://github.com/user-attachments/assets/a9b3d3dd-6856-4537-8744-bb2c779f60a5)
+
+Saved List for each indivual user, with delete option
+![IMG_0646](https://github.com/user-attachments/assets/04ba1bc1-4d60-47fc-b3dc-8d5e25a1bd6b)
 
