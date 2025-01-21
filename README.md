@@ -1,4 +1,5 @@
-**FindMyLease: A cross-platform mobile app that connects property seekers with landlords through interactive listings, visit scheduling, and real-time notifications**
+**FindMyLease**
+A cross-platform mobile app that connects property seekers with landlords through interactive listings, visit scheduling, and real-time notifications
 <br>
 <br>
 **Iteration-3:**
