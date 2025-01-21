@@ -146,31 +146,37 @@ Delete account final confirmation:
 
 
 <br>
+
 ![IMG_0686](https://github.com/user-attachments/assets/cc65d62a-0ad7-47fe-abbc-a4f364604bbc)
 
 Allow users to check the contact information of the landlord. Use Clipboard so they can hold and copy.
 <br>
+
 ![IMG_0685](https://github.com/user-attachments/assets/10981f09-d172-4e92-b002-673f0b6f5e47)
 
 Temp Users will not access certain functions, they have to log in first.
 <br>
+
 ![IMG_0684](https://github.com/user-attachments/assets/b6b88a31-b91a-4fa1-ae42-cce337da2fc9)
 
 The search bar can filter with the location. 
 <br>
+
 ![IMG_0678](https://github.com/user-attachments/assets/46fcc860-6997-448f-a524-812d84e6dc46)
 ![IMG_0679](https://github.com/user-attachments/assets/ba6ce0c3-962a-4480-8ccd-32b262924310)
 
 Updated profile page, move the saved part into the bottom tab. Updated the layout and rule for the saved part. 
 <br>
+
 ![IMG_0680](https://github.com/user-attachments/assets/b3041fba-5847-49ed-b72b-5d9ddd28fc0d)
 
 User can cancel all the local notification with top right button
 <br>
+
 ![IMG_0682](https://github.com/user-attachments/assets/0a203dd4-bfe2-443f-90e8-8deb6141cf5d)
 ![IMG_0683](https://github.com/user-attachments/assets/e88a1c72-d456-4641-beab-b5b08e7caf5c)
 
-Add the Chinese language to our App. Users can switch different languages in the App. The picture only shows the Chinese in the profile page, but it works on all the App. 
+Add the Chinese language to the App. Users can switch different languages in the App. The picture only shows the Chinese in the profile page, but it works on all the App. 
 
 <br>
 <br>
