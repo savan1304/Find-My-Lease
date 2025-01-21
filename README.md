@@ -273,20 +273,24 @@ Displaying existing images of the listing while editing a scheduled visit:
 <br>
 
 <br>
+
 ![Capture_Iteration2_0](https://github.com/user-attachments/assets/202abccc-ec03-4d2c-9c47-c6a119f4b41c)
 ![Capture_Iteration2_1](https://github.com/user-attachments/assets/e7c5f9e4-0ce2-45be-bde9-2197b5ef8855)
 ![Capture_Iteration2_2](https://github.com/user-attachments/assets/9019d5ca-2f20-45c7-aa75-902895857af3)
 
 Updated the login and sign-up screen with a description. User can use forget password button to reset their password. 
 <br>
+
 ![Capture_Iteration2_5](https://github.com/user-attachments/assets/da5d9693-2912-434b-848c-5dd0707258c6)
 <br>
 In sign up screen, user cannot create too simple password(must contain number+letter)
 <br>
+
 ![Capture_Iteration2_3](https://github.com/user-attachments/assets/b066c846-af8f-42ec-9a0c-6d90ec3b95f3)
 <br>
-On the detailed page, the user can view the details with external API to show the walking score, biking score, and transit score. 
+On the details page, the user can view the details with external API to show the walking score, biking score, and transit score. 
 <br>
+
 ![Capture_Iteration2_4](https://github.com/user-attachments/assets/c5e9710f-2859-42c1-943d-bb0a9a25713d)
 
 Create the notification 1 day before the user's schedule (local notification)
